@@ -1,0 +1,3103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C949 — Data Structures & Algorithms Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0e1a; --surface:#111827; --surface2:#1a2235; --border:#1e2d45;
+  --accent:#00d4ff; --accent2:#7c3aed; --accent3:#10b981; --accent4:#f59e0b; --accent5:#ef4444;
+  --text:#e2e8f0; --muted:#64748b; --code-bg:#0d1117;
+  --tip:#064e3b; --tip-border:#10b981; --warn:#451a03; --warn-border:#f59e0b;
+  --nav-h:60px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden;}
+
+/* ══ TOP NAVBAR ══ */
+#topnav {
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:1000;
+  background:rgba(10,14,26,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;gap:0;
+}
+.nav-brand {
+  display:flex;align-items:center;gap:10px;
+  padding:0 24px;
+  border-right:1px solid var(--border);
+  height:100%;
+  min-width:200px;
+}
+.nav-brand .tag {
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:2px;
+  color:var(--accent);
+  background:rgba(0,212,255,0.1);
+  border:1px solid rgba(0,212,255,0.25);
+  border-radius:4px;padding:2px 7px;
+}
+.nav-brand .title {
+  font-size:14px;font-weight:700;color:#fff;
+}
+.nav-tabs {
+  display:flex;height:100%;flex:1;
+}
+.nav-tab {
+  display:flex;align-items:center;gap:8px;
+  padding:0 28px;height:100%;
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
+  color:var(--muted);cursor:pointer;
+  border-bottom:3px solid transparent;
+  transition:all 0.2s;
+  letter-spacing:0.3px;
+  border:none;background:none;
+}
+.nav-tab:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+.nav-tab.active{color:#fff;border-bottom:3px solid var(--accent);background:rgba(0,212,255,0.04);}
+.nav-tab .tab-icon{font-size:16px;}
+.nav-progress {
+  margin-left:auto;padding-right:24px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:12px;
+}
+.nav-score-badge {
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:20px;padding:4px 14px;font-size:12px;
+  display:none;
+}
+.nav-score-badge.visible{display:flex;align-items:center;gap:6px;}
+.nav-score-badge .score-num{color:var(--accent);font-weight:700;}
+
+/* ══ PAGE WRAPPERS ══ */
+.page{display:none;padding-top:var(--nav-h);}
+.page.active{display:block;}
+
+/* ══ LESSONS PAGE ══ */
+#page-lessons{display:flex;}
+#lessons-sidebar {
+  width:240px;min-width:240px;
+  background:var(--surface);border-right:1px solid var(--border);
+  position:fixed;top:var(--nav-h);bottom:0;left:0;
+  overflow-y:auto;padding:16px 0;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+  display:none;
+}
+#page-lessons.active #lessons-sidebar{display:block;}
+#lessons-sidebar::-webkit-scrollbar{width:4px;}
+#lessons-sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.sidebar-label{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:2px;color:var(--muted);text-transform:uppercase;
+  padding:12px 18px 6px;
+}
+.sidebar-link {
+  display:flex;align-items:center;gap:9px;
+  padding:8px 18px;color:var(--muted);text-decoration:none;
+  font-size:13px;font-weight:600;transition:all 0.18s;
+  border-left:3px solid transparent;line-height:1.3;
+}
+.sidebar-link:hover,.sidebar-link.active{
+  color:var(--text);background:rgba(0,212,255,0.06);border-left-color:var(--accent);
+}
+.sidebar-link .si{font-size:14px;min-width:18px;text-align:center;}
+#lessons-main{
+  flex:1;margin-left:240px;
+  display:none;
+}
+#page-lessons.active #lessons-main{display:block;}
+.lessons-search-bar{
+  padding:12px 18px;background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:var(--nav-h);z-index:10;
+}
+#lessons-search{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:8px 14px;color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;
+  transition:border-color 0.2s;
+}
+#lessons-search:focus{border-color:var(--accent);}
+#lessons-search::placeholder{color:var(--muted);}
+
+/* ══ SECTIONS ══ */
+.section{padding:46px 48px 56px;border-bottom:1px solid var(--border);max-width:980px;}
+.section-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:28px;}
+.section-icon{font-size:1.9rem;line-height:1;margin-top:2px;}
+.section-number{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;}
+h2{font-size:1.75rem;font-weight:800;color:#fff;margin-bottom:2px;}
+h3{
+  font-size:1.05rem;font-weight:700;color:var(--accent);
+  margin:26px 0 10px;display:flex;align-items:center;gap:8px;
+}
+h3::before{content:'';display:block;width:3px;height:15px;background:var(--accent);border-radius:2px;}
+h4{font-size:.92rem;font-weight:700;color:var(--accent2);margin:16px 0 8px;}
+p{margin-bottom:12px;color:#cbd5e1;}
+
+/* tips / warn */
+.tip-box{background:var(--tip);border-left:4px solid var(--tip-border);border-radius:0 8px 8px 0;padding:13px 17px;margin:16px 0;font-size:14px;}
+.tip-box strong{color:var(--tip-border);}
+.warn-box{background:var(--warn);border-left:4px solid var(--warn-border);border-radius:0 8px 8px 0;padding:13px 17px;margin:16px 0;font-size:14px;}
+.warn-box strong{color:var(--warn-border);}
+
+/* code */
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:18px;overflow-x:auto;margin:12px 0 18px;position:relative;}
+pre::before{content:attr(data-lang);position:absolute;top:7px;right:11px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+code{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#a5f3fc;}
+.kw{color:#c084fc;}.fn{color:#67e8f9;}.cm{color:#4b5563;font-style:italic;}.st{color:#86efac;}.nm{color:#fbbf24;}.op{color:#f9a8d4;}
+
+/* tables */
+.complexity-table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:13px;}
+.complexity-table th{background:var(--surface2);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:9px 13px;text-align:left;border-bottom:1px solid var(--border);}
+.complexity-table td{padding:8px 13px;border-bottom:1px solid rgba(30,45,69,0.7);color:#cbd5e1;}
+.complexity-table tr:hover td{background:rgba(255,255,255,0.02);}
+.o1{color:#10b981;font-family:'JetBrains Mono',monospace;font-weight:700;}
+.olog{color:#67e8f9;font-family:'JetBrains Mono',monospace;font-weight:700;}
+.on{color:#fbbf24;font-family:'JetBrains Mono',monospace;font-weight:700;}
+.onlog{color:#f97316;font-family:'JetBrains Mono',monospace;font-weight:700;}
+.on2{color:#ef4444;font-family:'JetBrains Mono',monospace;font-weight:700;}
+
+/* steps / bullets */
+.steps{list-style:none;counter-reset:step;padding:0;margin:10px 0 18px;}
+.steps li{counter-increment:step;padding:9px 13px 9px 48px;position:relative;border-left:2px solid var(--border);margin-bottom:5px;color:#cbd5e1;font-size:14px;}
+.steps li::before{content:counter(step);position:absolute;left:-13px;top:9px;background:var(--accent2);color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;width:23px;height:23px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+ul.bullets{list-style:none;padding:0;margin:8px 0 16px;}
+ul.bullets li{padding:4px 0 4px 20px;position:relative;color:#cbd5e1;font-size:14px;}
+ul.bullets li::before{content:'▸';position:absolute;left:0;color:var(--accent);}
+
+/* rule card */
+.rule-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:17px 19px;margin:11px 0;}
+.rule-card .rule-title{font-weight:700;font-size:14px;color:#fff;margin-bottom:5px;}
+.rule-card p{margin:0;font-size:13px;color:#94a3b8;}
+
+/* scenario cards */
+.scenario-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent2);border-radius:0 10px 10px 0;padding:15px 19px;margin:11px 0;}
+.scenario-card .sc-title{font-weight:700;color:#c4b5fd;font-size:14px;margin-bottom:5px;}
+.scenario-card .sc-body{font-size:13px;color:#94a3b8;}
+.scenario-card .sc-answer{font-size:13px;color:var(--accent3);margin-top:7px;font-weight:600;}
+
+/* tabs */
+.tabs{display:flex;gap:4px;margin-bottom:18px;flex-wrap:wrap;}
+.tab-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;font-size:12px;padding:6px 15px;border-radius:6px;cursor:pointer;transition:all 0.2s;}
+.tab-btn.active,.tab-btn:hover{background:rgba(124,58,237,0.15);border-color:var(--accent2);color:var(--text);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ══ FLASHCARDS PAGE ══ */
+#page-flashcards{
+  min-height:calc(100vh - var(--nav-h));
+  padding:var(--nav-h) 0 0;
+}
+#page-flashcards.active{display:block;}
+.fc-page-inner{max-width:1200px;margin:0 auto;padding:36px 40px;}
+.fc-page-header{margin-bottom:28px;}
+.fc-page-header h2{font-size:1.7rem;font-weight:800;color:#fff;margin-bottom:6px;}
+.fc-page-header p{color:var(--muted);font-size:14px;}
+.fc-controls{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+.fc-filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.fc-filter-row label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;min-width:50px;}
+.fc-filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+.fc-filter-btn:hover,.fc-filter-btn.active{background:rgba(0,212,255,0.12);border-color:var(--accent);color:var(--accent);}
+#fc-search{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;color:var(--text);font-family:'Syne',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+#fc-search:focus{border-color:var(--accent);}
+.fc-stats{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:8px;}
+.fc-stats span{color:var(--accent);font-weight:700;}
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+
+/* flip card */
+.fc{height:170px;perspective:800px;cursor:pointer;}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 0.42s cubic-bezier(0.4,0,0.2,1);border-radius:10px;}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;padding:18px 16px;display:flex;flex-direction:column;justify-content:center;border:1px solid var(--border);}
+.fc-front{background:var(--surface);transition:border-color 0.2s,box-shadow 0.2s;}
+.fc:hover .fc-front{border-color:var(--accent);box-shadow:0 4px 20px rgba(0,212,255,0.1);}
+.fc-back{background:var(--surface2);transform:rotateY(180deg);border-color:var(--accent2);overflow-y:auto;}
+.fc-term{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--accent);margin-bottom:6px;}
+.fc-hint{font-size:11px;color:var(--muted);font-style:italic;}
+.fc-term-back{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+.fc-def{font-size:13px;color:#cbd5e1;line-height:1.5;}
+.fc-tag{position:absolute;top:10px;right:12px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);background:var(--surface2);border-radius:3px;padding:2px 6px;}
+
+/* ══ PRACTICE TEST PAGE ══ */
+#page-practice{min-height:calc(100vh - var(--nav-h));padding:var(--nav-h) 0 0;}
+#page-practice.active{display:block;}
+.pt-inner{max-width:880px;margin:0 auto;padding:36px 40px 80px;}
+.pt-header{margin-bottom:28px;}
+.pt-header h2{font-size:1.7rem;font-weight:800;color:#fff;margin-bottom:6px;}
+.pt-header p{color:var(--muted);font-size:14px;}
+
+/* scoreboard */
+.pt-scoreboard{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:20px 24px;margin-bottom:28px;
+  display:flex;align-items:center;gap:24px;flex-wrap:wrap;
+}
+.pt-score-main{display:flex;flex-direction:column;}
+.pt-score-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.pt-score-val{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--accent);line-height:1;}
+.pt-score-pct{font-size:13px;color:var(--muted);margin-top:4px;}
+.pt-progress-wrap{flex:1;min-width:160px;}
+.pt-prog-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;}
+.pt-prog-bar{background:rgba(255,255,255,0.07);border-radius:20px;height:8px;overflow:hidden;}
+.pt-prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width 0.4s ease;}
+.pt-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-left:auto;}
+.pt-btn{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:13px;
+  padding:10px 20px;border-radius:8px;cursor:pointer;transition:all 0.2s;border:none;
+}
+.pt-btn-primary{background:var(--accent);color:#000;}
+.pt-btn-primary:hover{background:#00b8d9;transform:translateY(-1px);}
+.pt-btn-secondary{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.pt-btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.pt-set-info{
+  background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);
+  border-radius:8px;padding:11px 16px;margin-bottom:22px;
+  font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;
+}
+.pt-set-info strong{color:var(--accent);}
+
+/* questions */
+.pt-section-label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent2);
+  letter-spacing:2px;text-transform:uppercase;
+  padding:10px 0 6px;margin-top:20px;border-bottom:1px solid var(--border);margin-bottom:16px;
+}
+.quiz-q{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:20px 22px;margin-bottom:14px;transition:border-color 0.2s;
+}
+.quiz-q.answered{border-color:rgba(0,212,255,0.2);}
+.quiz-q-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent2);margin-bottom:8px;letter-spacing:1px;}
+.quiz-q-text{font-size:14px;font-weight:600;color:#e2e8f0;margin-bottom:14px;line-height:1.5;}
+.quiz-options{display:flex;flex-direction:column;gap:8px;}
+.quiz-option{
+  display:flex;align-items:flex-start;gap:10px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:7px;
+  padding:10px 14px;cursor:pointer;font-size:13px;color:#94a3b8;
+  transition:all 0.18s;text-align:left;width:100%;
+}
+.quiz-option:hover:not(:disabled){border-color:var(--accent);color:var(--text);}
+.quiz-option.correct{background:rgba(16,185,129,0.12);border-color:#10b981;color:#6ee7b7;}
+.quiz-option.wrong{background:rgba(239,68,68,0.12);border-color:#ef4444;color:#fca5a5;}
+.quiz-option:disabled{cursor:default;}
+.opt-letter{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;color:var(--accent);min-width:18px;}
+.quiz-option.correct .opt-letter{color:#10b981;}
+.quiz-option.wrong .opt-letter{color:#ef4444;}
+.quiz-explain{
+  display:none;margin-top:12px;padding:12px 14px;
+  background:rgba(0,212,255,0.05);border-left:3px solid var(--accent);
+  border-radius:0 6px 6px 0;font-size:13px;color:#94a3b8;line-height:1.6;
+}
+.quiz-explain.show{display:block;}
+.quiz-explain strong{color:var(--accent);}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:800px){
+  #lessons-sidebar{display:none!important;}
+  #lessons-main{margin-left:0!important;}
+  .section{padding:28px 20px 36px;}
+  .fc-page-inner,.pt-inner{padding:24px 18px 60px;}
+  .nav-brand{min-width:auto;padding:0 16px;}
+  .nav-brand .title{display:none;}
+  .nav-tab{padding:0 16px;font-size:12px;}
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fc,.quiz-q{animation:fadeUp 0.3s ease both;}
+</style>
+</head>
+<body>
+
+<!-- ══ TOP NAV ══ -->
+<nav id="topnav">
+  <div class="nav-brand">
+    <span class="tag">C949</span>
+    <span class="title">DSA Study Guide</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('lessons')" id="tab-lessons">
+      <span class="tab-icon">📖</span> Lessons
+    </button>
+    <button class="nav-tab" onclick="showPage('flashcards')" id="tab-flashcards">
+      <span class="tab-icon">🃏</span> Flash Cards
+    </button>
+    <button class="nav-tab" onclick="showPage('practice')" id="tab-practice">
+      <span class="tab-icon">📝</span> Practice Test
+    </button>
+  </div>
+  <div class="nav-progress">
+    <div class="nav-score-badge" id="nav-score-badge">
+      <span>Score:</span><span class="score-num" id="nav-score-num">0/0</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     PAGE 1: LESSONS
+══════════════════════════════════════════ -->
+<div class="page active" id="page-lessons">
+  <nav id="lessons-sidebar">
+    <div class="sidebar-label">Topics</div>
+    <a href="#lists" class="sidebar-link" onclick="sideClick(this)"><span class="si">📋</span>1. Lists</a>
+    <a href="#stacks-queues" class="sidebar-link" onclick="sideClick(this)"><span class="si">📚</span>2. Stacks &amp; Queues</a>
+    <a href="#hash-tables" class="sidebar-link" onclick="sideClick(this)"><span class="si">🗄️</span>3. Hash Tables</a>
+    <a href="#trees" class="sidebar-link" onclick="sideClick(this)"><span class="si">🌳</span>4. Trees &amp; BSTs</a>
+    <a href="#balanced" class="sidebar-link" onclick="sideClick(this)"><span class="si">⚖️</span>5. Balanced Trees</a>
+    <a href="#heaps-treaps" class="sidebar-link" onclick="sideClick(this)"><span class="si">🔺</span>6. Heaps &amp; Treaps</a>
+    <a href="#sets" class="sidebar-link" onclick="sideClick(this)"><span class="si">🔗</span>7. Sets</a>
+    <a href="#graphs" class="sidebar-link" onclick="sideClick(this)"><span class="si">🕸️</span>8. Graphs</a>
+    <a href="#btrees" class="sidebar-link" onclick="sideClick(this)"><span class="si">🗂️</span>9. B-Trees</a>
+    <a href="#analysis" class="sidebar-link" onclick="sideClick(this)"><span class="si">📈</span>10. Algorithm Analysis</a>
+    <a href="#dynamic" class="sidebar-link" onclick="sideClick(this)"><span class="si">⚡</span>11. Dynamic Structures</a>
+  </nav>
+  <div id="lessons-main">
+    <div class="lessons-search-bar">
+      <input type="text" id="lessons-search" placeholder="🔍  Search concepts, terms, algorithms…" oninput="searchLessons(this.value)">
+    </div>
+    <section class="section" id="lists">
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <div>
+      <div class="section-number">01 / DATA STRUCTURES</div>
+      <h2>Lists</h2>
+    </div>
+  </div>
+  <p>Lists are ordered, sequential collections of elements. C949 tests three types: <strong>arrays</strong> (static), <strong>singly linked lists</strong>, and <strong>doubly linked lists</strong>.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'list-tabs','lt-array')">Array / List</button>
+    <button class="tab-btn" onclick="switchTab(this,'list-tabs','lt-singly')">Singly Linked</button>
+    <button class="tab-btn" onclick="switchTab(this,'list-tabs','lt-doubly')">Doubly Linked</button>
+  </div>
+  <div id="list-tabs">
+    <div id="lt-array" class="tab-content active">
+      <h3>Array / Python List</h3>
+      <p>A contiguous block of memory. Each element accessed via index in <span class="o1">O(1)</span>. In Python, the built-in <code>list</code> is a dynamic array.</p>
+      <h4>Rules</h4>
+      <ul class="bullets">
+        <li>Elements stored at consecutive memory addresses.</li>
+        <li>Index access is O(1) — direct offset calculation.</li>
+        <li>Insertion/deletion at middle requires shifting elements → O(n).</li>
+        <li>Append to end is amortized O(1) (Python dynamic array doubles capacity).</li>
+      </ul>
+      <h4>Key Operations</h4>
+      <table class="complexity-table">
+        <tr><th>Operation</th><th>Best</th><th>Average</th><th>Worst</th></tr>
+        <tr><td>Access by index</td><td class="o1">O(1)</td><td class="o1">O(1)</td><td class="o1">O(1)</td></tr>
+        <tr><td>Search (unsorted)</td><td class="o1">O(1)</td><td class="on">O(n)</td><td class="on">O(n)</td></tr>
+        <tr><td>Insert at end</td><td class="o1">O(1)</td><td class="o1">O(1)*</td><td class="on">O(n)</td></tr>
+        <tr><td>Insert at index</td><td class="o1">O(1)</td><td class="on">O(n)</td><td class="on">O(n)</td></tr>
+        <tr><td>Delete at index</td><td class="o1">O(1)</td><td class="on">O(n)</td><td class="on">O(n)</td></tr>
+      </table>
+      <pre data-lang="python"><code><span class="cm"># Python list operations</span>
+arr = [<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>, <span class="nm">40</span>]
+arr.append(<span class="nm">50</span>)          <span class="cm"># O(1) amortized — adds to end</span>
+arr.insert(<span class="nm">2</span>, <span class="nm">99</span>)       <span class="cm"># O(n) — shifts elements right</span>
+arr.pop()               <span class="cm"># O(1) — removes last element</span>
+arr.pop(<span class="nm">1</span>)             <span class="cm"># O(n) — removes at index, shifts</span>
+x = arr[<span class="nm">0</span>]             <span class="cm"># O(1) — direct index access</span>
+<span class="kw">print</span>(arr.index(<span class="nm">99</span>))   <span class="cm"># O(n) — linear search</span></code></pre>
+    </div>
+
+    <div id="lt-singly" class="tab-content">
+      <h3>Singly Linked List</h3>
+      <p>Each node holds <strong>data</strong> + a <strong>next pointer</strong>. The list maintains a <code>head</code> pointer; traversal is one-directional only.</p>
+      <h4>Rules</h4>
+      <ul class="bullets">
+        <li>No index — must traverse from head to reach any element.</li>
+        <li>Prepend is O(1): create node, point its next to current head, update head.</li>
+        <li>Append requires traversal to tail → O(n) without a tail pointer.</li>
+        <li>Delete requires tracking the <em>previous</em> node.</li>
+      </ul>
+      <h4>Procedure: Insert After a Node</h4>
+      <ol class="steps">
+        <li>Create a new node with the given data.</li>
+        <li>Set new_node.next = current_node.next</li>
+        <li>Set current_node.next = new_node</li>
+      </ol>
+      <pre data-lang="python"><code><span class="kw">class</span> <span class="fn">Node</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, data):
+        <span class="kw">self</span>.data = data
+        <span class="kw">self</span>.next = <span class="kw">None</span>
+
+<span class="kw">class</span> <span class="fn">SinglyLinkedList</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>.head = <span class="kw">None</span>
+
+    <span class="kw">def</span> <span class="fn">prepend</span>(<span class="kw">self</span>, data):     <span class="cm"># O(1)</span>
+        node = <span class="fn">Node</span>(data)
+        node.next = <span class="kw">self</span>.head
+        <span class="kw">self</span>.head = node
+
+    <span class="kw">def</span> <span class="fn">append</span>(<span class="kw">self</span>, data):      <span class="cm"># O(n) without tail ptr</span>
+        node = <span class="fn">Node</span>(data)
+        <span class="kw">if not</span> <span class="kw">self</span>.head:
+            <span class="kw">self</span>.head = node; <span class="kw">return</span>
+        cur = <span class="kw">self</span>.head
+        <span class="kw">while</span> cur.next: cur = cur.next
+        cur.next = node
+
+    <span class="kw">def</span> <span class="fn">search</span>(<span class="kw">self</span>, key):       <span class="cm"># O(n)</span>
+        cur = <span class="kw">self</span>.head
+        <span class="kw">while</span> cur:
+            <span class="kw">if</span> cur.data == key: <span class="kw">return</span> cur
+            cur = cur.next
+        <span class="kw">return None</span></code></pre>
+      <div class="tip-box"><strong>💡 Note:</strong> Singly linked list delete questions commonly ask you to track the <em>previous node</em>. Use a two-pointer walk: <code>prev</code> and <code>curr</code>.</div>
+    </div>
+
+    <div id="lt-doubly" class="tab-content">
+      <h3>Doubly Linked List</h3>
+      <p>Each node holds <strong>data + next + prev</strong>. Enables O(1) backward traversal and simpler deletion (no need to track predecessor separately).</p>
+      <h4>Rules</h4>
+      <ul class="bullets">
+        <li>Two pointers per node — slightly more memory than singly linked.</li>
+        <li>Deletion of a known node is O(1) — adjust both neighbors' pointers.</li>
+        <li>Common implementation for deques, LRU caches.</li>
+        <li>Python's <code>collections.deque</code> is a doubly linked list under the hood.</li>
+      </ul>
+      <h4>Procedure: Delete a Known Node</h4>
+      <ol class="steps">
+        <li>If node.prev exists → set node.prev.next = node.next</li>
+        <li>If node.next exists → set node.next.prev = node.prev</li>
+        <li>If node is head → update head = node.next</li>
+        <li>If node is tail → update tail = node.prev</li>
+      </ol>
+      <div class="tip-box"><strong>💡 Array vs. Linked List Decision Rule:</strong><br>
+      ✅ Use <strong>array/list</strong> when you need fast random access by index.<br>
+      ✅ Use <strong>linked list</strong> when you need fast insertions/deletions at arbitrary positions and don't need index access.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="stacks-queues">
+  <div class="section-header">
+    <div class="section-icon">📚</div>
+    <div>
+      <div class="section-number">02 / ABSTRACT DATA TYPES</div>
+      <h2>Stacks &amp; Queues</h2>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'sq-tabs','sq-stack')">Stack (LIFO)</button>
+    <button class="tab-btn" onclick="switchTab(this,'sq-tabs','sq-queue')">Queue (FIFO)</button>
+    <button class="tab-btn" onclick="switchTab(this,'sq-tabs','sq-deque')">Deque</button>
+  </div>
+  <div id="sq-tabs">
+    <div id="sq-stack" class="tab-content active">
+      <h3>Stack — Last In, First Out (LIFO)</h3>
+      <p>Think of a stack of plates: you add and remove from the <em>top only</em>.</p>
+      <h4>Core Operations (all O(1))</h4>
+      <ul class="bullets">
+        <li><strong>push(item)</strong> — add to top</li>
+        <li><strong>pop()</strong> — remove and return top</li>
+        <li><strong>peek() / top()</strong> — view top without removing</li>
+        <li><strong>is_empty()</strong> — returns True if stack has no items</li>
+      </ul>
+      <h4>Rules</h4>
+      <ul class="bullets">
+        <li>Only the top element is accessible at any time.</li>
+        <li>Can be implemented with a Python list (append = push, pop = pop).</li>
+        <li>Common uses: function call stack, undo operations, expression parsing, DFS.</li>
+      </ul>
+      <pre data-lang="python"><code><span class="cm"># Stack using Python list</span>
+stack = []
+stack.append(<span class="nm">1</span>)   <span class="cm"># push  → stack = [1]</span>
+stack.append(<span class="nm">2</span>)   <span class="cm"># push  → stack = [1, 2]</span>
+stack.append(<span class="nm">3</span>)   <span class="cm"># push  → stack = [1, 2, 3]</span>
+top = stack.pop() <span class="cm"># pop   → returns 3, stack = [1, 2]</span>
+peek = stack[-<span class="nm">1</span>]  <span class="cm"># peek  → 2 (no removal)</span>
+
+<span class="cm"># Stack using collections.deque (preferred for performance)</span>
+<span class="kw">from</span> collections <span class="kw">import</span> deque
+stack = deque()
+stack.append(<span class="nm">10</span>)
+stack.pop()       <span class="cm"># O(1) guaranteed</span></code></pre>
+      <div class="tip-box"><strong>💡 Note:</strong> The exam often asks you to <em>trace</em> push/pop operations. Write out each state after every operation — don't try to do it in your head.</div>
+    </div>
+
+    <div id="sq-queue" class="tab-content">
+      <h3>Queue — First In, First Out (FIFO)</h3>
+      <p>Think of a checkout line: items added to the <em>back</em>, removed from the <em>front</em>.</p>
+      <h4>Core Operations (all O(1) with deque)</h4>
+      <ul class="bullets">
+        <li><strong>enqueue(item)</strong> — add to back</li>
+        <li><strong>dequeue()</strong> — remove and return front</li>
+        <li><strong>peek()</strong> — view front without removing</li>
+        <li><strong>is_empty()</strong> — returns True if queue is empty</li>
+      </ul>
+      <h4>Rules</h4>
+      <ul class="bullets">
+        <li>Do NOT use a Python list for queues (list.pop(0) is O(n)). Use <code>collections.deque</code>.</li>
+        <li>Common uses: BFS traversal, task scheduling, print spoolers.</li>
+        <li>Priority Queue: uses a heap to always dequeue the highest-priority item.</li>
+      </ul>
+      <pre data-lang="python"><code><span class="kw">from</span> collections <span class="kw">import</span> deque
+
+queue = deque()
+queue.append(<span class="nm">1</span>)        <span class="cm"># enqueue → back  [1]</span>
+queue.append(<span class="nm">2</span>)        <span class="cm"># enqueue → back  [1,2]</span>
+queue.append(<span class="nm">3</span>)        <span class="cm"># enqueue → back  [1,2,3]</span>
+front = queue.popleft() <span class="cm"># dequeue → front returns 1, [2,3]</span>
+peek  = queue[<span class="nm">0</span>]       <span class="cm"># peek front → 2</span></code></pre>
+    </div>
+
+    <div id="sq-deque" class="tab-content">
+      <h3>Deque — Double-Ended Queue</h3>
+      <p>Supports insertion and removal from <em>both</em> ends in O(1). Generalizes both stack and queue.</p>
+      <pre data-lang="python"><code><span class="kw">from</span> collections <span class="kw">import</span> deque
+d = deque([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>])
+d.appendleft(<span class="nm">0</span>)  <span class="cm"># [0,1,2,3]</span>
+d.append(<span class="nm">4</span>)      <span class="cm"># [0,1,2,3,4]</span>
+d.popleft()      <span class="cm"># removes 0 → [1,2,3,4]</span>
+d.pop()          <span class="cm"># removes 4 → [1,2,3]</span></code></pre>
+      <div class="warn-box"><strong>⚠️ Common Mistake:</strong> Confusing <em>enqueue</em> (back) with push (top of stack). Read carefully: "What is at the FRONT of the queue after these operations?" not the back.</div>
+    </div>
+  </div>
+
+  <h3>Stack vs. Queue — Quick Reference</h3>
+  <table class="complexity-table">
+    <tr><th>Property</th><th>Stack</th><th>Queue</th></tr>
+    <tr><td>Order</td><td>LIFO</td><td>FIFO</td></tr>
+    <tr><td>Insert at</td><td>Top</td><td>Back (rear)</td></tr>
+    <tr><td>Remove from</td><td>Top</td><td>Front</td></tr>
+    <tr><td>Python impl</td><td>list / deque</td><td>deque only</td></tr>
+    <tr><td>Algorithm use</td><td>DFS, undo, call stack</td><td>BFS, scheduling</td></tr>
+  </table>
+</section>
+
+<section class="section" id="hash-tables">
+  <div class="section-header">
+    <div class="section-icon">🗄️</div>
+    <div>
+      <div class="section-number">03 / DATA STRUCTURES</div>
+      <h2>Hash Tables</h2>
+    </div>
+  </div>
+  <p>Hash tables map keys to values via a <strong>hash function</strong>. Average O(1) for insert, delete, and search. C949 tests three collision strategies: <strong>linear probing</strong>, <strong>quadratic probing</strong>, and <strong>chaining</strong>.</p>
+
+  <h3>Hash Function</h3>
+  <div class="rule-card">
+    <div class="rule-title">Core Formula</div>
+    <p><code>bucket_index = hash(key) % table_size</code><br>A good hash function distributes keys uniformly to minimize collisions.</p>
+  </div>
+
+  <h3>Load Factor</h3>
+  <p><code>load_factor = number_of_items / table_size</code></p>
+  <ul class="bullets">
+    <li>Keep load factor <strong>≤ 0.7</strong> for linear probing; <strong>≤ 0.5</strong> for quadratic probing.</li>
+    <li>When load factor exceeds threshold → <strong>rehash</strong>: create larger table, re-insert all items.</li>
+    <li>Python dict rehashes when load factor hits ~0.67.</li>
+  </ul>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'ht-tabs','ht-linear')">Linear Probing</button>
+    <button class="tab-btn" onclick="switchTab(this,'ht-tabs','ht-quad')">Quadratic Probing</button>
+    <button class="tab-btn" onclick="switchTab(this,'ht-tabs','ht-chain')">Chaining</button>
+  </div>
+  <div id="ht-tabs">
+    <div id="ht-linear" class="tab-content active">
+      <h3>Linear Probing (Open Addressing)</h3>
+      <h4>Rules</h4>
+      <ul class="bullets">
+        <li>On collision at index i, try <code>i+1, i+2, i+3, ...</code> (wrapping around).</li>
+        <li>Formula: <code>probe_index = (hash(key) + j) % table_size</code> where j = 1, 2, 3…</li>
+        <li>Problem: <strong>primary clustering</strong> — long chains of filled buckets build up, slowing future lookups.</li>
+      </ul>
+      <h4>Procedure: Insert</h4>
+      <ol class="steps">
+        <li>Compute <code>index = hash(key) % size</code></li>
+        <li>If slot is empty → insert here.</li>
+        <li>If slot is taken → probe index+1, index+2, … (wrap with mod) until empty slot found.</li>
+        <li>Insert at empty slot.</li>
+      </ol>
+      <h4>Procedure: Search</h4>
+      <ol class="steps">
+        <li>Compute starting index.</li>
+        <li>Probe forward. If key matches → found.</li>
+        <li>If empty slot encountered → key not present.</li>
+        <li>If entire table probed without finding → not present.</li>
+      </ol>
+      <pre data-lang="python"><code><span class="kw">class</span> <span class="fn">LinearProbingHashTable</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, size=<span class="nm">10</span>):
+        <span class="kw">self</span>.size  = size
+        <span class="kw">self</span>.table = [<span class="kw">None</span>] * size
+
+    <span class="kw">def</span> <span class="fn">_hash</span>(<span class="kw">self</span>, key):
+        <span class="kw">return</span> <span class="fn">hash</span>(key) % <span class="kw">self</span>.size
+
+    <span class="kw">def</span> <span class="fn">insert</span>(<span class="kw">self</span>, key, value):
+        idx = <span class="kw">self</span>._hash(key)
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="kw">self</span>.size):
+            probe = (idx + j) % <span class="kw">self</span>.size
+            <span class="kw">if</span> <span class="kw">self</span>.table[probe] <span class="kw">is None</span>:
+                <span class="kw">self</span>.table[probe] = (key, value)
+                <span class="kw">return</span>
+        <span class="kw">raise</span> <span class="fn">Exception</span>(<span class="st">"Table full"</span>)</code></pre>
+      <div class="tip-box"><strong>💡 Note:</strong> Linear probing questions typically give you a table size, a hash function (often key % size), and a list of keys to insert. Draw the array and fill it step by step — don't skip ahead.</div>
+    </div>
+
+    <div id="ht-quad" class="tab-content">
+      <h3>Quadratic Probing</h3>
+      <h4>Rules</h4>
+      <ul class="bullets">
+        <li>Formula: <code>probe_index = (hash(key) + j²) % table_size</code> where j = 1, 2, 3…</li>
+        <li>Reduces <strong>primary clustering</strong> (consecutive filled slots).</li>
+        <li>Can suffer <strong>secondary clustering</strong> (keys with same hash follow same probe sequence).</li>
+        <li>⚠️ Not guaranteed to find a slot unless table size is prime and load factor ≤ 0.5.</li>
+      </ul>
+      <h4>Procedure: Insert with Quadratic Probing</h4>
+      <ol class="steps">
+        <li>Compute <code>start = hash(key) % size</code></li>
+        <li>j = 0: try index = (start + 0²) % size = start</li>
+        <li>j = 1: try index = (start + 1) % size</li>
+        <li>j = 2: try index = (start + 4) % size</li>
+        <li>j = 3: try index = (start + 9) % size … and so on</li>
+        <li>Insert at first empty slot found.</li>
+      </ol>
+      <pre data-lang="python"><code><span class="cm"># Quadratic probe sequence for key "cat", hash=3, size=10</span>
+<span class="cm"># j=0: (3+0)%10 = 3   → occupied?</span>
+<span class="cm"># j=1: (3+1)%10 = 4   → occupied?</span>
+<span class="cm"># j=2: (3+4)%10 = 7   → occupied?</span>
+<span class="cm"># j=3: (3+9)%10 = 2   → empty → INSERT HERE</span>
+
+<span class="kw">def</span> <span class="fn">quad_probe</span>(start, j, size):
+    <span class="kw">return</span> (start + j**<span class="nm">2</span>) % size</code></pre>
+      <div class="warn-box"><strong>⚠️ Key Difference to Memorize:</strong><br>
+      Linear: j = 1,2,3,4… (step of 1)<br>
+      Quadratic: j² = 1,4,9,16… (growing jumps)</div>
+    </div>
+
+    <div id="ht-chain" class="tab-content">
+      <h3>Separate Chaining</h3>
+      <h4>Rules</h4>
+      <ul class="bullets">
+        <li>Each bucket holds a linked list (or Python list) of all keys that hash to it.</li>
+        <li>No collision — multiple items can share a bucket.</li>
+        <li>Search time degrades to O(n) if all keys hash to the same bucket.</li>
+        <li>Handles any load factor without rehashing being strictly required.</li>
+      </ul>
+      <pre data-lang="python"><code><span class="kw">class</span> <span class="fn">ChainingHashTable</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, size=<span class="nm">10</span>):
+        <span class="kw">self</span>.buckets = [[] <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(size)]
+
+    <span class="kw">def</span> <span class="fn">insert</span>(<span class="kw">self</span>, key, value):
+        idx = <span class="fn">hash</span>(key) % <span class="fn">len</span>(<span class="kw">self</span>.buckets)
+        <span class="kw">self</span>.buckets[idx].append((key, value))</code></pre>
+    </div>
+  </div>
+
+  <h3>Comparison: Collision Strategies</h3>
+  <table class="complexity-table">
+    <tr><th>Strategy</th><th>Probe Formula</th><th>Clustering</th><th>Load Factor Limit</th></tr>
+    <tr><td>Linear Probing</td><td>(h + j) % size</td><td>Primary (bad)</td><td class="on">≤ 0.7</td></tr>
+    <tr><td>Quadratic Probing</td><td>(h + j²) % size</td><td>Secondary (mild)</td><td class="on">≤ 0.5</td></tr>
+    <tr><td>Chaining</td><td>Linked list per bucket</td><td>None</td><td class="o1">Any</td></tr>
+  </table>
+</section>
+
+<section class="section" id="trees">
+  <div class="section-header">
+    <div class="section-icon">🌳</div>
+    <div>
+      <div class="section-number">04 / DATA STRUCTURES</div>
+      <h2>Trees &amp; Binary Search Trees</h2>
+    </div>
+  </div>
+
+  <h3>Tree Anatomy — Terms You Must Know</h3>
+  <ul class="bullets">
+    <li><strong>Root</strong> — topmost node (no parent)</li>
+    <li><strong>Leaf</strong> — node with no children</li>
+    <li><strong>Height</strong> — longest path from root to a leaf</li>
+    <li><strong>Depth</strong> — distance from root to a specific node</li>
+    <li><strong>Internal node</strong> — any non-leaf node</li>
+    <li><strong>Subtree</strong> — a node and all its descendants</li>
+    <li><strong>Binary tree</strong> — each node has at most 2 children (left, right)</li>
+  </ul>
+
+  <h3>BST Property (⚡ Must Memorize)</h3>
+  <div class="rule-card">
+    <div class="rule-title">Binary Search Tree Invariant</div>
+    <p>For every node N:<br>
+    • All values in <strong>left subtree &lt; N.key</strong><br>
+    • All values in <strong>right subtree &gt; N.key</strong></p>
+  </div>
+
+  <h3>BST Operations</h3>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'bst-tabs','bst-search')">Search</button>
+    <button class="tab-btn" onclick="switchTab(this,'bst-tabs','bst-insert')">Insert</button>
+    <button class="tab-btn" onclick="switchTab(this,'bst-tabs','bst-delete')">Delete</button>
+    <button class="tab-btn" onclick="switchTab(this,'bst-tabs','bst-traverse')">Traversals</button>
+  </div>
+  <div id="bst-tabs">
+    <div id="bst-search" class="tab-content active">
+      <h4>Procedure: BST Search</h4>
+      <ol class="steps">
+        <li>Start at root.</li>
+        <li>If key == node.key → found!</li>
+        <li>If key &lt; node.key → go left.</li>
+        <li>If key &gt; node.key → go right.</li>
+        <li>If node is None → not found.</li>
+      </ol>
+      <pre data-lang="python"><code><span class="kw">def</span> <span class="fn">search</span>(node, key):
+    <span class="kw">if</span> node <span class="kw">is None or</span> node.key == key:
+        <span class="kw">return</span> node
+    <span class="kw">if</span> key < node.key:
+        <span class="kw">return</span> <span class="fn">search</span>(node.left, key)
+    <span class="kw">return</span> <span class="fn">search</span>(node.right, key)</code></pre>
+    </div>
+    <div id="bst-insert" class="tab-content">
+      <h4>Procedure: BST Insert</h4>
+      <ol class="steps">
+        <li>If tree is empty → new node becomes root.</li>
+        <li>Navigate left/right using BST property.</li>
+        <li>When you reach None → insert new node there.</li>
+      </ol>
+      <pre data-lang="python"><code><span class="kw">def</span> <span class="fn">insert</span>(node, key):
+    <span class="kw">if</span> node <span class="kw">is None</span>:
+        <span class="kw">return</span> <span class="fn">Node</span>(key)
+    <span class="kw">if</span> key < node.key:
+        node.left  = <span class="fn">insert</span>(node.left, key)
+    <span class="kw">elif</span> key > node.key:
+        node.right = <span class="fn">insert</span>(node.right, key)
+    <span class="kw">return</span> node   <span class="cm"># duplicates ignored</span></code></pre>
+    </div>
+    <div id="bst-delete" class="tab-content">
+      <h4>Procedure: BST Delete (3 Cases)</h4>
+      <div class="rule-card"><div class="rule-title">Case 1: Node is a leaf</div><p>Simply remove it (set parent's pointer to None).</p></div>
+      <div class="rule-card"><div class="rule-title">Case 2: Node has one child</div><p>Replace the node with its single child.</p></div>
+      <div class="rule-card"><div class="rule-title">Case 3: Node has two children</div><p>Find the <strong>in-order successor</strong> (smallest node in right subtree). Copy its value into current node. Delete the in-order successor.</p></div>
+      <div class="tip-box"><strong>💡 In-order Successor Trick:</strong> Go right once, then keep going left until you can't. That's the in-order successor (smallest in right subtree).</div>
+    </div>
+    <div id="bst-traverse" class="tab-content">
+      <h4>Tree Traversals — The Big 3</h4>
+      <table class="complexity-table">
+        <tr><th>Name</th><th>Visit Order</th><th>Result on BST</th><th>Memory Hook</th></tr>
+        <tr><td>In-order</td><td>Left → Node → Right</td><td>Sorted ascending ✅</td><td>In = sorted</td></tr>
+        <tr><td>Pre-order</td><td>Node → Left → Right</td><td>Root first</td><td>Pre = root first</td></tr>
+        <tr><td>Post-order</td><td>Left → Right → Node</td><td>Root last</td><td>Post = root last</td></tr>
+      </table>
+      <pre data-lang="python"><code><span class="kw">def</span> <span class="fn">inorder</span>(node):    <span class="cm"># Left → Node → Right</span>
+    <span class="kw">if</span> node:
+        <span class="fn">inorder</span>(node.left)
+        <span class="kw">print</span>(node.key)
+        <span class="fn">inorder</span>(node.right)
+
+<span class="kw">def</span> <span class="fn">preorder</span>(node):   <span class="cm"># Node → Left → Right</span>
+    <span class="kw">if</span> node:
+        <span class="kw">print</span>(node.key)
+        <span class="fn">preorder</span>(node.left)
+        <span class="fn">preorder</span>(node.right)
+
+<span class="kw">def</span> <span class="fn">postorder</span>(node):  <span class="cm"># Left → Right → Node</span>
+    <span class="kw">if</span> node:
+        <span class="fn">postorder</span>(node.left)
+        <span class="fn">postorder</span>(node.right)
+        <span class="kw">print</span>(node.key)</code></pre>
+      <div class="warn-box"><strong>⚠️ Attention:</strong> A very common question type shows a BST diagram and asks "what is the in-order traversal?" — always produces sorted output from a valid BST.</div>
+    </div>
+  </div>
+
+  <h3>BST Complexity</h3>
+  <table class="complexity-table">
+    <tr><th>Operation</th><th>Average (balanced)</th><th>Worst (skewed)</th></tr>
+    <tr><td>Search</td><td class="olog">O(log n)</td><td class="on">O(n)</td></tr>
+    <tr><td>Insert</td><td class="olog">O(log n)</td><td class="on">O(n)</td></tr>
+    <tr><td>Delete</td><td class="olog">O(log n)</td><td class="on">O(n)</td></tr>
+  </table>
+  <div class="tip-box"><strong>💡 Skewed BST Tip:</strong> If you insert keys in sorted order (1,2,3,4,5…) into a BST, it degrades to a linked list → O(n). This is WHY we need balanced trees (AVL).</div>
+</section>
+
+<section class="section" id="balanced">
+  <div class="section-header">
+    <div class="section-icon">⚖️</div>
+    <div>
+      <div class="section-number">05 / DATA STRUCTURES</div>
+      <h2>Balanced Trees — AVL Trees</h2>
+    </div>
+  </div>
+  <p>An <strong>AVL tree</strong> is a self-balancing BST that guarantees O(log n) operations by maintaining a <em>balance factor</em> at every node. C949 focuses exclusively on AVL trees for balanced BSTs.</p>
+
+  <h3>Balance Factor</h3>
+  <div class="rule-card">
+    <div class="rule-title">Balance Factor Formula</div>
+    <p><code>BF(node) = height(left subtree) − height(right subtree)</code><br><br>
+    ✅ Valid balance factors: <strong>-1, 0, +1</strong><br>
+    ❌ Imbalanced: BF ≤ -2 or BF ≥ +2 → must rotate</p>
+  </div>
+
+  <h3>The 4 Rotation Cases</h3>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'avl-tabs','avl-ll')">Left-Left (LL)</button>
+    <button class="tab-btn" onclick="switchTab(this,'avl-tabs','avl-rr')">Right-Right (RR)</button>
+    <button class="tab-btn" onclick="switchTab(this,'avl-tabs','avl-lr')">Left-Right (LR)</button>
+    <button class="tab-btn" onclick="switchTab(this,'avl-tabs','avl-rl')">Right-Left (RL)</button>
+  </div>
+  <div id="avl-tabs">
+    <div id="avl-ll" class="tab-content active">
+      <h4>Left-Left Case → Right Rotation</h4>
+      <p>BF = +2 at node, BF = +1 at left child. The tree is heavy on the left-left side.</p>
+      <ol class="steps">
+        <li>Let A = imbalanced node, B = A's left child.</li>
+        <li>B becomes the new subtree root.</li>
+        <li>A becomes B's right child.</li>
+        <li>B's old right child becomes A's new left child.</li>
+      </ol>
+      <pre data-lang="python"><code><span class="cm"># Right rotation</span>
+<span class="kw">def</span> <span class="fn">rotate_right</span>(A):
+    B = A.left
+    A.left = B.right    <span class="cm"># step 4</span>
+    B.right = A         <span class="cm"># step 3</span>
+    <span class="fn">update_height</span>(A)
+    <span class="fn">update_height</span>(B)
+    <span class="kw">return</span> B            <span class="cm"># B is new root</span></code></pre>
+    </div>
+    <div id="avl-rr" class="tab-content">
+      <h4>Right-Right Case → Left Rotation</h4>
+      <p>BF = -2 at node, BF = -1 at right child. Mirror image of LL case.</p>
+      <ol class="steps">
+        <li>Let A = imbalanced node, B = A's right child.</li>
+        <li>B becomes the new subtree root.</li>
+        <li>A becomes B's left child.</li>
+        <li>B's old left child becomes A's new right child.</li>
+      </ol>
+      <pre data-lang="python"><code><span class="cm"># Left rotation</span>
+<span class="kw">def</span> <span class="fn">rotate_left</span>(A):
+    B = A.right
+    A.right = B.left
+    B.left = A
+    <span class="fn">update_height</span>(A)
+    <span class="fn">update_height</span>(B)
+    <span class="kw">return</span> B</code></pre>
+    </div>
+    <div id="avl-lr" class="tab-content">
+      <h4>Left-Right Case → Double Rotation</h4>
+      <p>BF = +2 at node, BF = -1 at left child. Cannot fix with single rotation.</p>
+      <ol class="steps">
+        <li>Left rotate A's left child (convert to LL case).</li>
+        <li>Right rotate A (now an LL case).</li>
+      </ol>
+      <div class="tip-box"><strong>💡 Memory Hook:</strong> LR = two rotations. First go Left (rotate left child left), then go Right (rotate root right). The name tells you the <em>imbalance direction</em>, not the rotation direction.</div>
+    </div>
+    <div id="avl-rl" class="tab-content">
+      <h4>Right-Left Case → Double Rotation</h4>
+      <p>BF = -2 at node, BF = +1 at right child. Mirror of LR.</p>
+      <ol class="steps">
+        <li>Right rotate A's right child (convert to RR case).</li>
+        <li>Left rotate A (now an RR case).</li>
+      </ol>
+    </div>
+  </div>
+
+  <h3>AVL vs. Plain BST</h3>
+  <table class="complexity-table">
+    <tr><th>Operation</th><th>Plain BST (avg)</th><th>Plain BST (worst)</th><th>AVL Tree</th></tr>
+    <tr><td>Search</td><td class="olog">O(log n)</td><td class="on">O(n)</td><td class="olog">O(log n)</td></tr>
+    <tr><td>Insert</td><td class="olog">O(log n)</td><td class="on">O(n)</td><td class="olog">O(log n)</td></tr>
+    <tr><td>Delete</td><td class="olog">O(log n)</td><td class="on">O(n)</td><td class="olog">O(log n)</td></tr>
+  </table>
+  <div class="tip-box"><strong>💡 Rotation Trick:</strong> To identify which rotation to use, look at the imbalanced node's BF and its <em>heavier child's</em> BF:<br>
+  BF=+2, child BF=+1 → LL → single right rotation<br>
+  BF=-2, child BF=-1 → RR → single left rotation<br>
+  BF=+2, child BF=-1 → LR → double (left then right)<br>
+  BF=-2, child BF=+1 → RL → double (right then left)</div>
+</section>
+
+<section class="section" id="heaps-treaps">
+  <div class="section-header">
+    <div class="section-icon">🔺</div>
+    <div>
+      <div class="section-number">06 / DATA STRUCTURES</div>
+      <h2>Heaps &amp; Treaps</h2>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'ht2-tabs','ht2-heap')">Heaps</button>
+    <button class="tab-btn" onclick="switchTab(this,'ht2-tabs','ht2-treap')">Treaps</button>
+  </div>
+  <div id="ht2-tabs">
+    <div id="ht2-heap" class="tab-content active">
+      <h3>Heap</h3>
+      <p>A <strong>complete binary tree</strong> satisfying the <em>heap property</em>. Stored efficiently as an array.</p>
+      <div class="rule-card">
+        <div class="rule-title">Max-Heap Property</div>
+        <p>Every parent's key ≥ its children's keys. Root holds the maximum.</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-title">Min-Heap Property</div>
+        <p>Every parent's key ≤ its children's keys. Root holds the minimum.</p>
+      </div>
+
+      <h4>Array Representation</h4>
+      <p>For a node at index <code>i</code> (0-indexed):</p>
+      <ul class="bullets">
+        <li>Left child: <code>2*i + 1</code></li>
+        <li>Right child: <code>2*i + 2</code></li>
+        <li>Parent: <code>(i-1) // 2</code></li>
+      </ul>
+
+      <h4>Procedure: Insert (Percolate Up)</h4>
+      <ol class="steps">
+        <li>Add new element at the end of the array.</li>
+        <li>Compare with parent. If heap property violated → swap.</li>
+        <li>Repeat step 2 until parent is valid or root reached.</li>
+      </ol>
+      <h4>Procedure: Remove Max / Min (Percolate Down)</h4>
+      <ol class="steps">
+        <li>Save root value (the max/min).</li>
+        <li>Move last element to root position.</li>
+        <li>Remove last element.</li>
+        <li>Percolate down: compare root with children, swap with larger child (max-heap), repeat.</li>
+        <li>Return saved value.</li>
+      </ol>
+      <pre data-lang="python"><code><span class="kw">import</span> heapq
+
+<span class="cm"># Python heapq is a MIN-heap by default</span>
+h = []
+heapq.heappush(h, <span class="nm">5</span>)
+heapq.heappush(h, <span class="nm">1</span>)
+heapq.heappush(h, <span class="nm">3</span>)
+<span class="kw">print</span>(heapq.heappop(h))   <span class="cm"># → 1 (minimum)</span>
+
+<span class="cm"># MAX-heap trick: negate values</span>
+max_heap = []
+<span class="kw">for</span> x <span class="kw">in</span> [<span class="nm">5</span>, <span class="nm">1</span>, <span class="nm">3</span>]:
+    heapq.heappush(max_heap, -x)
+<span class="kw">print</span>(-heapq.heappop(max_heap))  <span class="cm"># → 5 (maximum)</span></code></pre>
+      <div class="tip-box"><strong>💡 Heap = Priority Queue:</strong> When asked "which structure implements a priority queue?" → <strong>Heap</strong>. Always.</div>
+
+      <h4>Heapsort</h4>
+      <ol class="steps">
+        <li>Build a max-heap from the array: O(n)</li>
+        <li>Repeatedly extract the max and place at end of array.</li>
+        <li>Each extraction: O(log n). Total: <span class="onlog">O(n log n)</span></li>
+      </ol>
+    </div>
+
+    <div id="ht2-treap" class="tab-content">
+      <h3>Treap</h3>
+      <p>A <strong>Treap</strong> combines a BST with a heap. Each node has both a <em>key</em> (BST property) and a randomly assigned <em>priority</em> (heap property).</p>
+
+      <div class="rule-card">
+        <div class="rule-title">Treap Dual Property</div>
+        <p>
+        • <strong>BST property:</strong> keys are ordered (left &lt; node &lt; right)<br>
+        • <strong>Heap property:</strong> every parent's priority ≥ children's priorities (max-heap on priority)
+        </p>
+      </div>
+
+      <h4>Why Treaps?</h4>
+      <ul class="bullets">
+        <li>Random priorities cause the tree to be <em>balanced on average</em> without complex rotation bookkeeping like AVL.</li>
+        <li>Expected height: O(log n)</li>
+      </ul>
+
+      <h4>Procedure: Treap Insert</h4>
+      <ol class="steps">
+        <li>Insert key using standard BST insert procedure.</li>
+        <li>Assign a random priority to the new node.</li>
+        <li>If new node's priority > parent's priority → rotate to maintain heap property.</li>
+        <li>Use left or right rotation based on which child the new node is.</li>
+      </ol>
+
+      <h4>Procedure: Treap Delete</h4>
+      <ol class="steps">
+        <li>Find the node using BST search.</li>
+        <li>Reduce its priority to -∞ (or 0 for min-heap variant).</li>
+        <li>Percolate the node down via rotations until it becomes a leaf.</li>
+        <li>Remove the leaf node.</li>
+      </ol>
+
+      <div class="warn-box"><strong>⚠️ Note:</strong> Treaps are tested conceptually in C949. Focus on understanding the dual property and why random priorities keep the tree balanced — you are unlikely to need to code a full treap from scratch.</div>
+    </div>
+  </div>
+
+  <h3>Heap Complexity Summary</h3>
+  <table class="complexity-table">
+    <tr><th>Operation</th><th>Time</th></tr>
+    <tr><td>Insert (percolate up)</td><td class="olog">O(log n)</td></tr>
+    <tr><td>Remove min/max (percolate down)</td><td class="olog">O(log n)</td></tr>
+    <tr><td>Peek min/max (root)</td><td class="o1">O(1)</td></tr>
+    <tr><td>Build heap (heapify)</td><td class="on">O(n)</td></tr>
+    <tr><td>Heapsort</td><td class="onlog">O(n log n)</td></tr>
+  </table>
+</section>
+
+<section class="section" id="sets">
+  <div class="section-header">
+    <div class="section-icon">🔗</div>
+    <div>
+      <div class="section-number">07 / ABSTRACT DATA TYPES</div>
+      <h2>Sets</h2>
+    </div>
+  </div>
+  <p>A <strong>set</strong> is an unordered collection of <em>unique</em> elements. In Python, <code>set</code> is implemented as a hash table, giving average O(1) operations.</p>
+
+  <h3>Core Operations</h3>
+  <table class="complexity-table">
+    <tr><th>Operation</th><th>Python Syntax</th><th>Time</th></tr>
+    <tr><td>Add element</td><td><code>s.add(x)</code></td><td class="o1">O(1) avg</td></tr>
+    <tr><td>Remove element</td><td><code>s.remove(x)</code></td><td class="o1">O(1) avg</td></tr>
+    <tr><td>Check membership</td><td><code>x in s</code></td><td class="o1">O(1) avg</td></tr>
+    <tr><td>Union</td><td><code>s1 | s2</code></td><td class="on">O(n)</td></tr>
+    <tr><td>Intersection</td><td><code>s1 &amp; s2</code></td><td class="on">O(min(n,m))</td></tr>
+    <tr><td>Difference</td><td><code>s1 - s2</code></td><td class="on">O(n)</td></tr>
+    <tr><td>Subset check</td><td><code>s1 &lt;= s2</code></td><td class="on">O(n)</td></tr>
+  </table>
+
+  <pre data-lang="python"><code>A = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>}
+B = {<span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>}
+
+<span class="kw">print</span>(A | B)   <span class="cm"># Union        → {1,2,3,4,5,6}</span>
+<span class="kw">print</span>(A &amp; B)   <span class="cm"># Intersection → {3,4}</span>
+<span class="kw">print</span>(A - B)   <span class="cm"># Difference   → {1,2}</span>
+<span class="kw">print</span>(A ^ B)   <span class="cm"># Sym diff     → {1,2,5,6}</span>
+<span class="kw">print</span>(<span class="nm">3</span> <span class="kw">in</span> A)  <span class="cm"># Membership   → True</span></code></pre>
+
+  <div class="tip-box"><strong>💡 Set vs. List vs. Dict:</strong><br>
+  Use a <strong>set</strong> when you need fast membership testing and uniqueness.<br>
+  Use a <strong>list</strong> when order matters or duplicates are allowed.<br>
+  Use a <strong>dict</strong> when you need key→value mapping.</div>
+</section>
+
+<section class="section" id="graphs">
+  <div class="section-header">
+    <div class="section-icon">🕸️</div>
+    <div>
+      <div class="section-number">08 / DATA STRUCTURES</div>
+      <h2>Graphs</h2>
+    </div>
+  </div>
+  <p>A <strong>graph</strong> G = (V, E) consists of vertices (nodes) and edges (connections). Graphs generalize trees — a tree is a connected acyclic graph.</p>
+
+  <h3>Graph Types</h3>
+  <table class="complexity-table">
+    <tr><th>Type</th><th>Edges</th><th>Example Use</th></tr>
+    <tr><td>Undirected</td><td>Two-way connections</td><td>Friendships, road maps</td></tr>
+    <tr><td>Directed (Digraph)</td><td>One-way arrows</td><td>Web links, dependencies</td></tr>
+    <tr><td>Weighted</td><td>Edges have numeric costs</td><td>GPS routing, network costs</td></tr>
+    <tr><td>Unweighted</td><td>Edges are equal</td><td>Social networks, mazes</td></tr>
+  </table>
+
+  <h3>Representation</h3>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'graph-rep','gr-adj-list')">Adjacency List</button>
+    <button class="tab-btn" onclick="switchTab(this,'graph-rep','gr-adj-matrix')">Adjacency Matrix</button>
+  </div>
+  <div id="graph-rep">
+    <div id="gr-adj-list" class="tab-content active">
+      <p>Dictionary/list of neighbors per vertex. Best for <strong>sparse graphs</strong>.</p>
+      <pre data-lang="python"><code><span class="cm"># Adjacency list (undirected graph)</span>
+graph = {
+    <span class="st">'A'</span>: [<span class="st">'B'</span>, <span class="st">'C'</span>],
+    <span class="st">'B'</span>: [<span class="st">'A'</span>, <span class="st">'D'</span>],
+    <span class="st">'C'</span>: [<span class="st">'A'</span>],
+    <span class="st">'D'</span>: [<span class="st">'B'</span>]
+}
+<span class="cm"># Space: O(V + E)</span></code></pre>
+    </div>
+    <div id="gr-adj-matrix" class="tab-content">
+      <p>2D array where <code>matrix[i][j] = 1</code> if edge exists. Best for <strong>dense graphs</strong> or when edge lookup speed is critical.</p>
+      <pre data-lang="python"><code><span class="cm"># Adjacency matrix — 4 vertices</span>
+<span class="cm"># 0=A, 1=B, 2=C, 3=D</span>
+matrix = [
+  [<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">0</span>],   <span class="cm"># A connects to B,C</span>
+  [<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">1</span>],   <span class="cm"># B connects to A,D</span>
+  [<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">0</span>],   <span class="cm"># C connects to A</span>
+  [<span class="nm">0</span>,<span class="nm">1</span>,<span class="nm">0</span>,<span class="nm">0</span>]    <span class="cm"># D connects to B</span>
+]
+<span class="cm"># Space: O(V²)</span></code></pre>
+    </div>
+  </div>
+
+  <h3>Graph Traversal Algorithms</h3>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'graph-alg','ga-bfs')">BFS</button>
+    <button class="tab-btn" onclick="switchTab(this,'graph-alg','ga-dfs')">DFS</button>
+    <button class="tab-btn" onclick="switchTab(this,'graph-alg','ga-dijkstra')">Dijkstra's</button>
+  </div>
+  <div id="graph-alg">
+    <div id="ga-bfs" class="tab-content active">
+      <h4>Breadth-First Search (BFS)</h4>
+      <p>Explores all neighbors before going deeper. Uses a <strong>queue</strong>. Finds shortest path in unweighted graphs.</p>
+      <ol class="steps">
+        <li>Enqueue start vertex. Mark as visited.</li>
+        <li>Dequeue vertex. Process it.</li>
+        <li>Enqueue all unvisited neighbors. Mark them visited.</li>
+        <li>Repeat until queue is empty.</li>
+      </ol>
+      <pre data-lang="python"><code><span class="kw">from</span> collections <span class="kw">import</span> deque
+
+<span class="kw">def</span> <span class="fn">bfs</span>(graph, start):
+    visited = <span class="fn">set</span>([start])
+    queue   = deque([start])
+    <span class="kw">while</span> queue:
+        v = queue.popleft()
+        <span class="kw">print</span>(v)
+        <span class="kw">for</span> neighbor <span class="kw">in</span> graph[v]:
+            <span class="kw">if</span> neighbor <span class="kw">not in</span> visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+<span class="cm"># Time: O(V + E)</span></code></pre>
+      <div class="tip-box"><strong>💡 BFS = Queue, DFS = Stack (or recursion).</strong> This is one of the most commonly tested graph facts.</div>
+    </div>
+    <div id="ga-dfs" class="tab-content">
+      <h4>Depth-First Search (DFS)</h4>
+      <p>Explores as deep as possible before backtracking. Uses a <strong>stack</strong> (or recursion).</p>
+      <pre data-lang="python"><code><span class="kw">def</span> <span class="fn">dfs</span>(graph, start, visited=<span class="kw">None</span>):
+    <span class="kw">if</span> visited <span class="kw">is None</span>: visited = <span class="fn">set</span>()
+    visited.add(start)
+    <span class="kw">print</span>(start)
+    <span class="kw">for</span> neighbor <span class="kw">in</span> graph[start]:
+        <span class="kw">if</span> neighbor <span class="kw">not in</span> visited:
+            <span class="fn">dfs</span>(graph, neighbor, visited)
+<span class="cm"># Time: O(V + E)</span></code></pre>
+    </div>
+    <div id="ga-dijkstra" class="tab-content">
+      <h4>Dijkstra's Shortest Path</h4>
+      <p>Finds the shortest path from a source to all vertices in a weighted graph. Uses a <strong>priority queue (min-heap)</strong>.</p>
+      <ol class="steps">
+        <li>Set dist[source] = 0, all others = ∞.</li>
+        <li>Add source to min-heap.</li>
+        <li>Pop vertex with minimum distance.</li>
+        <li>For each neighbor: if dist[current] + edge_weight &lt; dist[neighbor] → update dist[neighbor] and push to heap.</li>
+        <li>Repeat until heap is empty.</li>
+      </ol>
+      <pre data-lang="python"><code><span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">dijkstra</span>(graph, src):
+    dist = {v: <span class="fn">float</span>(<span class="st">'inf'</span>) <span class="kw">for</span> v <span class="kw">in</span> graph}
+    dist[src] = <span class="nm">0</span>
+    heap = [(<span class="nm">0</span>, src)]
+    <span class="kw">while</span> heap:
+        d, u = heapq.heappop(heap)
+        <span class="kw">if</span> d > dist[u]: <span class="kw">continue</span>
+        <span class="kw">for</span> v, w <span class="kw">in</span> graph[u]:
+            nd = dist[u] + w
+            <span class="kw">if</span> nd < dist[v]:
+                dist[v] = nd
+                heapq.heappush(heap, (nd, v))
+    <span class="kw">return</span> dist
+<span class="cm"># Time: O((V + E) log V)</span></code></pre>
+      <div class="warn-box"><strong>⚠️ Dijkstra Limitation:</strong> Does NOT work with negative edge weights. Use Bellman-Ford for negative weights (not in C949 scope, but good to know).</div>
+    </div>
+  </div>
+
+  <h3>Graph Algorithm Complexity</h3>
+  <table class="complexity-table">
+    <tr><th>Algorithm</th><th>Time</th><th>Space</th><th>Use Case</th></tr>
+    <tr><td>BFS</td><td class="on">O(V+E)</td><td class="on">O(V)</td><td>Shortest path (unweighted)</td></tr>
+    <tr><td>DFS</td><td class="on">O(V+E)</td><td class="on">O(V)</td><td>Cycle detect, topological sort</td></tr>
+    <tr><td>Dijkstra's</td><td class="onlog">O((V+E) log V)</td><td class="on">O(V)</td><td>Shortest path (weighted, positive)</td></tr>
+  </table>
+</section>
+
+<section class="section" id="btrees">
+  <div class="section-header">
+    <div class="section-icon">🗂️</div>
+    <div>
+      <div class="section-number">09 / DATA STRUCTURES</div>
+      <h2>B-Trees</h2>
+    </div>
+  </div>
+  <p>A <strong>B-tree</strong> is a self-balancing multi-way search tree designed for systems that read/write large blocks of data (databases, file systems). Unlike BSTs, each node can hold <em>multiple keys</em> and have <em>many children</em>.</p>
+
+  <h3>B-Tree Rules (Order m)</h3>
+  <div class="rule-card">
+    <div class="rule-title">B-Tree Invariants</div>
+    <p>
+    1. Every node has <strong>at most m children</strong> (m = order)<br>
+    2. Every non-root internal node has <strong>at least ⌈m/2⌉ children</strong><br>
+    3. Root has at least 2 children (unless it's a leaf)<br>
+    4. All leaves are at the <strong>same level</strong><br>
+    5. A node with k children contains <strong>k-1 keys</strong>
+    </p>
+  </div>
+
+  <h3>B-Tree vs BST</h3>
+  <table class="complexity-table">
+    <tr><th>Property</th><th>BST</th><th>B-Tree (order m)</th></tr>
+    <tr><td>Keys per node</td><td>1</td><td>Up to m-1</td></tr>
+    <tr><td>Children per node</td><td>Up to 2</td><td>Up to m</td></tr>
+    <tr><td>Height</td><td>O(n) worst case</td><td class="olog">O(log n)</td></tr>
+    <tr><td>Best for</td><td>In-memory</td><td>Disk/database I/O</td></tr>
+  </table>
+
+  <h3>Procedure: B-Tree Insert</h3>
+  <ol class="steps">
+    <li>Find the appropriate leaf node using BST-like comparison.</li>
+    <li>Insert the key in sorted order within that leaf.</li>
+    <li>If the node now has m keys (overflow) → <strong>split</strong> it.</li>
+    <li>Move the median key up to the parent.</li>
+    <li>If parent overflows → split parent too (propagate up).</li>
+    <li>If root splits → create a new root, tree height increases by 1.</li>
+  </ol>
+
+  <div class="tip-box"><strong>💡 B-Tree Key Insight:</strong> B-trees grow <em>upward</em> (splits push keys up to root), unlike BSTs which grow downward. This is why all leaves stay at the same level.</div>
+
+  <div class="warn-box"><strong>⚠️ Scope:</strong> C949 tests B-tree concepts — the order, node capacity rules, split behavior, and why B-trees are used for databases. Deep implementation is less likely. Know the rules and how to trace an insert with a split.</div>
+</section>
+
+<section class="section" id="analysis">
+  <div class="section-header">
+    <div class="section-icon">📈</div>
+    <div>
+      <div class="section-number">10 / ALGORITHM ANALYSIS</div>
+      <h2>Algorithm Analysis &amp; Big O</h2>
+    </div>
+  </div>
+  <p>Big O notation describes how an algorithm's <em>runtime or space</em> scales as input size n grows. It captures the <strong>worst-case</strong> upper bound.</p>
+
+  <h3>Complexity Classes (Fastest → Slowest)</h3>
+  <table class="complexity-table">
+    <tr><th>Notation</th><th>Name</th><th>Example</th><th>n=1000</th></tr>
+    <tr><td class="o1">O(1)</td><td>Constant</td><td>Array index, hash lookup</td><td class="o1">1 op</td></tr>
+    <tr><td class="olog">O(log n)</td><td>Logarithmic</td><td>Binary search, BST search</td><td class="olog">~10 ops</td></tr>
+    <tr><td class="on">O(n)</td><td>Linear</td><td>Linear search, list traversal</td><td class="on">1,000 ops</td></tr>
+    <tr><td class="onlog">O(n log n)</td><td>Linearithmic</td><td>Merge sort, heapsort</td><td class="onlog">~10,000 ops</td></tr>
+    <tr><td class="on2">O(n²)</td><td>Quadratic</td><td>Bubble sort, nested loops</td><td class="on2">1,000,000 ops</td></tr>
+    <tr><td class="on2">O(2ⁿ)</td><td>Exponential</td><td>Recursive Fibonacci (naive)</td><td class="on2">Astronomical</td></tr>
+  </table>
+
+  <h3>Big O Rules</h3>
+  <ul class="bullets">
+    <li><strong>Drop constants:</strong> O(3n) → O(n)</li>
+    <li><strong>Drop lower-order terms:</strong> O(n² + n) → O(n²)</li>
+    <li><strong>Sequential steps add:</strong> O(n) + O(m) → O(n + m)</li>
+    <li><strong>Nested loops multiply:</strong> O(n) inside O(n) → O(n²)</li>
+    <li><strong>Halving = log:</strong> Any algorithm that halves input each step → O(log n)</li>
+  </ul>
+
+  <h3>Sorting Algorithms Cheat Sheet</h3>
+  <table class="complexity-table">
+    <tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable?</th></tr>
+    <tr><td>Bubble Sort</td><td class="on">O(n)</td><td class="on2">O(n²)</td><td class="on2">O(n²)</td><td class="o1">O(1)</td><td>✅</td></tr>
+    <tr><td>Selection Sort</td><td class="on2">O(n²)</td><td class="on2">O(n²)</td><td class="on2">O(n²)</td><td class="o1">O(1)</td><td>❌</td></tr>
+    <tr><td>Insertion Sort</td><td class="on">O(n)</td><td class="on2">O(n²)</td><td class="on2">O(n²)</td><td class="o1">O(1)</td><td>✅</td></tr>
+    <tr><td>Merge Sort</td><td class="onlog">O(n log n)</td><td class="onlog">O(n log n)</td><td class="onlog">O(n log n)</td><td class="on">O(n)</td><td>✅</td></tr>
+    <tr><td>Quick Sort</td><td class="onlog">O(n log n)</td><td class="onlog">O(n log n)</td><td class="on2">O(n²)</td><td class="olog">O(log n)</td><td>❌</td></tr>
+    <tr><td>Heap Sort</td><td class="onlog">O(n log n)</td><td class="onlog">O(n log n)</td><td class="onlog">O(n log n)</td><td class="o1">O(1)</td><td>❌</td></tr>
+    <tr><td>Radix Sort</td><td class="on">O(nk)</td><td class="on">O(nk)</td><td class="on">O(nk)</td><td class="on">O(n+k)</td><td>✅</td></tr>
+  </table>
+
+  <div class="tip-box"><strong>💡 Key Sorting Facts:</strong><br>
+  • Best worst-case → <strong>Merge Sort, Heap Sort</strong> (always O(n log n))<br>
+  • Best average case in practice → <strong>Quick Sort</strong><br>
+  • Only O(n²) worst case among fast sorts → <strong>Quick Sort</strong> (bad pivot)<br>
+  • Smallest space → <strong>Heap Sort</strong> (O(1), in-place)<br>
+  • Good for nearly sorted data → <strong>Insertion Sort</strong></div>
+
+  <h3>Search Algorithms</h3>
+  <table class="complexity-table">
+    <tr><th>Algorithm</th><th>Requires</th><th>Best</th><th>Worst</th></tr>
+    <tr><td>Linear Search</td><td>Nothing</td><td class="o1">O(1)</td><td class="on">O(n)</td></tr>
+    <tr><td>Binary Search</td><td>Sorted array</td><td class="o1">O(1)</td><td class="olog">O(log n)</td></tr>
+  </table>
+
+  <h4>Binary Search Procedure</h4>
+  <ol class="steps">
+    <li>Set low = 0, high = len(arr) - 1</li>
+    <li>mid = (low + high) // 2</li>
+    <li>If arr[mid] == target → found at mid</li>
+    <li>If arr[mid] &lt; target → low = mid + 1 (search right half)</li>
+    <li>If arr[mid] &gt; target → high = mid - 1 (search left half)</li>
+    <li>Repeat until found or low &gt; high → not found</li>
+  </ol>
+  <pre data-lang="python"><code><span class="kw">def</span> <span class="fn">binary_search</span>(arr, target):
+    low, high = <span class="nm">0</span>, <span class="fn">len</span>(arr) - <span class="nm">1</span>
+    <span class="kw">while</span> low <= high:
+        mid = (low + high) // <span class="nm">2</span>
+        <span class="kw">if</span>   arr[mid] == target: <span class="kw">return</span> mid
+        <span class="kw">elif</span> arr[mid]  < target: low  = mid + <span class="nm">1</span>
+        <span class="kw">else</span>:                   high = mid - <span class="nm">1</span>
+    <span class="kw">return</span> -<span class="nm">1</span>  <span class="cm"># not found</span></code></pre>
+
+  <h3>Recursion &amp; Space Complexity</h3>
+  <ul class="bullets">
+    <li>Each recursive call adds a <strong>stack frame</strong> → space complexity = O(call depth).</li>
+    <li>Binary search recursively → O(log n) space.</li>
+    <li>Merge sort → O(n) space for auxiliary arrays.</li>
+    <li>Iterative versions usually reduce space to O(1).</li>
+  </ul>
+</section>
+
+<section class="section" id="dynamic">
+  <div class="section-header">
+    <div class="section-icon">⚡</div>
+    <div>
+      <div class="section-number">11 / DYNAMIC DATA STRUCTURES</div>
+      <h2>Dynamic Data Structures</h2>
+    </div>
+  </div>
+  <p>This is the <strong>applied</strong> area — the goal is to choose the right structure for a given scenario, predict how structures behave as data scales, and reason about trade-offs. It bridges Sections 1–10 into real decisions.</p>
+
+  <div class="warn-box"><strong>⚠️ What "Dynamic" Means Here:</strong> "Dynamic" refers to structures whose size changes at runtime (as opposed to fixed-size arrays). This domain focuses on <em>scalability reasoning</em> — how does this structure behave as n grows from 100 to 1,000,000?</div>
+
+  <h3>The Core Decision Framework</h3>
+  <p>For any scenario, ask these questions in order:</p>
+  <ol class="steps">
+    <li><strong>Do I need fast access by index/key?</strong> → Array (index) or Hash Table (key)</li>
+    <li><strong>Do I need sorted order?</strong> → BST, AVL Tree, or sorted array</li>
+    <li><strong>Do I need fast insert/delete at arbitrary positions?</strong> → Linked List</li>
+    <li><strong>Do I need the min or max quickly?</strong> → Heap / Priority Queue</li>
+    <li><strong>Do I need LIFO order?</strong> → Stack</li>
+    <li><strong>Do I need FIFO order?</strong> → Queue</li>
+    <li><strong>Do I need to model relationships/connections?</strong> → Graph</li>
+    <li><strong>Is data stored on disk / very large?</strong> → B-Tree</li>
+  </ol>
+
+  <h3>Structure Selection Scenarios</h3>
+
+  <div class="scenario-card">
+    <div class="sc-title">🎮 Scenario: Undo / Redo in a text editor</div>
+    <div class="sc-body">Each action must be undoable in reverse order. New actions push onto history, Undo pops the last one.</div>
+    <div class="sc-answer">✅ Best choice: Stack (LIFO). Each action is pushed; undo pops the most recent.</div>
+  </div>
+
+  <div class="scenario-card">
+    <div class="sc-title">🖨️ Scenario: Print job spooler</div>
+    <div class="sc-body">Jobs arrive from multiple computers and must be printed in the order received. No job should jump the queue.</div>
+    <div class="sc-answer">✅ Best choice: Queue (FIFO). First job submitted is first to print.</div>
+  </div>
+
+  <div class="scenario-card">
+    <div class="sc-title">🏥 Scenario: Hospital emergency room triage</div>
+    <div class="sc-body">Patients arrive continuously. Most critical patients must be treated first regardless of arrival order.</div>
+    <div class="sc-answer">✅ Best choice: Priority Queue / Min-Heap. Severity score = priority. O(log n) insert and O(log n) extract-min.</div>
+  </div>
+
+  <div class="scenario-card">
+    <div class="sc-title">📖 Scenario: Dictionary / spell checker lookup</div>
+    <div class="sc-body">Given 500,000 words, need to check whether any input word is valid in near-instant time.</div>
+    <div class="sc-answer">✅ Best choice: Hash Table (set). O(1) average membership test. BST is O(log n) — slower at scale.</div>
+  </div>
+
+  <div class="scenario-card">
+    <div class="sc-title">🗺️ Scenario: GPS turn-by-turn navigation</div>
+    <div class="sc-body">Road network with intersections (nodes) and roads (weighted edges). Find shortest driving route.</div>
+    <div class="sc-answer">✅ Best choice: Weighted Graph + Dijkstra's Algorithm. Roads are edges with distance/time weights.</div>
+  </div>
+
+  <div class="scenario-card">
+    <div class="sc-title">🗃️ Scenario: Database index for 10 million records</div>
+    <div class="sc-body">Records stored on disk. Need fast search, insert, and delete. Data won't fit in RAM. Disk reads are expensive.</div>
+    <div class="sc-answer">✅ Best choice: B-Tree. Minimizes disk I/O by keeping many keys per node. Used by MySQL, PostgreSQL indexes.</div>
+  </div>
+
+  <div class="scenario-card">
+    <div class="sc-title">📊 Scenario: Leaderboard — always show top 10 scores</div>
+    <div class="sc-body">Scores are added continuously. Need to quickly retrieve the top 10 at any moment.</div>
+    <div class="sc-answer">✅ Best choice: Max-Heap (or Min-Heap of size 10). O(1) peek at max, O(log n) insert.</div>
+  </div>
+
+  <div class="scenario-card">
+    <div class="sc-title">🔗 Scenario: Social network — friends of friends</div>
+    <div class="sc-body">Users are connected to other users. Need to find if person A can reach person B within 3 hops.</div>
+    <div class="sc-answer">✅ Best choice: Undirected Graph + BFS. BFS naturally explores level-by-level (hop-by-hop).</div>
+  </div>
+
+  <h3>Scalability Trade-Off Table</h3>
+  <table class="complexity-table">
+    <tr><th>Structure</th><th>Insert</th><th>Search</th><th>Delete</th><th>Ordered?</th><th>Best Scaled Use</th></tr>
+    <tr><td>Array / List</td><td class="on">O(n)</td><td class="on">O(n)</td><td class="on">O(n)</td><td>✅ (if sorted)</td><td>Index access, small n</td></tr>
+    <tr><td>Linked List</td><td class="o1">O(1)*</td><td class="on">O(n)</td><td class="o1">O(1)*</td><td>❌</td><td>Frequent mid-inserts</td></tr>
+    <tr><td>Hash Table</td><td class="o1">O(1)</td><td class="o1">O(1)</td><td class="o1">O(1)</td><td>❌</td><td>Fast key-value lookup</td></tr>
+    <tr><td>BST</td><td class="olog">O(log n)</td><td class="olog">O(log n)</td><td class="olog">O(log n)</td><td>✅</td><td>Sorted + searchable</td></tr>
+    <tr><td>AVL Tree</td><td class="olog">O(log n)</td><td class="olog">O(log n)</td><td class="olog">O(log n)</td><td>✅</td><td>Guaranteed log n at scale</td></tr>
+    <tr><td>Heap</td><td class="olog">O(log n)</td><td class="on">O(n)</td><td class="olog">O(log n)</td><td>Partial</td><td>Priority queue, top-k</td></tr>
+    <tr><td>Graph (BFS)</td><td class="o1">O(1)</td><td class="on">O(V+E)</td><td class="o1">O(1)</td><td>❌</td><td>Network/relationship data</td></tr>
+    <tr><td>B-Tree</td><td class="olog">O(log n)</td><td class="olog">O(log n)</td><td class="olog">O(log n)</td><td>✅</td><td>Disk-based, huge datasets</td></tr>
+  </table>
+  <p style="font-size:12px;color:var(--muted)">* O(1) only with direct pointer reference to the node; O(n) if you must search first.</p>
+
+  <h3>Dynamic Resizing Behaviors</h3>
+  <ul class="bullets">
+    <li><strong>Python list (dynamic array):</strong> doubles capacity when full → amortized O(1) append, but occasional O(n) copy.</li>
+    <li><strong>Hash table:</strong> rehashes when load factor exceeds threshold → amortized O(1), spikes on rehash.</li>
+    <li><strong>BST (unbalanced):</strong> degrades to O(n) on sorted input — no self-correction.</li>
+    <li><strong>AVL / B-Tree:</strong> self-correcting → maintains O(log n) regardless of insertion order.</li>
+    <li><strong>Heap:</strong> complete binary tree stays balanced by definition — no rotation needed.</li>
+  </ul>
+
+  <div class="tip-box"><strong>💡 The Golden Pattern:</strong> Dynamic Data Structures questions often look like: <em>"A program must do X millions of times as data grows. Which structure minimizes time complexity?"</em> — translate the requirement into an operation (search? insert? ordered retrieval?) then pick the structure with the best Big O for that operation at scale.</div>
+</section>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 2: FLASH CARDS
+══════════════════════════════════════════ -->
+<div class="page" id="page-flashcards">
+  <div class="fc-page-inner">
+    <div class="fc-page-header">
+      <h2>🃏 Flash Cards</h2>
+      <p>Click any card to flip it and reveal the definition. Filter by topic or search by keyword.</p>
+    </div>
+    <div class="fc-controls">
+      <input type="text" id="fc-search" placeholder="🔍  Search terms or definitions…" oninput="filterCards()">
+      <div class="fc-filter-row">
+        <label>FILTER:</label>
+        <button class="fc-filter-btn active" onclick="filterByTag(this,'all')">All</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'lists')">Lists</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'stacks')">Stacks/Queues</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'hash')">Hash Tables</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'trees')">Trees</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'avl')">AVL</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'heaps')">Heaps</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'graphs')">Graphs</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'bigO')">Big O</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'sorting')">Sorting</button>
+        <button class="fc-filter-btn" onclick="filterByTag(this,'dynamic')">Dynamic</button>
+      </div>
+    </div>
+    <div class="fc-stats">Showing <span id="fc-count">0</span> cards</div>
+    <div class="fc-grid" id="fc-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 3: PRACTICE TEST
+══════════════════════════════════════════ -->
+<div class="page" id="page-practice">
+  <div class="pt-inner">
+    <div class="pt-header">
+      <h2>📝 Practice Test</h2>
+      <p>50 questions randomly drawn from a bank of 150. New set drawn on every reset.</p>
+    </div>
+
+    <div class="pt-scoreboard">
+      <div class="pt-score-main">
+        <div class="pt-score-label">Score</div>
+        <div class="pt-score-val" id="score-display">0 / 0</div>
+        <div class="pt-score-pct" id="score-pct">Answer questions to track your score</div>
+      </div>
+      <div class="pt-progress-wrap">
+        <div class="pt-prog-label">PROGRESS</div>
+        <div class="pt-prog-bar"><div class="pt-prog-fill" id="pt-prog-fill" style="width:0%"></div></div>
+      </div>
+      <div class="pt-controls">
+        <button class="pt-btn pt-btn-primary" onclick="resetQuiz()">↺ New Set</button>
+      </div>
+    </div>
+
+    <div class="pt-set-info" id="pt-set-info">
+      🎲 <strong>Set loaded.</strong> 50 of 150 questions selected — reset to draw a new random set.
+    </div>
+    <div id="quiz-container"></div>
+  </div>
+</div>
+
+<script>
+// ══ PAGE NAVIGATION ══
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ══ SIDEBAR ══
+function sideClick(el) {
+  document.querySelectorAll('.sidebar-link').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Intersection observer for sidebar active state
+const lessonSections = document.querySelectorAll('#lessons-main section.section');
+const sideLinks = document.querySelectorAll('#lessons-sidebar .sidebar-link');
+const sideObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      sideLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { threshold: 0.25 });
+lessonSections.forEach(s => sideObs.observe(s));
+
+// ══ LESSONS SEARCH ══
+function searchLessons(val) {
+  const q = val.toLowerCase();
+  lessonSections.forEach(s => {
+    s.style.opacity = !q || s.textContent.toLowerCase().includes(q) ? '1' : '0.2';
+  });
+}
+
+// ══ TAB SWITCHER (for section tabs inside lessons) ══
+function switchTab(btn, groupId, targetId) {
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(targetId).classList.add('active');
+  const parent = btn.closest('.tabs') || btn.parentElement;
+  parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ══ FLASH CARDS ══
+const cards = [
+  // Lists
+  {term:"Array",def:"A data structure storing ordered items in contiguous memory. Direct index access in O(1).",tag:"lists"},
+  {term:"Linked List",def:"Ordered collection stored in nodes. Each node has data + a pointer to the next node. No index access.",tag:"lists"},
+  {term:"Singly Linked List",def:"Each node has one pointer (next). Traversal is one-directional. Prepend is O(1).",tag:"lists"},
+  {term:"Doubly Linked List",def:"Each node has two pointers (next, prev). Enables O(1) deletion of a known node.",tag:"lists"},
+  {term:"Head",def:"The first node in a linked list. Entry point for all traversal operations.",tag:"lists"},
+  {term:"Tail",def:"The last node in a linked list. Its next pointer is None.",tag:"lists"},
+  {term:"Prepend",def:"Insert a new node at the front of a linked list. O(1) operation.",tag:"lists"},
+  {term:"Dynamic Array",def:"An array that automatically resizes when capacity is exceeded. Python's built-in list is a dynamic array.",tag:"lists"},
+  // Stacks / Queues
+  {term:"Stack",def:"LIFO structure. Insert (push) and remove (pop) from the same end (top). Used in DFS, call stacks.",tag:"stacks"},
+  {term:"Queue",def:"FIFO structure. Insert (enqueue) at back, remove (dequeue) from front. Used in BFS, scheduling.",tag:"stacks"},
+  {term:"LIFO",def:"Last In, First Out — the access order of a stack. Most recently pushed item is popped first.",tag:"stacks"},
+  {term:"FIFO",def:"First In, First Out — the access order of a queue. Oldest item is dequeued first.",tag:"stacks"},
+  {term:"Push",def:"Stack operation: add an item to the top.",tag:"stacks"},
+  {term:"Pop",def:"Stack operation: remove and return the top item.",tag:"stacks"},
+  {term:"Peek",def:"View the top element of a stack (or front of queue) without removing it.",tag:"stacks"},
+  {term:"Enqueue",def:"Queue operation: add an item to the rear/back.",tag:"stacks"},
+  {term:"Dequeue",def:"Queue operation: remove and return the front item.",tag:"stacks"},
+  {term:"Deque",def:"Double-ended queue. O(1) insert and remove from both ends. Python: collections.deque",tag:"stacks"},
+  {term:"Priority Queue",def:"Queue where each element has a priority. Highest-priority item is always dequeued first. Implemented with a heap.",tag:"stacks"},
+  // Hash Tables
+  {term:"Hash Table",def:"Data structure mapping keys to values via a hash function. Average O(1) for insert, search, delete.",tag:"hash"},
+  {term:"Hash Function",def:"A function that maps a key to a bucket index. Good hash functions distribute keys uniformly.",tag:"hash"},
+  {term:"Collision",def:"When two keys hash to the same bucket index.",tag:"hash"},
+  {term:"Linear Probing",def:"Open addressing collision resolution: probe index+1, index+2, ... Formula: (h+j) % size",tag:"hash"},
+  {term:"Quadratic Probing",def:"Collision resolution using increasing jumps: (h + j²) % size. Reduces primary clustering.",tag:"hash"},
+  {term:"Separate Chaining",def:"Collision resolution using a linked list at each bucket. Multiple items can share a bucket.",tag:"hash"},
+  {term:"Load Factor",def:"Number of items / table size. For linear probing keep ≤ 0.7; for quadratic probing keep ≤ 0.5. Triggers rehashing when exceeded.",tag:"hash"},
+  {term:"Rehashing",def:"Creating a new, larger hash table and re-inserting all items. Triggered when load factor is too high.",tag:"hash"},
+  {term:"Primary Clustering",def:"Consecutive filled slots in linear probing that slow future insertions and searches.",tag:"hash"},
+  // Trees
+  {term:"Binary Tree",def:"Tree where each node has at most two children (left and right).",tag:"trees"},
+  {term:"Binary Search Tree (BST)",def:"Binary tree where left child < parent < right child for every node.",tag:"trees"},
+  {term:"Root",def:"The topmost node of a tree. Has no parent.",tag:"trees"},
+  {term:"Leaf",def:"A node with no children.",tag:"trees"},
+  {term:"Height (tree)",def:"The length of the longest path from root to a leaf.",tag:"trees"},
+  {term:"Depth (node)",def:"The distance from the root to a specific node.",tag:"trees"},
+  {term:"In-order Traversal",def:"Left → Node → Right. On a BST, produces keys in sorted ascending order.",tag:"trees"},
+  {term:"Pre-order Traversal",def:"Node → Left → Right. Root is visited first.",tag:"trees"},
+  {term:"Post-order Traversal",def:"Left → Right → Node. Root is visited last.",tag:"trees"},
+  {term:"In-order Successor",def:"The smallest node in the right subtree. Used in BST deletion when a node has two children.",tag:"trees"},
+  {term:"Complete Binary Tree",def:"All levels are fully filled except possibly the last, which is filled left to right.",tag:"trees"},
+  // AVL
+  {term:"AVL Tree",def:"A self-balancing BST that maintains O(log n) operations by keeping balance factor between -1 and +1.",tag:"avl"},
+  {term:"Balance Factor",def:"height(left subtree) − height(right subtree). Valid values: -1, 0, +1. |BF| ≥ 2 triggers rotation.",tag:"avl"},
+  {term:"Right Rotation",def:"Applied to fix Left-Left imbalance (BF=+2). Left child becomes new root; old root becomes right child.",tag:"avl"},
+  {term:"Left Rotation",def:"Applied to fix Right-Right imbalance (BF=-2). Right child becomes new root; old root becomes left child.",tag:"avl"},
+  {term:"Left-Right Rotation",def:"Double rotation for LR imbalance. First: left rotate left child. Then: right rotate root.",tag:"avl"},
+  {term:"Right-Left Rotation",def:"Double rotation for RL imbalance. First: right rotate right child. Then: left rotate root.",tag:"avl"},
+  // Heaps
+  {term:"Heap",def:"A complete binary tree satisfying the heap property. Stored as an array. Used for priority queues.",tag:"heaps"},
+  {term:"Max-Heap",def:"Every parent ≥ its children. Root holds the maximum element.",tag:"heaps"},
+  {term:"Min-Heap",def:"Every parent ≤ its children. Root holds the minimum element.",tag:"heaps"},
+  {term:"Percolate Up",def:"Heap insert: add element at end, then swap upward with parent until heap property restored.",tag:"heaps"},
+  {term:"Percolate Down",def:"Heap delete: replace root with last element, then swap downward with larger child.",tag:"heaps"},
+  {term:"Heapify",def:"Build a valid heap from an unsorted array. Time: O(n).",tag:"heaps"},
+  {term:"Heapsort",def:"Sort using a max-heap. Build heap in O(n), extract max n times in O(n log n). Total: O(n log n).",tag:"heaps"},
+  {term:"Treap",def:"A BST + heap hybrid. Each node has a key (BST order) and a random priority (heap order). Expected height O(log n).",tag:"heaps"},
+  // Graphs
+  {term:"Graph",def:"G = (V, E). A set of vertices connected by edges. Generalizes trees.",tag:"graphs"},
+  {term:"Directed Graph (Digraph)",def:"Edges have direction (arrows). Edge (u,v) ≠ edge (v,u).",tag:"graphs"},
+  {term:"Undirected Graph",def:"Edges are bidirectional. Edge (u,v) = edge (v,u).",tag:"graphs"},
+  {term:"Weighted Graph",def:"Each edge has a numeric cost (weight). Used in shortest-path problems.",tag:"graphs"},
+  {term:"Adjacency List",def:"Graph representation using a dict/list of neighbors per vertex. Space: O(V+E). Best for sparse graphs.",tag:"graphs"},
+  {term:"Adjacency Matrix",def:"2D array where matrix[i][j]=1 if edge exists. Space: O(V²). Best for dense graphs.",tag:"graphs"},
+  {term:"BFS (Breadth-First Search)",def:"Explores neighbors layer by layer using a queue. Finds shortest path in unweighted graphs. O(V+E).",tag:"graphs"},
+  {term:"DFS (Depth-First Search)",def:"Explores as deep as possible before backtracking. Uses a stack or recursion. O(V+E).",tag:"graphs"},
+  {term:"Dijkstra's Algorithm",def:"Shortest path in weighted graphs (no negative weights). Uses a min-heap. O((V+E) log V).",tag:"graphs"},
+  {term:"Minimum Spanning Tree",def:"Subset of edges connecting all vertices with minimum total weight. Found by Prim's or Kruskal's algorithm.",tag:"graphs"},
+  // Big O
+  {term:"Big O Notation",def:"Describes worst-case upper bound on algorithm runtime or space as input n grows. Drops constants and lower terms.",tag:"bigO"},
+  {term:"O(1) — Constant",def:"Runtime doesn't change with input size. Examples: array index, hash lookup, stack push/pop.",tag:"bigO"},
+  {term:"O(log n) — Logarithmic",def:"Runtime halves the problem each step. Examples: binary search, BST search, heap insert.",tag:"bigO"},
+  {term:"O(n) — Linear",def:"Runtime grows proportionally with input. Examples: linear search, array traversal.",tag:"bigO"},
+  {term:"O(n log n) — Linearithmic",def:"Typical of efficient sorting algorithms. Examples: merge sort, heap sort, quick sort (avg).",tag:"bigO"},
+  {term:"O(n²) — Quadratic",def:"Nested loops over input. Examples: bubble sort, selection sort, insertion sort (worst).",tag:"bigO"},
+  {term:"Time Complexity",def:"How the number of operations scales with input size n.",tag:"bigO"},
+  {term:"Space Complexity",def:"How much extra memory an algorithm uses relative to input size.",tag:"bigO"},
+  {term:"Amortized O(1)",def:"An operation that is occasionally expensive but averages out to O(1) over many calls. Example: Python list append.",tag:"bigO"},
+  {term:"Abstract Data Type (ADT)",def:"A logical description of a data type's behavior (operations) without specifying implementation. Stack, Queue, Set are ADTs.",tag:"bigO"},
+  // Sorting
+  {term:"Bubble Sort",def:"Repeatedly swap adjacent elements if out of order. O(n²) worst/avg, O(n) best (sorted). Stable.",tag:"sorting"},
+  {term:"Selection Sort",def:"Find minimum element, place at front, repeat. Always O(n²). Not stable.",tag:"sorting"},
+  {term:"Insertion Sort",def:"Build sorted array one element at a time. O(n²) worst, O(n) best (nearly sorted). Stable. Good for small n.",tag:"sorting"},
+  {term:"Merge Sort",def:"Divide array in half, sort halves, merge. Always O(n log n). Stable. Uses O(n) space.",tag:"sorting"},
+  {term:"Quick Sort",def:"Choose pivot, partition, recurse. O(n log n) avg, O(n²) worst. Not stable. O(log n) space.",tag:"sorting"},
+  {term:"Heap Sort",def:"Build max-heap, extract max repeatedly. Always O(n log n). Not stable. O(1) space (in-place).",tag:"sorting"},
+  {term:"Radix Sort",def:"Sort by digits/characters, least to most significant. O(nk) time. Stable. Not comparison-based.",tag:"sorting"},
+  {term:"Stable Sort",def:"Preserves relative order of equal elements. Merge sort and insertion sort are stable; quick sort is not.",tag:"sorting"},
+  // B-Tree
+  {term:"B-Tree",def:"Self-balancing multi-way search tree. Each node holds multiple keys. Designed for disk-based storage.",tag:"trees"},
+  {term:"B-Tree Order (m)",def:"Max children per node. Each node holds at most m-1 keys and at least ⌈m/2⌉-1 keys (non-root).",tag:"trees"},
+  {term:"B-Tree Split",def:"When a node overflows (m keys), split it: promote median key to parent, create two child nodes.",tag:"trees"},
+  // Dynamic Data Structures
+  {term:"Dynamic Data Structure",def:"A structure that grows or shrinks at runtime. Examples: linked list, dynamic array, hash table, BST.",tag:"dynamic"},
+  {term:"Static vs Dynamic",def:"Static structures have fixed size (e.g. fixed array). Dynamic structures resize as needed (e.g. Python list, linked list).",tag:"dynamic"},
+  {term:"Amortized Analysis",def:"Average cost per operation over a sequence of operations, even if individual ops vary. Python list append is amortized O(1).",tag:"dynamic"},
+  {term:"Rehashing",def:"When a hash table's load factor is exceeded, a new larger table is created and all items are re-inserted. O(n) cost, but infrequent.",tag:"dynamic"},
+  {term:"Structure Selection — Fast Lookup",def:"When you need O(1) key-based lookup → use a Hash Table.",tag:"dynamic"},
+  {term:"Structure Selection — Sorted Data",def:"When you need sorted traversal + fast search → use a BST or AVL Tree.",tag:"dynamic"},
+  {term:"Structure Selection — Priority",def:"When you always need the min or max element quickly → use a Heap / Priority Queue.",tag:"dynamic"},
+  {term:"Structure Selection — Disk Storage",def:"When data is too large for RAM and lives on disk → use a B-Tree.",tag:"dynamic"},
+  {term:"Structure Selection — Relationships",def:"When data has connections between entities (friends, roads, dependencies) → use a Graph.",tag:"dynamic"},
+  {term:"Scalability",def:"How well a data structure or algorithm handles increasing data sizes. Measured by Big O growth rate.",tag:"dynamic"},
+];
+
+let activeTag = 'all', searchTerm = '';
+
+function renderCards() {
+  const grid = document.getElementById('fc-grid');
+  const filtered = cards.filter(c => {
+    const matchTag = activeTag === 'all' || c.tag === activeTag;
+    const matchSearch = !searchTerm || c.term.toLowerCase().includes(searchTerm) || c.def.toLowerCase().includes(searchTerm);
+    return matchTag && matchSearch;
+  });
+  document.getElementById('fc-count').textContent = filtered.length;
+  grid.innerHTML = filtered.length === 0
+    ? '<p style="color:var(--muted);grid-column:1/-1;padding:20px 0">No cards match your search.</p>'
+    : filtered.map(c => `
+      <div class="fc" onclick="this.classList.toggle('flipped')" title="Click to flip">
+        <div class="fc-inner">
+          <div class="fc-front">
+            <div class="fc-tag">${c.tag}</div>
+            <div class="fc-term">${c.term}</div>
+            <div class="fc-hint">click to reveal definition</div>
+          </div>
+          <div class="fc-back">
+            <div class="fc-term-back">${c.term}</div>
+            <div class="fc-def">${c.def}</div>
+          </div>
+        </div>
+      </div>`).join('');
+}
+
+function filterByTag(btn, tag) {
+  document.querySelectorAll('.fc-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeTag = tag;
+  renderCards();
+}
+
+function filterCards() {
+  searchTerm = document.getElementById('fc-search').value.toLowerCase();
+  renderCards();
+}
+
+renderCards();
+
+// ══ QUIZ ENGINE ══
+const quizData = [
+  // ── LISTS (15) ──
+  {
+    section: "📋 Lists",
+    q: "What is the time complexity of accessing an element by index in a Python list (dynamic array)?",
+    opts: ["O(n)", "O(log n)", "O(1)", "O(n²)"],
+    ans: 2,
+    explain: "<strong>O(1)</strong> — Array elements are stored in contiguous memory. The CPU can jump directly to any index via pointer arithmetic (base_address + index × element_size), so no traversal is needed."
+  },
+  {
+    section: "📋 Lists",
+    q: "You need to insert an element at index 3 in a Python list of 10,000 elements. What is the worst-case time complexity?",
+    opts: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    ans: 2,
+    explain: "<strong>O(n)</strong> — Inserting at an index requires shifting all subsequent elements one position to the right. In the worst case (insert at index 0), all n elements must be shifted."
+  },
+  {
+    section: "📋 Lists",
+    q: "In a singly linked list, which operation is O(1) without a tail pointer?",
+    opts: ["Append to end", "Prepend to front", "Search for a value", "Delete from middle"],
+    ans: 1,
+    explain: "<strong>Prepend to front</strong> — Create a new node, point its next to the current head, and update head. This requires no traversal. Append without a tail pointer requires O(n) traversal to find the last node."
+  },
+  {
+    section: "📋 Lists",
+    q: "Which data structure would you choose if you need fast random access by index AND your collection size is known at creation time?",
+    opts: ["Singly linked list", "Doubly linked list", "Array / Python list", "Hash table"],
+    ans: 2,
+    explain: "<strong>Array / Python list</strong> — Direct index access is O(1) with arrays. Linked lists have no index — you must traverse from head (O(n)). Hash tables don't support ordered indexing."
+  },
+  {
+    section: "📋 Lists",
+    q: "What is the main advantage of a doubly linked list over a singly linked list?",
+    opts: [
+      "Faster search by value",
+      "O(1) deletion of a known node without traversing for its predecessor",
+      "Less memory usage per node",
+      "O(1) access by index"
+    ],
+    ans: 1,
+    explain: "<strong>O(1) deletion of a known node</strong> — In a singly linked list, deletion requires finding the predecessor node (O(n) traversal). A doubly linked list's prev pointer lets you adjust both neighbors directly in O(1)."
+  },
+
+  // ── STACKS & QUEUES ──
+  {
+    section: "📚 Stacks & Queues",
+    q: "A stack contains (bottom to top): 1, 2, 3, 4. You call pop() twice, then push(9). What is now at the top?",
+    opts: ["2", "3", "9", "4"],
+    ans: 2,
+    explain: "<strong>9</strong> — pop() removes 4, pop() removes 3. Stack is now [1, 2]. push(9) adds 9 to the top → [1, 2, 9]. Top = 9."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "Why should you use collections.deque instead of a Python list for a queue?",
+    opts: [
+      "deque supports more data types",
+      "list.pop(0) is O(n) because it shifts elements; deque.popleft() is O(1)",
+      "deque uses less memory",
+      "list cannot hold None values"
+    ],
+    ans: 1,
+    explain: "<strong>list.pop(0) is O(n)</strong> — Removing from the front of a Python list requires shifting all remaining elements left. deque is implemented as a doubly linked list, so both ends are O(1)."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "Which algorithm uses a queue as its primary data structure?",
+    opts: ["Depth-First Search", "Merge Sort", "Breadth-First Search", "Binary Search"],
+    ans: 2,
+    explain: "<strong>Breadth-First Search (BFS)</strong> — BFS explores all neighbors at the current depth before going deeper, which is naturally implemented with a FIFO queue. DFS uses a stack (or recursion)."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "A queue contains (front to back): A, B, C. You enqueue D, then dequeue twice. What remains?",
+    opts: ["A, B", "C, D", "B, C, D", "A, D"],
+    ans: 1,
+    explain: "<strong>C, D</strong> — After enqueue(D): [A, B, C, D]. dequeue() removes A → [B, C, D]. dequeue() removes B → [C, D]."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "Which abstract data type is best suited for implementing an 'undo' feature in a text editor?",
+    opts: ["Queue", "Stack", "Set", "Priority Queue"],
+    ans: 1,
+    explain: "<strong>Stack (LIFO)</strong> — Each edit is pushed onto the stack. When the user presses Undo, the most recent edit is popped. LIFO order naturally reverses actions in reverse chronological order."
+  },
+
+  // ── HASH TABLES ──
+  {
+    section: "🗄️ Hash Tables",
+    q: "In open addressing, what is the probe formula for LINEAR probing at step j?",
+    opts: ["(hash(key) + j²) % size", "(hash(key) + j) % size", "(hash(key) × j) % size", "hash(key) % (size + j)"],
+    ans: 1,
+    explain: "<strong>(hash(key) + j) % size</strong> — Linear probing increments by 1 at each step (j=0,1,2,3…). This simple sequential scan causes primary clustering — consecutive filled slots slow future insertions — which is the main drawback of linear probing compared to quadratic probing."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "Using quadratic probing, what are the first three probe indices for a key that hashes to index 3 in a table of size 11?",
+    opts: ["3, 4, 5", "3, 4, 7", "3, 6, 9", "3, 5, 9"],
+    ans: 1,
+    explain: "<strong>3, 4, 7</strong> — j=0: (3+0²)%11=3. j=1: (3+1)%11=4. j=2: (3+4)%11=7. Quadratic probing uses j² offsets: 0,1,4,9…"
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "What is the load factor of a hash table with 7 items and 10 buckets?",
+    opts: ["0.3", "0.7", "1.4", "7.0"],
+    ans: 1,
+    explain: "<strong>0.7</strong> — Load factor = items / table_size = 7 / 10 = 0.7. This is right at the recommended maximum for open addressing — any more and performance degrades significantly."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "What is 'primary clustering' and which collision resolution method causes it?",
+    opts: [
+      "Two keys sharing the same hash — caused by chaining",
+      "Long runs of consecutive filled slots — caused by linear probing",
+      "A bucket's linked list growing too long — caused by quadratic probing",
+      "Hash function producing all zeros — caused by bad table size"
+    ],
+    ans: 1,
+    explain: "<strong>Long runs of consecutive filled slots — linear probing</strong> — When a collision occurs, linear probing fills the next slot. This creates clusters where future insertions pile up, degrading O(1) toward O(n)."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "What is the average time complexity of search in a well-designed hash table?",
+    opts: ["O(n)", "O(log n)", "O(1)", "O(n log n)"],
+    ans: 2,
+    explain: "<strong>O(1)</strong> — The hash function computes the bucket index directly. As long as the load factor is low and collisions are rare, search, insert, and delete all average O(1)."
+  },
+
+  // ── TREES & BSTs ──
+  {
+    section: "🌳 Trees & BSTs",
+    q: "In a valid BST, you insert keys in this order: 50, 30, 70, 20, 40. What is the in-order traversal output?",
+    opts: ["50, 30, 70, 20, 40", "20, 30, 40, 50, 70", "50, 70, 30, 40, 20", "20, 40, 30, 70, 50"],
+    ans: 1,
+    explain: "<strong>20, 30, 40, 50, 70</strong> — In-order traversal of a BST always produces keys in sorted ascending order. Left → Node → Right visits the smallest key first, progressing upward."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "When deleting a BST node that has TWO children, what replaces it?",
+    opts: [
+      "The root node",
+      "The left child",
+      "The in-order successor (smallest node in right subtree)",
+      "The largest node in the left subtree"
+    ],
+    ans: 2,
+    explain: "<strong>In-order successor</strong> — The in-order successor is the smallest value in the right subtree. Replacing the deleted node with it maintains the BST property. (The in-order predecessor — largest in left subtree — also works.)"
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "What is the worst-case time complexity for BST search, and when does it occur?",
+    opts: [
+      "O(log n) — when the tree is balanced",
+      "O(n) — when keys are inserted in sorted order, creating a linear chain",
+      "O(n²) — when the tree is completely unbalanced",
+      "O(1) — when the key is at the root"
+    ],
+    ans: 1,
+    explain: "<strong>O(n) — sorted insertion order</strong> — Inserting 1, 2, 3, 4, 5 creates a right-skewed tree (like a linked list). Every search must traverse all nodes. This is why balanced trees (AVL) exist."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "Which traversal visits the root LAST?",
+    opts: ["Pre-order", "In-order", "Post-order", "Level-order"],
+    ans: 2,
+    explain: "<strong>Post-order (Left → Right → Node)</strong> — Root is visited after both subtrees. Memory hook: 'Post = root is posted last.' Commonly used for deleting a tree (children before parent)."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "What is the in-order successor of node 50 in a BST where 50's right subtree contains: 60 (root), 55 (left child of 60), 65 (right child of 60)?",
+    opts: ["60", "55", "65", "There is no in-order successor"],
+    ans: 1,
+    explain: "<strong>55</strong> — The in-order successor is found by going right once (to 60), then going left as far as possible. 60's left child is 55, and 55 has no left child — so 55 is the smallest node in 50's right subtree."
+  },
+
+  // ── AVL TREES ──
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "A node has a balance factor of +2 and its left child has a balance factor of +1. Which rotation fixes this?",
+    opts: ["Left rotation", "Right rotation", "Left-Right double rotation", "Right-Left double rotation"],
+    ans: 1,
+    explain: "<strong>Right rotation (LL case)</strong> — BF=+2 means left-heavy. Left child BF=+1 means it's also left-heavy (Left-Left case). A single right rotation on the imbalanced node restores balance."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "What are the only valid balance factor values in a correctly balanced AVL tree?",
+    opts: ["-2, -1, 0, 1, 2", "-1, 0, 1", "0, 1, 2", "Any negative or positive integer"],
+    ans: 1,
+    explain: "<strong>-1, 0, +1</strong> — AVL property: every node's balance factor must be in {-1, 0, +1}. A balance factor of ±2 triggers rotation. Values beyond ±2 should never persist after rebalancing."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "A node has BF = -2 and its right child has BF = +1. Which rotation sequence is needed?",
+    opts: [
+      "Single left rotation",
+      "Single right rotation",
+      "Right-Left double rotation (right rotate right child, then left rotate root)",
+      "Left-Right double rotation"
+    ],
+    ans: 2,
+    explain: "<strong>Right-Left double rotation</strong> — BF=-2 (right-heavy) with right child BF=+1 (left-heavy child) is the RL case. First right-rotate the right child to convert to RR case, then left-rotate the root."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "What is the worst-case time complexity for search in an AVL tree with n nodes?",
+    opts: ["O(n)", "O(n²)", "O(log n)", "O(1)"],
+    ans: 2,
+    explain: "<strong>O(log n)</strong> — AVL trees maintain height ≤ 1.44 log₂(n). The self-balancing rotations guarantee the tree never degrades to a linear chain, unlike plain BSTs which can reach O(n)."
+  },
+
+  // ── HEAPS & TREAPS ──
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "In a max-heap stored as an array, what is the index of the LEFT child of the node at index 4?",
+    opts: ["8", "9", "5", "2"],
+    ans: 1,
+    explain: "<strong>9</strong> — For a node at index i (0-indexed), left child = 2*i + 1. So: 2*4 + 1 = 9."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "You insert 15 into this max-heap array: [20, 18, 14, 10, 12, 8]. What is the array after insertion and percolation?",
+    opts: [
+      "[20, 18, 15, 10, 12, 8, 14]",
+      "[20, 18, 14, 10, 12, 8, 15]",
+      "[20, 15, 14, 10, 12, 8, 18]",
+      "[15, 18, 20, 10, 12, 8, 14]"
+    ],
+    ans: 0,
+    explain: "<strong>[20, 18, 15, 10, 12, 8, 14]</strong> — 15 is appended at index 6. Parent = (6-1)//2 = 2 (value 14). 15 > 14 → swap → [20, 18, 15, 10, 12, 8, 14]. Parent of index 2 = index 0 (value 20). 15 < 20 → stop."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "What data structure should you use to implement a priority queue?",
+    opts: ["Stack", "Unsorted array", "Heap", "Doubly linked list"],
+    ans: 2,
+    explain: "<strong>Heap</strong> — A heap provides O(1) access to the min/max (root), O(log n) insert, and O(log n) extract. It is the standard implementation of a priority queue."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "What two properties does a Treap combine?",
+    opts: [
+      "Hash table + linked list",
+      "BST key ordering + heap priority ordering",
+      "AVL balance + B-Tree multi-key storage",
+      "Stack LIFO + queue FIFO"
+    ],
+    ans: 1,
+    explain: "<strong>BST + Heap</strong> — Each Treap node has a key (satisfying BST left < node < right) and a random priority (satisfying heap parent ≥ children). The random priorities keep the tree balanced on average without explicit rotations."
+  },
+
+  // ── SETS ──
+  {
+    section: "🔗 Sets",
+    q: "Given A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A & B in Python?",
+    opts: ["{1, 2, 3, 4, 5, 6}", "{3, 4}", "{1, 2}", "{1, 2, 5, 6}"],
+    ans: 1,
+    explain: "<strong>{3, 4}</strong> — The & operator is intersection: elements that appear in BOTH sets. 3 and 4 are in both A and B."
+  },
+  {
+    section: "🔗 Sets",
+    q: "What is the average time complexity of checking membership (x in s) for a Python set?",
+    opts: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+    ans: 3,
+    explain: "<strong>O(1)</strong> — Python sets are implemented as hash tables. Membership testing computes the hash of x and checks the corresponding bucket directly — no iteration needed."
+  },
+  {
+    section: "🔗 Sets",
+    q: "Which Python set operation returns elements in A but NOT in B?",
+    opts: ["A | B", "A & B", "A - B", "A ^ B"],
+    ans: 2,
+    explain: "<strong>A - B (difference)</strong> — Returns elements that are in A but not in B. A ^ B is symmetric difference (in either but not both). A | B is union. A & B is intersection."
+  },
+
+  // ── GRAPHS ──
+  {
+    section: "🕸️ Graphs",
+    q: "BFS is run on this graph starting at A: A→B, A→C, B→D, C→D, D→E. What is the BFS traversal order?",
+    opts: ["A, B, D, E, C", "A, B, C, D, E", "A, C, B, D, E", "A, D, B, C, E"],
+    ans: 1,
+    explain: "<strong>A, B, C, D, E</strong> — BFS visits all neighbors of A first (B and C), then all neighbors of B and C (D appears once, visited when first reached), then D's neighbor E."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "Which graph representation is more space-efficient for a sparse graph (few edges relative to vertices)?",
+    opts: [
+      "Adjacency matrix — O(V²) space",
+      "Adjacency list — O(V + E) space",
+      "Both are equally efficient",
+      "Neither is suitable for sparse graphs"
+    ],
+    ans: 1,
+    explain: "<strong>Adjacency list — O(V + E)</strong> — A matrix always allocates V² space regardless of edges. For a sparse graph with few edges, most matrix entries are 0, wasting memory. A list only stores actual edges."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "Dijkstra's algorithm CANNOT be used when:",
+    opts: [
+      "The graph is directed",
+      "The graph has more than 1000 vertices",
+      "The graph has negative edge weights",
+      "The graph is disconnected"
+    ],
+    ans: 2,
+    explain: "<strong>Negative edge weights</strong> — Dijkstra's greedy approach assumes that once a vertex's shortest distance is finalized, it won't improve. Negative weights violate this. Use Bellman-Ford for negative weights."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "What data structure does Dijkstra's algorithm use internally to always process the vertex with the smallest known distance?",
+    opts: ["Stack", "Queue (FIFO)", "Min-Heap (Priority Queue)", "Hash table"],
+    ans: 2,
+    explain: "<strong>Min-Heap (Priority Queue)</strong> — Dijkstra's must efficiently find the unvisited vertex with the smallest distance. A min-heap does this in O(log V), giving the algorithm its O((V+E) log V) overall complexity."
+  },
+
+  // ── B-TREES ──
+  {
+    section: "🗂️ B-Trees",
+    q: "In a B-tree of order 5, what is the maximum number of keys a single node can hold?",
+    opts: ["3", "4", "5", "10"],
+    ans: 1,
+    explain: "<strong>4</strong> — A node in a B-tree of order m can hold at most m-1 keys. With m=5: 5-1 = 4 keys maximum. If a 5th key is inserted, the node splits."
+  },
+  {
+    section: "🗂️ B-Trees",
+    q: "Why are B-trees preferred over BSTs for database indexes?",
+    opts: [
+      "B-trees use less memory per node",
+      "B-trees have O(1) search",
+      "B-trees minimize disk I/O by storing many keys per node, reducing tree height",
+      "B-trees support O(n) insertion which is faster for bulk loads"
+    ],
+    ans: 2,
+    explain: "<strong>Minimizes disk I/O</strong> — Databases store data on disk where each read is expensive. B-trees pack many keys per node, so the tree height is very small (log_m n). Fewer levels = fewer disk reads per search."
+  },
+  {
+    section: "🗂️ B-Trees",
+    q: "When a B-tree node splits during insertion, what happens to the median key?",
+    opts: [
+      "It is deleted",
+      "It stays in the left child",
+      "It is promoted up to the parent node",
+      "It becomes the new root automatically"
+    ],
+    ans: 2,
+    explain: "<strong>Promoted to parent</strong> — The node splits into two halves. The median key moves up to the parent. If the parent also overflows, it splits too, potentially all the way up to the root — which is why B-trees grow upward."
+  },
+
+  // ── ALGORITHM ANALYSIS ──
+  {
+    section: "📈 Algorithm Analysis",
+    q: "What is the Big O of this code?\nfor i in range(n):\n    for j in range(n):\n        print(i, j)",
+    opts: ["O(n)", "O(n log n)", "O(n²)", "O(2n)"],
+    ans: 2,
+    explain: "<strong>O(n²)</strong> — Two nested loops each running n times multiply: n × n = n². This is the classic nested loop pattern — any time you see a loop inside a loop over the same n, the complexity is quadratic."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "What is the Big O of binary search?",
+    opts: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    ans: 1,
+    explain: "<strong>O(log n)</strong> — Binary search halves the search space with every comparison. Starting with n elements: after 1 step → n/2, after 2 steps → n/4 … The number of steps is log₂(n)."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "Which sorting algorithm guarantees O(n log n) in ALL cases (best, average, AND worst)?",
+    opts: ["Quick Sort", "Insertion Sort", "Merge Sort", "Bubble Sort"],
+    ans: 2,
+    explain: "<strong>Merge Sort</strong> — Merge sort always divides the array in half and merges in O(n log n) regardless of input order. Quick sort degrades to O(n²) with a bad pivot. Heap sort also guarantees O(n log n), but merge sort is the most commonly tested answer."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "What is the simplified Big O of T(n) = 5n² + 3n + 100?",
+    opts: ["O(5n²)", "O(n² + n)", "O(n²)", "O(n³)"],
+    ans: 2,
+    explain: "<strong>O(n²)</strong> — Big O drops constants (5n² → n²) and lower-order terms (3n and 100 are dominated by n² as n grows). Only the fastest-growing term matters."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "What is the worst-case time complexity of Quick Sort, and what causes it?",
+    opts: [
+      "O(n log n) — always consistent",
+      "O(n²) — when the pivot is always the largest or smallest element",
+      "O(n³) — when the array is in reverse order",
+      "O(log n) — when the array is already sorted"
+    ],
+    ans: 1,
+    explain: "<strong>O(n²) — bad pivot selection</strong> — If the pivot is always the min or max (e.g., on an already-sorted array with first-element pivot), one partition has n-1 elements and the other has 0. This gives n recursive calls of O(n) work each → O(n²)."
+  },
+
+  // ── DYNAMIC DATA STRUCTURES ──
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "A social media app needs to store 50 million user IDs and check if a user follows another in constant time. Which structure is best?",
+    opts: ["Sorted array with binary search", "AVL tree", "Hash set", "Singly linked list"],
+    ans: 2,
+    explain: "<strong>Hash set</strong> — Membership testing (does user A follow user B?) averages O(1) with a hash set, regardless of how many users there are. Binary search is O(log n), linked list is O(n) — neither scales to 50M records as efficiently."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "You need a data structure that always gives you the minimum element instantly and supports fast insert. What do you choose?",
+    opts: ["Sorted linked list", "Min-heap", "Hash table", "AVL tree"],
+    ans: 1,
+    explain: "<strong>Min-heap</strong> — The minimum is always at the root: O(1) peek. Insert (percolate up) is O(log n). A sorted linked list requires O(n) insert to maintain order. A hash table has no ordering."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "A program processes tasks in order of arrival, but must occasionally insert a high-priority task to the front. Which structure handles BOTH requirements?",
+    opts: ["Queue only", "Stack only", "Deque (double-ended queue)", "Hash table"],
+    ans: 2,
+    explain: "<strong>Deque</strong> — A deque supports O(1) insert and remove from both ends. Normal tasks enqueue to the back (FIFO behavior); high-priority tasks are pushed to the front. Python's collections.deque supports this natively."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "As data grows from 1,000 to 1,000,000 records, which structure's search performance degrades the MOST compared to its small-data performance?",
+    opts: ["Hash table", "AVL tree", "Unbalanced BST with sorted insertions", "B-tree"],
+    ans: 2,
+    explain: "<strong>Unbalanced BST with sorted insertions</strong> — Inserting sorted data creates a linear chain (O(n) search). At 1M records with sorted input, search becomes O(1,000,000). Hash tables, AVL trees, and B-trees all maintain efficient operations regardless of n."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "Which two structures both guarantee O(log n) search, insert, and delete at any scale?",
+    opts: [
+      "Hash table and array",
+      "AVL tree and B-tree",
+      "Stack and queue",
+      "Linked list and heap"
+    ],
+    ans: 1,
+    explain: "<strong>AVL tree and B-tree</strong> — Both are self-balancing. AVL trees maintain height ≤ 1.44 log n via rotations. B-trees maintain all leaves at the same level via splits. Both guarantee O(log n) for the three core operations at any scale."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "A program builds a list and then repeatedly searches it by value. The list size is fixed after building. What is the best strategy?",
+    opts: [
+      "Use a linked list — O(1) prepend during build",
+      "Sort the array once, then use binary search — O(n log n) build, O(log n) searches",
+      "Use a stack — push all values, pop to search",
+      "Use an adjacency matrix"
+    ],
+    ans: 1,
+    explain: "<strong>Sort once, binary search repeatedly</strong> — The O(n log n) sort cost is paid once. Every subsequent search costs O(log n) instead of O(n). If you have k searches, total cost is O(n log n + k log n) vs O(kn) for linear search — much better for large k."
+  },
+
+  // ── LISTS CONTINUED ──
+  {
+    section: "📋 Lists",
+    q: "What is the time complexity of searching for a value in an unsorted singly linked list?",
+    opts: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    ans: 2,
+    explain: "<strong>O(n)</strong> — You must start at the head and follow next pointers one by one until you find the value or reach null. There is no shortcut — worst case visits every node."
+  },
+  {
+    section: "📋 Lists",
+    q: "Which Python method removes and returns the LAST element of a list in O(1)?",
+    opts: ["list.pop(0)", "list.remove(x)", "list.pop()", "list.delete()"],
+    ans: 2,
+    explain: "<strong>list.pop()</strong> — With no argument, pop() removes and returns the last element in O(1) since no shifting is needed. list.pop(0) removes the first element but requires shifting all others — O(n)."
+  },
+  {
+    section: "📋 Lists",
+    q: "A singly linked list node needs which two components?",
+    opts: ["data and index", "data and a next pointer", "key and value", "prev pointer and next pointer"],
+    ans: 1,
+    explain: "<strong>data and a next pointer</strong> — Each node stores the actual data and a reference (pointer) to the next node. Without the next pointer there is no chain. A doubly linked list adds a prev pointer."
+  },
+  {
+    section: "📋 Lists",
+    q: "What Python data structure is most similar to a doubly linked list in its performance characteristics?",
+    opts: ["list", "dict", "collections.deque", "tuple"],
+    ans: 2,
+    explain: "<strong>collections.deque</strong> — Python's deque is implemented as a doubly linked list of fixed-size blocks. It provides O(1) append and pop from both ends, matching doubly linked list behavior."
+  },
+  {
+    section: "📋 Lists",
+    q: "In a circular linked list, the last node's next pointer points to:",
+    opts: ["None", "Itself", "The head (first node)", "The middle node"],
+    ans: 2,
+    explain: "<strong>The head (first node)</strong> — A circular linked list has no null terminator. The last node loops back to the head, forming a ring. This is useful for round-robin scheduling and buffers."
+  },
+  {
+    section: "📋 Lists",
+    q: "You insert at index 0 of a Python list with 1,000,000 elements. What is the time complexity?",
+    opts: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    ans: 2,
+    explain: "<strong>O(n)</strong> — Inserting at index 0 requires shifting every single element one position to the right to make room. With 1,000,000 elements, that is 1,000,000 shift operations."
+  },
+  {
+    section: "📋 Lists",
+    q: "Which list operation is always O(1) regardless of list size?",
+    opts: ["Insert at index i", "Search for value x", "Access element at index i", "Sort the list"],
+    ans: 2,
+    explain: "<strong>Access element at index i</strong> — Arrays support direct index access: memory_address = base + i × element_size. This is one arithmetic operation regardless of n."
+  },
+  {
+    section: "📋 Lists",
+    q: "What happens to memory when a Python list's internal capacity is exceeded on append?",
+    opts: ["An error is raised", "The list stops growing", "A larger array is allocated and all elements are copied over", "Elements are moved to a linked list"],
+    ans: 2,
+    explain: "<strong>Resize and copy</strong> — Python allocates a new, larger array (roughly double the size) and copies all elements into it. This O(n) copy happens rarely, making append amortized O(1)."
+  },
+  {
+    section: "📋 Lists",
+    q: "In a doubly linked list, what is the time complexity of inserting a new node BEFORE a known node (given a direct pointer)?",
+    opts: ["O(n)", "O(log n)", "O(1)", "O(n²)"],
+    ans: 2,
+    explain: "<strong>O(1)</strong> — With a pointer to the target node, you adjust the prev node's next and the target's prev pointer. No traversal needed. This is the key advantage over singly linked lists."
+  },
+
+  // ── STACKS & QUEUES CONTINUED (10 more) ──
+  {
+    section: "📚 Stacks & Queues",
+    q: "Which real-world system uses a queue as its fundamental model?",
+    opts: ["Browser back/forward history", "Function call stack", "Operating system print spooler", "Undo/redo in a text editor"],
+    ans: 2,
+    explain: "<strong>Print spooler</strong> — Jobs are queued FIFO: first submitted, first printed. Browser history and undo/redo use stacks (LIFO). The call stack is literally named after the stack data structure."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "After these operations on an empty stack: push(5), push(3), pop(), push(7), push(2), pop() — what is the top of the stack?",
+    opts: ["5", "3", "7", "2"],
+    ans: 2,
+    explain: "<strong>7</strong> — push(5)→[5], push(3)→[5,3], pop()→[5], push(7)→[5,7], push(2)→[5,7,2], pop()→[5,7]. Top = 7."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "A deque supports O(1) operations at which ends?",
+    opts: ["Front only", "Back only", "Both front and back", "Neither — all deque ops are O(n)"],
+    ans: 2,
+    explain: "<strong>Both front and back</strong> — A double-ended queue (deque) supports O(1) insert and remove from both ends. This makes it more versatile than either a stack (back only) or queue (front insert, back remove)."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "What is the correct Python syntax to peek at the top of a stack implemented as a list?",
+    opts: ["stack.peek()", "stack[0]", "stack[-1]", "stack.top()"],
+    ans: 2,
+    explain: "<strong>stack[-1]</strong> — Python uses -1 indexing for the last element. Since the top of the stack is the last appended element, stack[-1] gives the top without removing it."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "What does it mean if peek() on a stack returns the same value as dequeue() would on a queue given the same sequence of operations?",
+    opts: ["Both structures have one element", "The structures are equivalent", "This is impossible", "Both are empty"],
+    ans: 0,
+    explain: "<strong>Both have one element</strong> — When there's only one element, the top of the stack equals the front of the queue — they're the same single item. With more elements they would differ."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "In Python, which is the correct way to implement a stack's push operation?",
+    opts: ["stack.insert(0, item)", "stack.appendleft(item)", "stack.append(item)", "stack.enqueue(item)"],
+    ans: 2,
+    explain: "<strong>stack.append(item)</strong> — Python lists append to the end in O(1). Since pop() also removes from the end, append+pop together implement LIFO stack behavior perfectly."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "What data structure would you use to check if parentheses in a string are balanced (e.g., '((()))' is valid, '(()' is not)?",
+    opts: ["Queue", "Stack", "Hash table", "Heap"],
+    ans: 1,
+    explain: "<strong>Stack</strong> — Push every opening bracket. When a closing bracket is found, pop and check if it matches. If the stack is empty at the end, parentheses are balanced. This is a classic stack application."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "A priority queue always dequeues the item with the:",
+    opts: ["Lowest index", "Earliest insertion time", "Highest priority value", "Longest string key"],
+    ans: 2,
+    explain: "<strong>Highest priority value</strong> — Unlike a regular queue (FIFO), a priority queue dequeues based on priority. Implemented with a heap, it gives O(log n) insert and O(log n) extract of the highest-priority item."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "If you enqueue A, B, C, D into a queue and then dequeue twice, what is the front of the queue?",
+    opts: ["A", "B", "C", "D"],
+    ans: 2,
+    explain: "<strong>C</strong> — Queue: A(front), B, C, D(back). Dequeue removes A → B, C, D. Dequeue removes B → C, D. Front is now C."
+  },
+  {
+    section: "📚 Stacks & Queues",
+    q: "Which statement is TRUE about a stack and a queue?",
+    opts: [
+      "Both allow access to any element by index",
+      "A stack is FIFO; a queue is LIFO",
+      "Both can be implemented using a Python list, but a queue performs better with deque",
+      "Stacks and queues have identical time complexity for all operations"
+    ],
+    ans: 2,
+    explain: "<strong>Both can use a list; queue performs better with deque</strong> — list works for stacks (append/pop are O(1)). For queues, list.pop(0) is O(n) — use collections.deque for O(1) popleft()."
+  },
+
+  // ── HASH TABLES CONTINUED (10 more) ──
+  {
+    section: "🗄️ Hash Tables",
+    q: "A hash table of size 10 uses hash(key) = key % 10. You insert keys: 5, 15, 25. Using linear probing, where does 25 land?",
+    opts: ["Index 5", "Index 6", "Index 7", "Index 0"],
+    ans: 2,
+    explain: "<strong>Index 7</strong> — hash(25)=5 (taken). Probe 6 (taken by 15). Probe 7 — empty. 25 lands at index 7."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "What is 'primary clustering' and which probing method causes it?",
+    opts: [
+      "Two keys sharing the same hash — caused by chaining",
+      "Long runs of consecutive filled slots — caused by linear probing",
+      "A bucket's list growing too long — caused by quadratic probing",
+      "Hash collisions caused by a bad table size"
+    ],
+    ans: 1,
+    explain: "<strong>Long runs of consecutive slots — linear probing</strong> — When a collision occurs, linear probing fills the next slot. This creates clusters where future insertions pile up, degrading O(1) toward O(n)."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "Which collision resolution method offers the BEST cache performance and why?",
+    opts: ["Separate chaining — linked lists are cache-friendly", "Quadratic probing — jumps are evenly spaced", "Linear probing — data is stored contiguously in the array", "Double hashing — uses two hash functions"],
+    ans: 2,
+    explain: "<strong>Linear probing</strong> — Because all keys are stored in the main array (open addressing), linear probing benefits from spatial locality. The CPU can cache nearby array slots. Separate chaining scatters nodes across heap memory, causing frequent cache misses."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "Separate chaining handles collisions by:",
+    opts: [
+      "Probing forward to the next empty slot",
+      "Storing a linked list at each bucket for multiple keys",
+      "Doubling the table size immediately",
+      "Rejecting duplicate hash values"
+    ],
+    ans: 1,
+    explain: "<strong>Linked list at each bucket</strong> — Each bucket holds a list. Multiple keys that hash to the same bucket are chained together. Search requires hashing then traversing the chain."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "What is the WORST case time complexity for search in a hash table with chaining if all keys hash to the same bucket?",
+    opts: ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    ans: 2,
+    explain: "<strong>O(n)</strong> — If all n keys hash to the same bucket, the chain has length n and you must search every entry linearly. This worst case occurs with a terrible hash function or adversarial keys."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "A hash table using open addressing has 10 slots and load factor 0.6. It uses quadratic probing. Should you rehash before inserting the next item?",
+    opts: ["No — 0.6 is below the 0.7 threshold for all open addressing", "Yes — quadratic probing requires load factor ≤ 0.5 to guarantee finding an empty slot", "No — rehashing only happens when the table is 100% full", "Yes — any load factor above 0.5 causes O(n) worst case for linear probing"],
+    ans: 1,
+    explain: "<strong>Yes — quadratic probing requires ≤ 0.5</strong> — Unlike linear probing (safe up to ~0.7), quadratic probing is NOT guaranteed to find an empty slot when the load factor exceeds 0.5 (unless the table size is prime). At 0.6, insertions may fail. Rehashing into a larger table is required."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "What is the average case time complexity for insert in a hash table?",
+    opts: ["O(n)", "O(log n)", "O(1)", "O(n log n)"],
+    ans: 2,
+    explain: "<strong>O(1)</strong> — With a good hash function and low load factor, computing the index and inserting takes constant time on average. Rehashing is rare and amortized into the overall cost."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "A Python dictionary is implemented as a:",
+    opts: ["Binary search tree", "Linked list", "Hash table", "Heap"],
+    ans: 2,
+    explain: "<strong>Hash table</strong> — Python dicts use open addressing with compact tables. This gives O(1) average key lookup, insert, and delete. The implementation evolved from chaining to a more cache-friendly open addressing scheme."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "What advantage does quadratic probing have over linear probing?",
+    opts: [
+      "Guarantees finding an empty slot",
+      "Reduces primary clustering by using larger jumps",
+      "Uses less memory",
+      "Works without a hash function"
+    ],
+    ans: 1,
+    explain: "<strong>Reduces primary clustering</strong> — Quadratic jumps (1,4,9,16…) spread probes away from the initial collision point, breaking up the consecutive clusters that linear probing creates."
+  },
+  {
+    section: "🗄️ Hash Tables",
+    q: "When does rehashing occur in a hash table?",
+    opts: [
+      "Every time a key is inserted",
+      "When the load factor exceeds a strategy-dependent threshold",
+      "When the first collision is detected",
+      "Only when the table is full (load factor = 1.0)"
+    ],
+    ans: 1,
+    explain: "<strong>When load factor exceeds a threshold</strong> — The threshold depends on the collision strategy: for linear probing, keep load factor ≤ 0.7; for quadratic probing, keep ≤ 0.5 (otherwise a slot is not guaranteed to be found); for separate chaining, a higher load factor is acceptable. Rehashing creates a larger table and re-inserts all items."
+  },
+
+  // ── TREES & BSTs CONTINUED (10 more) ──
+  {
+    section: "🌳 Trees & BSTs",
+    q: "In a valid BST, you insert keys: 50, 30, 70, 20, 40. What is the in-order traversal output?",
+    opts: ["50, 30, 70, 20, 40", "20, 30, 40, 50, 70", "50, 70, 30, 40, 20", "20, 40, 30, 70, 50"],
+    ans: 1,
+    explain: "<strong>20, 30, 40, 50, 70</strong> — In-order traversal of a BST always produces sorted ascending output. Left → Node → Right visits the smallest first."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "You insert keys 40, 20, 60, 10, 30 into an empty BST. What is the pre-order traversal?",
+    opts: ["10, 20, 30, 40, 60", "40, 20, 10, 30, 60", "10, 30, 20, 60, 40", "40, 60, 20, 30, 10"],
+    ans: 1,
+    explain: "<strong>40, 20, 10, 30, 60</strong> — Tree: root=40, left=20, right=60; 20's left=10, right=30. Pre-order visits Node→Left→Right: 40, then left subtree (20, 10, 30), then right subtree (60). Result: 40, 20, 10, 30, 60."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "What traversal produces a copy of the tree in the same structure?",
+    opts: ["In-order", "Post-order", "Pre-order", "Level-order"],
+    ans: 2,
+    explain: "<strong>Pre-order (Node → Left → Right)</strong> — Pre-order visits the root before its children. If you re-insert nodes in pre-order sequence into a new tree, the same BST structure is recreated. This is why pre-order is used for tree serialization."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "A BST has root 50, with left subtree having max key 45 and right subtree having min key 55. What BST property violation, if any, exists?",
+    opts: ["None — this is a valid BST", "Violation — right subtree min must be > 50, so 55 is invalid", "Violation — left subtree max must be < 50, but 45 is fine; right subtree min 55 > 50 is fine", "Violation — the root must be the median value"],
+    ans: 0,
+    explain: "<strong>None — this is a valid BST</strong> — BST property: all left subtree keys < node key, all right subtree keys > node key. Left max = 45 < 50 ✓ and right min = 55 > 50 ✓. Both satisfy the invariant. No violation."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "BST in-order traversal always produces sorted output because:",
+    opts: [
+      "It visits nodes alphabetically",
+      "The BST property ensures left subtree values < node < right subtree values, and in-order follows Left→Node→Right",
+      "Binary trees are always stored in sorted arrays",
+      "In-order uses a queue which sorts automatically"
+    ],
+    ans: 1,
+    explain: "<strong>BST property + Left→Node→Right visit order</strong> — The BST invariant guarantees all left descendants have smaller keys and all right descendants have larger keys. In-order traversal processes the left subtree (all smaller values) first, then the node, then the right subtree (all larger values) — always producing ascending sorted order."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "What is the in-order successor of node 50 in a BST where 50's right subtree root is 60, with left child 55 and right child 65?",
+    opts: ["60", "55", "65", "No in-order successor"],
+    ans: 1,
+    explain: "<strong>55</strong> — Go right to 60, then left as far as possible: 60's left child is 55, which has no left child. So 55 is the minimum in 50's right subtree = in-order successor."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "A complete binary tree with height h has how many nodes at the last level at most?",
+    opts: ["h", "2^h", "2^(h-1)", "h²"],
+    ans: 1,
+    explain: "<strong>2^h</strong> — Level 0 (root) has 1=2⁰ nodes, level 1 has 2=2¹, level h has at most 2^h nodes. A perfect binary tree fills all levels; a complete tree fills all except possibly the last, left to right."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "In a BST, where is the minimum value always located?",
+    opts: ["At the root", "At the rightmost node", "At the leftmost node", "At a leaf node always"],
+    ans: 2,
+    explain: "<strong>Leftmost node</strong> — BST property: left < parent. Following left pointers always moves to smaller values. The leftmost node (no left child) holds the minimum."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "A binary tree is 'full' if:",
+    opts: [
+      "All levels are completely filled",
+      "Every node has 0 or 2 children (never exactly 1)",
+      "All leaves are at the same level",
+      "The tree has exactly n nodes"
+    ],
+    ans: 1,
+    explain: "<strong>Every node has 0 or 2 children</strong> — A full binary tree has no nodes with exactly one child. A perfect binary tree is full AND complete. A complete binary tree fills levels left to right."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "What is level-order traversal also known as?",
+    opts: ["DFS traversal", "In-order traversal", "Breadth-first traversal", "Post-order traversal"],
+    ans: 2,
+    explain: "<strong>Breadth-first traversal</strong> — Level-order visits nodes level by level (root first, then its children, then grandchildren). It uses a queue internally, same as BFS in graphs."
+  },
+
+  // ── AVL TREES CONTINUED (8 more) ──
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "After an RR imbalance is corrected by a left rotation, the old root becomes the:",
+    opts: ["New root of the subtree", "Left child of the new root", "Right child of the new root", "It is removed from the tree"],
+    ans: 1,
+    explain: "<strong>Left child of the new root</strong> — In a left rotation (fixing RR case): the right child B becomes the new root. The original root A becomes B's left child. B's old left child becomes A's new right child. This mirrors the right rotation for LL cases."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "Why do AVL trees guarantee O(log n) operations while plain BSTs do not?",
+    opts: [
+      "AVL trees store keys in sorted arrays, not nodes",
+      "AVL trees use hashing for fast access",
+      "AVL trees enforce a maximum height difference of 1 between subtrees via rotations, bounding height to O(log n)",
+      "AVL trees always have exactly n/2 nodes in each subtree"
+    ],
+    ans: 2,
+    explain: "<strong>Height difference ≤ 1 → bounded height O(log n)</strong> — By enforcing |height(left) − height(right)| ≤ 1 at every node and using rotations to restore this property after insert/delete, AVL trees guarantee height ≤ 1.44 log₂(n). Plain BSTs have no such enforcement and can degrade to O(n) height with sorted insertions."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "During AVL insertion, at most how many rotations are needed to restore balance?",
+    opts: ["Up to log n rotations, one per level", "Exactly n/2 rotations", "At most 2 rotations (one single or one double) per insertion", "No rotations — balance is maintained automatically"],
+    ans: 2,
+    explain: "<strong>At most 2 rotations per insertion</strong> — After inserting a node, only one imbalanced ancestor needs rebalancing. A single rotation (LL or RR case) or double rotation (LR or RL case) restores the entire tree's balance. This is a key efficiency advantage of AVL trees vs deletion which may require O(log n) rotations."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "The balance factor of a node is defined as:",
+    opts: [
+      "right subtree height minus left subtree height",
+      "left subtree height minus right subtree height",
+      "total nodes in left minus total nodes in right",
+      "height of node minus height of parent"
+    ],
+    ans: 1,
+    explain: "<strong>height(left) − height(right)</strong> — The standard definition. Positive = left-heavy, negative = right-heavy, zero = balanced. Absolute value > 1 triggers rotation."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "After inserting a value that causes an LL imbalance (BF=+2 at root, BF=+1 at left child), what becomes the new root after the right rotation?",
+    opts: [
+      "The original root",
+      "The left child of the original root",
+      "The right child of the original root",
+      "The newly inserted node"
+    ],
+    ans: 1,
+    explain: "<strong>The left child becomes the new root</strong> — In a right rotation, the left child (B) rises to become the new subtree root. The old root (A) becomes B's right child. B's old right child becomes A's new left child."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "How many rotations does a Left-Right (LR) imbalance require?",
+    opts: ["0", "1", "2", "3"],
+    ans: 2,
+    explain: "<strong>2 rotations</strong> — LR requires a double rotation: first a left rotation on the left child (converting to LL case), then a right rotation on the root (fixing the LL case)."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "What is the guaranteed maximum height of an AVL tree with n nodes?",
+    opts: ["n", "n/2", "O(log n)", "O(n²)"],
+    ans: 2,
+    explain: "<strong>O(log n)</strong> — More precisely, height ≤ 1.44 log₂(n). The AVL rotations ensure no path from root to leaf is more than 44% longer than the optimal log₂(n), guaranteeing O(log n) operations."
+  },
+  {
+    section: "⚖️ Balanced Trees (AVL)",
+    q: "A node has BF = +2 and its left child has BF = -1. Which case is this?",
+    opts: ["LL case — single right rotation", "RR case — single left rotation", "LR case — double rotation (left then right)", "RL case — double rotation (right then left)"],
+    ans: 2,
+    explain: "<strong>LR case</strong> — BF=+2 (left-heavy root) with left child BF=-1 (right-heavy child) = Left-Right imbalance. Fix: left-rotate the left child first, then right-rotate the root."
+  },
+
+  // ── HEAPS & TREAPS CONTINUED (10 more) ──
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "In a 0-indexed max-heap array, what is the RIGHT child index of the node at index 3?",
+    opts: ["6", "7", "8", "9"],
+    ans: 2,
+    explain: "<strong>8</strong> — Right child of index i (0-indexed) = 2*i + 2. So: 2*3 + 2 = 8. Left child would be at 2*3+1=7. Parent would be at (3-1)//2=1."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "You insert 15 into this max-heap array: [20, 18, 14, 10, 12, 8]. What is the array after insertion?",
+    opts: [
+      "[20, 18, 15, 10, 12, 8, 14]",
+      "[20, 18, 14, 10, 12, 8, 15]",
+      "[20, 15, 14, 10, 12, 8, 18]",
+      "[15, 18, 20, 10, 12, 8, 14]"
+    ],
+    ans: 0,
+    explain: "<strong>[20, 18, 15, 10, 12, 8, 14]</strong> — 15 appended at index 6. Parent = (6-1)//2 = 2 (value 14). 15 > 14 → swap → [20,18,15,10,12,8,14]. Parent of index 2 = index 0 (value 20). 15 < 20 → stop."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "A max-heap with 7 elements stored as an array: [50, 30, 40, 10, 20, 35, 25]. Which index is the root?",
+    opts: ["Index 3", "Index 1", "Index 0", "Index 6"],
+    ans: 2,
+    explain: "<strong>Index 0</strong> — In a 0-indexed heap array, the root is always at index 0. It holds the maximum (50) in a max-heap. The root is the only element with no parent — (0-1)//2 = 0 in integer division, which we interpret as 'no parent' since the root IS index 0."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "In a Treap, what is the purpose of assigning RANDOM priorities to nodes?",
+    opts: [
+      "To ensure the tree degrades to a linked list",
+      "To allow duplicate keys to coexist",
+      "Random priorities produce an expected tree height of O(log n) without complex balancing bookkeeping like AVL",
+      "To speed up hashing within the treap"
+    ],
+    ans: 2,
+    explain: "<strong>Expected O(log n) height without explicit balancing</strong> — Because priorities are random, the heap property naturally distributes nodes to produce a balanced shape on average. Wikipedia and the original treap paper show expected height is O(log n) with high probability, avoiding the rotation bookkeeping required by AVL trees."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "What is the parent index of a node at index i in a 0-indexed heap array?",
+    opts: ["i // 2", "(i - 1) // 2", "i * 2", "i - 1"],
+    ans: 1,
+    explain: "<strong>(i - 1) // 2</strong> — Integer division of (i-1) by 2 gives the parent index. For example, index 5: (5-1)//2 = 2. Index 4: (4-1)//2 = 1."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "Removing the maximum from a max-heap involves which steps?",
+    opts: [
+      "Delete the root, rebuild entire tree",
+      "Replace root with last element, remove last, percolate down",
+      "Find max in array, shift everything left",
+      "Swap root with minimum, then delete"
+    ],
+    ans: 1,
+    explain: "<strong>Replace root with last element, then percolate down</strong> — This maintains the complete binary tree shape while restoring the heap property by swapping downward with the larger child until balanced."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "Python's heapq.heappush() and heapq.heappop() operate on a:",
+    opts: ["Max-heap", "Min-heap", "Sorted list", "BST"],
+    ans: 1,
+    explain: "<strong>Min-heap</strong> — Python's heapq is a min-heap by default. heappop() returns the smallest element. For a max-heap, negate values: push -x and negate the result of pop."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "What is 'percolate up' in heap terminology?",
+    opts: [
+      "Moving the root down after deletion",
+      "Moving a newly inserted node upward by swapping with parent until heap property holds",
+      "Rebuilding the heap from scratch",
+      "Sorting the heap array"
+    ],
+    ans: 1,
+    explain: "<strong>Moving a new node upward</strong> — After inserting at the end, compare with parent. If heap property violated (new > parent in max-heap), swap. Repeat until property holds or root reached. O(log n)."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "Heapsort runs in O(n log n) because:",
+    opts: [
+      "Building the heap is O(n log n) and extraction is O(1)",
+      "Building the heap is O(n) and each of n extractions is O(log n)",
+      "Both building and extraction are O(n log n)",
+      "The sort uses merge sort internally"
+    ],
+    ans: 1,
+    explain: "<strong>O(n) build + n × O(log n) extractions</strong> — Heapify builds the heap in O(n). Then extracting the max n times, each O(log n), gives O(n log n) total."
+  },
+  {
+    section: "🔺 Heaps & Treaps",
+    q: "In a min-heap, the root always contains:",
+    opts: ["The median value", "The maximum value", "The minimum value", "The most recently inserted value"],
+    ans: 2,
+    explain: "<strong>The minimum value</strong> — Min-heap property: every parent ≤ its children. This propagates to make the root the global minimum. Python's heapq uses a min-heap."
+  },
+
+  // ── SETS CONTINUED (5 more) ──
+  {
+    section: "🔗 Sets",
+    q: "Given A = {1, 2, 3, 4} and B = {3, 4, 5, 6}, what is A ^ B in Python?",
+    opts: ["{1,2,3,4,5,6}", "{3,4}", "{1,2,5,6}", "{1,2}"],
+    ans: 2,
+    explain: "<strong>{1,2,5,6}</strong> — ^ is symmetric difference: elements in EITHER set but NOT in BOTH. 1,2 are only in A; 5,6 are only in B. 3,4 are in both so excluded."
+  },
+  {
+    section: "🔗 Sets",
+    q: "Can Python sets contain duplicate values?",
+    opts: ["Yes, duplicates are allowed", "No, sets only store unique values", "Yes, but only for strings", "Duplicates are allowed up to a limit"],
+    ans: 1,
+    explain: "<strong>No, sets only store unique values</strong> — By definition, a set is a collection of distinct elements. Adding a duplicate to a Python set has no effect — the set remains unchanged."
+  },
+  {
+    section: "🔗 Sets",
+    q: "What is the Python syntax to check if set A is a subset of set B?",
+    opts: ["A < B", "A <= B", "A.issubset(B) or A <= B", "A in B"],
+    ans: 2,
+    explain: "<strong>A.issubset(B) or A <= B</strong> — Both work. A <= B returns True if every element of A is also in B. A < B checks proper subset (A is subset but A ≠ B)."
+  },
+  {
+    section: "🔗 Sets",
+    q: "Which underlying data structure makes Python set membership testing O(1)?",
+    opts: ["Sorted array", "Linked list", "Hash table", "Binary search tree"],
+    ans: 2,
+    explain: "<strong>Hash table</strong> — Python sets are implemented as hash tables. Each element is hashed to a bucket; checking membership computes the hash and inspects that bucket — O(1) average."
+  },
+  {
+    section: "🔗 Sets",
+    q: "What is A | B in Python set notation?",
+    opts: ["Intersection — elements in both A and B", "Union — all elements from both A and B", "Difference — elements in A but not B", "Symmetric difference"],
+    ans: 1,
+    explain: "<strong>Union — all elements from both sets</strong> — A | B returns a new set containing every element that appears in A, B, or both. Duplicates are automatically eliminated."
+  },
+
+  // ── GRAPHS CONTINUED (10 more) ──
+  {
+    section: "🕸️ Graphs",
+    q: "BFS is run starting at A: A→B, A→C, B→D, C→D, D→E. What is the BFS order?",
+    opts: ["A, B, D, E, C", "A, B, C, D, E", "A, C, D, B, E", "A, D, B, C, E"],
+    ans: 1,
+    explain: "<strong>A, B, C, D, E</strong> — BFS: enqueue A. Dequeue A, enqueue B,C. Dequeue B, enqueue D (C not yet). Dequeue C (D already queued). Dequeue D, enqueue E. Dequeue E."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "Which graph representation is more space-efficient for a sparse graph?",
+    opts: [
+      "Adjacency matrix — O(V²) space",
+      "Adjacency list — O(V+E) space",
+      "Both are equally efficient",
+      "Neither works for sparse graphs"
+    ],
+    ans: 1,
+    explain: "<strong>Adjacency list — O(V+E)</strong> — A matrix always uses V² space, most of it zeros for sparse graphs. A list only stores actual edges."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "What is the time complexity of BFS and DFS on a graph with V vertices and E edges?",
+    opts: ["O(V²) for both", "O(V + E) for both", "O(E log V) for BFS; O(V) for DFS", "O(V log V) for both"],
+    ans: 1,
+    explain: "<strong>O(V + E) for both</strong> — BFS and DFS each visit every vertex once (O(V)) and traverse every edge once (O(E)). Total work is O(V + E). For a dense graph where E ≈ V², this becomes O(V²). For sparse graphs, O(V + E) is much better than O(V²)."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "What data structure does Dijkstra's algorithm use to always process the vertex with the smallest known distance?",
+    opts: ["Stack", "Queue (FIFO)", "Min-Heap (Priority Queue)", "Hash table"],
+    ans: 2,
+    explain: "<strong>Min-Heap (Priority Queue)</strong> — Dijkstra's must efficiently find the unvisited vertex with the smallest tentative distance. A min-heap does this in O(log V)."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "In an undirected graph with V=5 and E=4, the adjacency matrix has how many cells total?",
+    opts: ["9", "20", "25", "16"],
+    ans: 2,
+    explain: "<strong>25</strong> — An adjacency matrix is always V×V = 5×5 = 25 cells, regardless of how many edges exist. For sparse graphs this wastes space — use an adjacency list instead."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "What is a minimum spanning tree (MST)?",
+    opts: [
+      "The shortest path from source to all vertices",
+      "A subset of edges connecting all vertices with minimum total weight and no cycles",
+      "The tree formed by DFS traversal",
+      "The path that visits every vertex exactly once"
+    ],
+    ans: 1,
+    explain: "<strong>Subset of edges connecting all vertices with minimum total weight, no cycles</strong> — Found by Prim's or Kruskal's algorithms. Used in network design to minimize cable/road costs."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "DFS explores a graph by:",
+    opts: [
+      "Visiting all neighbors at the current level before going deeper",
+      "Going as deep as possible down one path before backtracking",
+      "Always choosing the shortest edge first",
+      "Visiting nodes in alphabetical order"
+    ],
+    ans: 1,
+    explain: "<strong>Going as deep as possible before backtracking</strong> — DFS follows one path all the way to the end (or until revisiting), then backtracks. It uses a stack (or recursion) and visits O(V+E) nodes/edges."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "A directed graph (digraph) has an edge from A to B. Can you travel from B to A using that edge?",
+    opts: ["Yes, all edges are bidirectional", "No, directed edges are one-way", "Only if A and B are at the same depth", "Only in weighted graphs"],
+    ans: 1,
+    explain: "<strong>No, directed edges are one-way</strong> — In a digraph, edge (A→B) only allows travel from A to B. To travel from B to A, a separate edge (B→A) must exist."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "What does it mean for a graph to be 'connected'?",
+    opts: [
+      "Every vertex has the same degree",
+      "There exists a path between every pair of vertices",
+      "The graph has no cycles",
+      "All edges have the same weight"
+    ],
+    ans: 1,
+    explain: "<strong>A path exists between every pair of vertices</strong> — In a connected graph, you can reach any vertex from any other vertex. A disconnected graph has isolated components."
+  },
+  {
+    section: "🕸️ Graphs",
+    q: "Which algorithm finds shortest paths from ONE source to ALL other vertices in a weighted graph?",
+    opts: ["BFS", "DFS", "Dijkstra's algorithm", "Binary search"],
+    ans: 2,
+    explain: "<strong>Dijkstra's algorithm</strong> — It computes the shortest distance from a single source to every reachable vertex. BFS does this for unweighted graphs; Dijkstra handles weighted (non-negative) graphs."
+  },
+
+  // ── B-TREES CONTINUED (5 more) ──
+  {
+    section: "🗂️ B-Trees",
+    q: "In a B-tree of order 4, what is the MINIMUM number of keys a non-root internal node must contain?",
+    opts: ["1", "2", "3", "4"],
+    ans: 0,
+    explain: "<strong>1</strong> — For order m=4, non-root internal nodes must have at least ⌈m/2⌉ − 1 = ⌈4/2⌉ − 1 = 2 − 1 = 1 key minimum. This ensures nodes don't become too sparse and the tree stays balanced. (Note: ⌈4/2⌉ = 2 children minimum → 1 key minimum.)"
+  },
+  {
+    section: "🗂️ B-Trees",
+    q: "A B-tree node with 3 keys has how many child pointers?",
+    opts: ["2", "3", "4", "6"],
+    ans: 2,
+    explain: "<strong>4</strong> — A B-tree node with k keys has exactly k+1 child pointers. Each pointer separates a range of keys: one pointer before the first key, one between each pair of keys, and one after the last key. So 3 keys → 4 children."
+  },
+  {
+    section: "🗂️ B-Trees",
+    q: "Why do B-trees grow UPWARD (toward the root) rather than downward like plain BSTs?",
+    opts: [
+      "Because keys are inserted at the root",
+      "Because splits propagate the median key up to the parent, and only the root can split without a parent, increasing the tree height",
+      "Because B-trees use post-order insertion",
+      "Because the leaf level is always empty in a B-tree"
+    ],
+    ans: 1,
+    explain: "<strong>Splits push keys upward</strong> — New keys always enter at a leaf. When a leaf overflows, it splits and pushes the median up to the parent. If the parent also overflows, it too splits and pushes upward. Only the root has no parent, so when the root splits, a new root is created — increasing height by 1. This ensures all leaves always remain at the same depth."
+  },
+  {
+    section: "🗂️ B-Trees",
+    q: "In a B-tree, all leaf nodes are guaranteed to be at:",
+    opts: ["Different levels", "The same level", "Level 0 (root)", "An even-numbered level"],
+    ans: 1,
+    explain: "<strong>The same level</strong> — B-trees grow upward via splits. Because the root only splits when full and pushes a key up, all leaves remain at the same depth. This guarantees O(log n) for all operations."
+  },
+  {
+    section: "🗂️ B-Trees",
+    q: "What is the minimum number of keys a non-root internal node must have in a B-tree of order m?",
+    opts: ["1", "⌈m/2⌉ - 1", "m - 1", "m"],
+    ans: 1,
+    explain: "<strong>⌈m/2⌉ - 1</strong> — B-tree invariant: internal nodes (except root) must have at least ⌈m/2⌉ children, meaning at least ⌈m/2⌉ - 1 keys. This prevents nodes from becoming too sparse."
+  },
+
+  // ── ALGORITHM ANALYSIS CONTINUED (12 more) ──
+  {
+    section: "📈 Algorithm Analysis",
+    q: "An algorithm has the recurrence T(n) = 2T(n/2) + O(n). By the Master Theorem, what is its time complexity?",
+    opts: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+    ans: 1,
+    explain: "<strong>O(n log n)</strong> — This recurrence matches Merge Sort: at each level, the array is split in half (2T(n/2)) and a linear merge is performed (O(n)). The Master Theorem case 2 applies when the split work and merge work are equal, giving O(n log n). This is why merge sort is O(n log n)."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "Which sorting algorithm is NOT stable by default?",
+    opts: ["Merge Sort", "Bubble Sort", "Insertion Sort", "Quick Sort"],
+    ans: 3,
+    explain: "<strong>Quick Sort</strong> — Quick Sort swaps non-adjacent elements during partitioning, which can change the relative order of equal elements. Merge Sort, Bubble Sort, and Insertion Sort all preserve the relative order of equal elements (stable). Heap Sort is also not stable, but Quick Sort is the most commonly tested unstable sort."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "An algorithm makes exactly n + n/2 + n/4 + … comparisons (a geometric series halving each time). What is the total Big O?",
+    opts: ["O(n log n)", "O(n²)", "O(n)", "O(log n)"],
+    ans: 2,
+    explain: "<strong>O(n)</strong> — The geometric series n + n/2 + n/4 + … converges to 2n. By Big O rules, constants are dropped: O(2n) = O(n). This pattern appears in algorithms that process decreasing portions of data, like heap building (bottom-up heapify)."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "Merge Sort requires O(n) extra space. What causes this space usage?",
+    opts: [
+      "The recursion stack grows to O(n) depth",
+      "A temporary auxiliary array of size n is needed to merge two sorted halves",
+      "Merge sort stores n copies of each element",
+      "Merge sort uses a hash table of size n internally"
+    ],
+    ans: 1,
+    explain: "<strong>Auxiliary array of size n for merging</strong> — During the merge step, elements from two sorted halves are combined into a temporary array. This temporary space is O(n). The call stack is O(log n). Total space = O(n). This is Merge Sort's main disadvantage vs Heap Sort which sorts in-place using only O(1) extra space."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "What is the space complexity of Merge Sort?",
+    opts: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    ans: 2,
+    explain: "<strong>O(n)</strong> — Merge Sort requires an auxiliary array of size n to perform the merge step. This extra memory is the main disadvantage compared to Heap Sort which is O(1) space."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "Which of these Big O complexities is the FASTEST?",
+    opts: ["O(n²)", "O(n log n)", "O(log n)", "O(n)"],
+    ans: 2,
+    explain: "<strong>O(log n)</strong> — Ordered fastest to slowest: O(1) < O(log n) < O(n) < O(n log n) < O(n²). O(log n) grows extremely slowly — log₂(1,000,000) ≈ 20."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "Bubble sort has a best-case of O(n). When does this occur?",
+    opts: [
+      "When the array is sorted in reverse order",
+      "When the array is already sorted (with early termination optimization)",
+      "When the array has exactly 2 elements",
+      "Bubble sort is always O(n²)"
+    ],
+    ans: 1,
+    explain: "<strong>When already sorted (with optimization)</strong> — With a 'swapped' flag, if no swaps occur in a full pass, the algorithm terminates early. On a sorted array this happens after 1 pass: O(n)."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "What is the time complexity of the following: for i in range(n): for j in range(i)?",
+    opts: ["O(n)", "O(n log n)", "O(n²)", "O(n³)"],
+    ans: 2,
+    explain: "<strong>O(n²)</strong> — The outer loop runs n times. The inner loop runs 0,1,2,…,n-1 times. Total iterations = 0+1+…+(n-1) = n(n-1)/2 = O(n²)."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "Insertion sort performs best on which type of input?",
+    opts: ["Completely random arrays", "Reverse-sorted arrays", "Nearly sorted (almost in order) arrays", "Arrays with all duplicate values"],
+    ans: 2,
+    explain: "<strong>Nearly sorted arrays</strong> — Insertion sort shifts elements leftward to insert each item. When the array is nearly sorted, few shifts are needed per element, approaching O(n) best case."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "What does 'amortized O(1)' mean for Python list.append()?",
+    opts: [
+      "Every append is exactly O(1)",
+      "Append is sometimes O(n) (on resize) but averages O(1) over many appends",
+      "Append is O(1) only for small lists",
+      "The list never needs to resize"
+    ],
+    ans: 1,
+    explain: "<strong>Occasionally O(n) but averages O(1)</strong> — Most appends are O(1). Occasionally the list resizes (O(n)), but it doubles capacity so resizes become rare. Spread over many operations, the average cost per append is O(1)."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "What is the time complexity of selection sort in ALL cases (best, average, worst)?",
+    opts: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+    ans: 2,
+    explain: "<strong>O(n²) always</strong> — Selection sort always scans the entire unsorted portion to find the minimum, regardless of input order. Unlike bubble sort, it has no early termination optimization."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "Radix sort has time complexity O(nk) where k is:",
+    opts: [
+      "The number of unique elements",
+      "The number of digits/characters in the maximum key",
+      "log(n)",
+      "The number of comparisons"
+    ],
+    ans: 1,
+    explain: "<strong>k = number of digits in the maximum key</strong> — Radix sort processes each digit position (k passes), doing O(n) work per pass. For fixed-length integers (e.g., 32-bit), k is constant, making it effectively O(n)."
+  },
+
+  // ── DYNAMIC DATA STRUCTURES CONTINUED (10 more) ──
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "A social media app needs to store 50 million user IDs and check follows in constant time. Best structure?",
+    opts: ["Sorted array with binary search", "AVL tree", "Hash set", "Singly linked list"],
+    ans: 2,
+    explain: "<strong>Hash set</strong> — O(1) average membership testing at any scale. Binary search is O(log n) ≈ 26 ops for 50M. Linked list is O(n) — completely unscalable."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "You need a structure that always gives you the minimum element instantly and supports fast insert. Choose:",
+    opts: ["Sorted linked list", "Min-heap", "Hash table", "AVL tree"],
+    ans: 1,
+    explain: "<strong>Min-heap</strong> — O(1) peek at minimum (root), O(log n) insert. Sorted linked list requires O(n) insert to maintain order. AVL works but has more overhead than needed."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "A program processes tasks FIFO but must occasionally fast-track urgent tasks to the front. Best structure?",
+    opts: ["Queue only", "Stack only", "Deque (double-ended queue)", "Hash table"],
+    ans: 2,
+    explain: "<strong>Deque</strong> — O(1) insert/remove from both ends. Normal tasks enqueue to the back; urgent tasks are prepended to the front. Python's collections.deque supports this natively."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "As data grows from 1,000 to 1,000,000 records, which structure degrades the MOST?",
+    opts: ["Hash table", "AVL tree", "Unbalanced BST (sorted insertions)", "B-tree"],
+    ans: 2,
+    explain: "<strong>Unbalanced BST with sorted insertions</strong> — Becomes a linear chain: O(n) search at 1M records. Hash, AVL, and B-trees maintain efficient operations regardless of n."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "A hash table averages O(1) search but a BST averages O(log n). When would you PREFER a BST over a hash table?",
+    opts: [
+      "Always — BSTs are faster in all cases",
+      "When you need keys in sorted order or need to efficiently find the minimum, maximum, or range of keys",
+      "When you have very few elements (n < 10)",
+      "When memory is unlimited and speed is the only concern"
+    ],
+    ans: 1,
+    explain: "<strong>When sorted order or range queries matter</strong> — Hash tables scatter keys randomly; you cannot efficiently iterate in sorted order or find min/max. BSTs maintain sorted order: in-order traversal = sorted list, min = leftmost, max = rightmost, all in O(log n). For key-value lookup only (no ordering needed), hash tables win. For ordered data and range queries, BSTs are the right choice."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "A navigation app needs to find the fastest route between two cities with many roads and variable travel times. Best approach?",
+    opts: [
+      "BFS on an unweighted graph",
+      "Dijkstra's algorithm on a weighted graph",
+      "Storing routes in a hash table",
+      "DFS on a sorted BST"
+    ],
+    ans: 1,
+    explain: "<strong>Dijkstra's on a weighted graph</strong> — Road networks are weighted graphs (travel time = edge weight). Dijkstra's finds the shortest path with minimum total weight. BFS only works for unweighted (hop count) shortest paths."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "Which structure is MOST appropriate for implementing a browser's back/forward button history?",
+    opts: ["Two stacks (one for back, one for forward)", "A single queue", "A hash table", "A min-heap"],
+    ans: 0,
+    explain: "<strong>Two stacks</strong> — The 'back' stack holds visited pages (LIFO). When you navigate to a new page, push to back stack and clear forward stack. When you press Back, pop from back and push to forward. This correctly models browser history."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "Which structure is best for implementing an autocomplete suggestion system that needs prefix-based search?",
+    opts: ["Hash table", "Sorted array", "Trie (prefix tree)", "Max-heap"],
+    ans: 2,
+    explain: "<strong>Trie (prefix tree)</strong> — Tries store strings character by character and allow O(L) prefix lookup (L = string length) regardless of n. While not explicitly in C949, it represents the correct dynamic structure choice for prefix problems."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "A video game maintains a leaderboard with continuous score updates. You need the top 10 scores at any time. Best approach?",
+    opts: [
+      "Sort the entire array each update",
+      "Maintain a min-heap of size 10",
+      "Store all scores in a linked list",
+      "Use a stack with 10 slots"
+    ],
+    ans: 1,
+    explain: "<strong>Min-heap of size 10</strong> — The heap's root is the smallest of the top-10 scores. On each new score: if > root, replace root and re-heapify (O(log 10) = O(1)). Sorting the full array each time is O(n log n) — wasteful."
+  },
+  {
+    section: "⚡ Dynamic Data Structures",
+    q: "A compiler processes nested function calls and must return to the correct point after each function finishes. Which structure is used?",
+    opts: ["Queue", "Hash table", "Call stack", "Min-heap"],
+    ans: 2,
+    explain: "<strong>Call stack</strong> — Each function call pushes a stack frame (local variables, return address). When the function returns, the frame is popped and execution resumes at the return address. Stack overflow = too many nested calls."
+  },
+  {
+    section: "📈 Algorithm Analysis",
+    q: "An algorithm runs in O(2ⁿ). If n=10 takes 1 second, approximately how long does n=20 take?",
+    opts: ["2 seconds", "10 seconds", "About 1024 seconds", "20 seconds"],
+    ans: 2,
+    explain: "<strong>~1024 seconds</strong> — O(2ⁿ) doubles with each increment. n=20 gives 2²⁰ = 1,048,576 vs 2¹⁰ = 1,024 operations — roughly 1024× more work than n=10. Exponential growth is catastrophic."
+  },
+  {
+    section: "🌳 Trees & BSTs",
+    q: "How many edges does a binary tree with n nodes have?",
+    opts: ["n", "n + 1", "n - 1", "2n"],
+    ans: 2,
+    explain: "<strong>n - 1 edges</strong> — Every node except the root has exactly one incoming edge from its parent. With n nodes and 1 root (no incoming edge), there are exactly n-1 edges. This holds for all trees, not just binary."
+  }
+];
+
+let scores = { correct: 0, total: 0 };
+let answered = {};
+let activeSet = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildQuiz() {
+  scores = { correct: 0, total: 0 };
+  answered = {};
+  updateScore();
+
+  // Stratified random sample: at least 1 per section
+  const bySection = {};
+  quizData.forEach(q => {
+    if (!bySection[q.section]) bySection[q.section] = [];
+    bySection[q.section].push(q);
+  });
+  let pool = [];
+  Object.keys(bySection).forEach(s => pool.push(shuffle(bySection[s])[0]));
+  const remaining = shuffle(quizData.filter(q => !pool.includes(q)));
+  pool = shuffle([...pool, ...remaining.slice(0, 50 - pool.length)]).slice(0, 50);
+  activeSet = pool;
+
+  const container = document.getElementById('quiz-container');
+  const grouped = {};
+  activeSet.forEach((q, i) => {
+    if (!grouped[q.section]) grouped[q.section] = [];
+    grouped[q.section].push({ ...q, slot: i });
+  });
+
+  let html = '';
+  Object.entries(grouped).forEach(([sec, qs]) => {
+    html += `<div class="pt-section-label">${sec}</div>`;
+    qs.forEach(q => {
+      html += `<div class="quiz-q" id="qq-${q.slot}">
+        <div class="quiz-q-num">Q${q.slot + 1}</div>
+        <div class="quiz-q-text">${q.q.replace(/\n/g, '<br>')}</div>
+        <div class="quiz-options">
+          ${q.opts.map((o, oi) => `<button class="quiz-option" onclick="answerQ(${q.slot},${oi},${q.ans})">
+            <span class="opt-letter">${['A','B','C','D'][oi]}</span>${o}
+          </button>`).join('')}
+        </div>
+        <div class="quiz-explain" id="exp-${q.slot}"><strong>Explanation:</strong> ${q.explain}</div>
+      </div>`;
+    });
+  });
+  container.innerHTML = html;
+}
+
+function answerQ(slot, chosen, correct) {
+  if (answered[slot] !== undefined) return;
+  answered[slot] = chosen;
+  scores.total++;
+  if (chosen === correct) scores.correct++;
+
+  const qEl = document.getElementById('qq-' + slot);
+  qEl.classList.add('answered');
+  qEl.querySelectorAll('.quiz-option').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === correct) btn.classList.add('correct');
+    else if (i === chosen && chosen !== correct) btn.classList.add('wrong');
+  });
+  document.getElementById('exp-' + slot).classList.add('show');
+  updateScore();
+}
+
+function updateScore() {
+  const { correct, total } = scores;
+  const pct = total > 0 ? Math.round(correct / total * 100) : 0;
+  const progress = Math.round(total / 50 * 100);
+  document.getElementById('score-display').textContent = `${correct} / ${total}`;
+  document.getElementById('score-pct').textContent = total > 0
+    ? `${pct}% — ${pct >= 80 ? '✅ On track!' : pct >= 60 ? '📖 Keep studying' : '💪 Review the material'}`
+    : 'Answer questions to track your score';
+  document.getElementById('pt-prog-fill').style.width = progress + '%';
+
+  // Navbar badge
+  const badge = document.getElementById('nav-score-badge');
+  const num = document.getElementById('nav-score-num');
+  if (total > 0) {
+    badge.classList.add('visible');
+    num.textContent = `${correct}/${total}`;
+  } else {
+    badge.classList.remove('visible');
+  }
+}
+
+function resetQuiz() {
+  buildQuiz();
+  window.scrollTo(0, 0);
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
