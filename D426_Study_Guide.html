@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WGU D426 - Data Management Foundations Study Guide</title>
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --primary-light: #06b6d4;
+            --bg-dark: #0f172a;
+            --bg-card: #1a202c;
+            --bg-hover: #2d3748;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --correct: #34d399;
+            --incorrect: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1f3a 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--bg-hover);
+            animation: slideUp 0.6s ease-out 0.1s both;
+        }
+
+        .tab-button {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-button:hover {
+            color: var(--primary);
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .test-header {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-hover);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            transition: width 0.3s ease;
+        }
+
+        .test-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .test-info span {
+            color: var(--text-secondary);
+        }
+
+        .question-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--bg-hover);
+            transition: all 0.3s ease;
+        }
+
+        .question-container.answered {
+            border-color: var(--primary);
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        .question-number {
+            color: var(--primary);
+            font-size: 0.9em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background: var(--bg-hover);
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 15px;
+            margin-top: 3px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .option-label {
+            cursor: pointer;
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(14, 165, 233, 0.15);
+        }
+
+        .option.correct {
+            border-color: var(--correct);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .option.incorrect {
+            border-color: var(--incorrect);
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .feedback.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--correct);
+            color: var(--correct);
+        }
+
+        .feedback.incorrect {
+            background: rgba(248, 113, 113, 0.1);
+            border-left: 4px solid var(--incorrect);
+            color: var(--text-primary);
+        }
+
+        .feedback-label {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(14, 165, 233, 0.2);
+        }
+
+        .results-container {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--bg-hover);
+            display: none;
+        }
+
+        .results-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .results-score {
+            font-size: 3em;
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .results-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .result-item {
+            background: var(--bg-hover);
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 15px;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-hover);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 1em;
+        }
+
+        .search-box::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .flashcard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .flashcard {
+            perspective: 1000px;
+            height: 250px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--bg-hover);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .flashcard-front {
+            background: var(--bg-card);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            color: var(--text-primary);
+            transform: rotateY(180deg);
+            font-size: 0.95em;
+            border: 1px solid var(--primary);
+        }
+
+        .card-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .flashcard-count {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .no-cards {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            .tabs {
+                flex-wrap: wrap;
+            }
+            .tab-button {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+            .question-container {
+                padding: 20px;
+            }
+            .flashcard-grid {
+                grid-template-columns: 1fr;
+            }
+            .results-details {
+                grid-template-columns: 1fr;
+            }
+            button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WGU D426</h1>
+            <p>Data Management Foundations Study Guide</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('test')">Practice Test</button>
+            <button class="tab-button" onclick="switchTab('flashcards')">Flashcards</button>
+        </div>
+
+        <!-- PRACTICE TEST TAB -->
+        <div id="test" class="tab-content active">
+            <div class="test-header">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div class="test-info">
+                    <span>Question <span id="currentQuestion">1</span> of <span id="totalQuestions">0</span></span>
+                    <span>Correct: <span id="correctCount">0</span> | Wrong: <span id="wrongCount">0</span></span>
+                </div>
+            </div>
+
+            <div id="testContent"></div>
+            <div id="resultsContainer" class="results-container">
+                <h2>Test Complete!</h2>
+                <div class="results-score" id="finalScore">0%</div>
+                <div class="results-details">
+                    <div class="result-item">
+                        <div class="result-label">Correct Answers</div>
+                        <div class="result-value" id="finalCorrect">0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Total Questions</div>
+                        <div class="result-value" id="totalQuestionsResult">0</div>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="restartTest()" style="margin-top: 30px;">Retake Test</button>
+            </div>
+        </div>
+
+        <!-- FLASHCARDS TAB -->
+        <div id="flashcards" class="tab-content">
+            <div class="flashcard-controls">
+                <input type="text" class="search-box" id="searchBox" placeholder="Search flashcards..." onkeyup="filterFlashcards()">
+                <button class="btn-secondary" onclick="resetFlashcards()">Reset All</button>
+            </div>
+            <div class="flashcard-count"><span id="cardCount">0</span> cards</div>
+            <div class="flashcard-grid" id="flashcardGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        // TEST QUESTIONS DATA
+        let testQuestions = [
+            {question:"What is a database?",options:["An organized collection of structured data stored and accessed electronically","A software program used to create spreadsheets","A folder containing multiple files on a computer","A backup system for protecting files"],correctAnswer:"An organized collection of structured data stored and accessed electronically",explanation:"A database is an organized collection of structured data that is stored and can be accessed electronically. It's designed for efficient data storage, retrieval, and management through a DBMS."},
+            {question:"What does DBMS stand for?",options:["Database Management System","Digital Business Management Solution","Data Backup and Monitoring Service","Database Multi-tier Storage"],correctAnswer:"Database Management System",explanation:"DBMS stands for Database Management System. It is software that manages databases and provides users with tools to access, modify, and analyze data efficiently."},
+            {question:"What is a relational database?",options:["A database that stores data in a series of related tables with rows and columns","A database that stores data in a single large file","A database designed only for text documents","A database that can only be accessed by one user at a time"],correctAnswer:"A database that stores data in a series of related tables with rows and columns",explanation:"A relational database stores data in structured tables (relations) with rows (records) and columns (attributes). Tables are related through keys."},
+            {question:"What is the primary purpose of a primary key?",options:["To uniquely identify each record in a table","To ensure records are stored in chronological order","To establish a relationship with a foreign key","To automatically backup database records"],correctAnswer:"To uniquely identify each record in a table",explanation:"A primary key uniquely identifies each record in a table. It ensures that each row can be distinctly identified and prevents duplicate records."},
+            {question:"What is a foreign key?",options:["A column that references the primary key of another table","A column that serves as the primary key in a different table","A secondary key used only for data backup purposes","A key that allows multiple tables to have the same column names"],correctAnswer:"A column that references the primary key of another table",explanation:"A foreign key is a column in one table that refers to the primary key in another table. It establishes a relationship between two tables."},
+            {question:"What is referential integrity?",options:["A rule that ensures foreign key values match primary key values in referenced tables","A security measure that encrypts all database connections","A process that automatically backs up database changes","A method to organize data alphabetically"],correctAnswer:"A rule that ensures foreign key values match primary key values in referenced tables",explanation:"Referential integrity ensures foreign key values always correspond to valid primary key values in the referenced table."},
+            {question:"What does SQL stand for?",options:["Structured Query Language","System Query Logic","Standard Query Library","Structured Question Language"],correctAnswer:"Structured Query Language",explanation:"SQL stands for Structured Query Language. It is the standard language used to communicate with relational databases."},
+            {question:"Which SQL statement is used to retrieve data from a database?",options:["SELECT","INSERT","UPDATE","DELETE"],correctAnswer:"SELECT",explanation:"The SELECT statement is used to retrieve data from one or more tables in a database. It is one of the most commonly used SQL commands."},
+            {question:"What is the correct syntax to select all columns from a table named 'users'?",options:["SELECT * FROM users;","SELECT FROM users;","SELECT ALL users;","RETRIEVE * FROM users;"],correctAnswer:"SELECT * FROM users;",explanation:"The correct syntax is SELECT * FROM users;. The asterisk (*) represents all columns."},
+            {question:"What does the WHERE clause do in SQL?",options:["Filters records based on specified conditions","Orders results in ascending order","Groups records by column values","Joins two tables together"],correctAnswer:"Filters records based on specified conditions",explanation:"The WHERE clause filters records based on specified conditions."},
+            {question:"What is the correct MySQL syntax to insert data?",options:["INSERT INTO table_name (column1, column2) VALUES (value1, value2);","INSERT table_name (column1, column2) = (value1, value2);","ADD INTO table_name VALUES (value1, value2);","INSERT VALUES table_name (value1, value2);"],correctAnswer:"INSERT INTO table_name (column1, column2) VALUES (value1, value2);",explanation:"Correct syntax: INSERT INTO table_name (column1, column2) VALUES (value1, value2);"},
+            {question:"What SQL statement updates existing records?",options:["UPDATE","MODIFY","CHANGE","EDIT"],correctAnswer:"UPDATE",explanation:"The UPDATE statement modifies existing data in a database."},
+            {question:"What is the correct MySQL syntax to update a record?",options:["UPDATE table_name SET column1 = value1 WHERE condition;","UPDATE table_name (column1) VALUES (value1);","MODIFY table_name SET column1 = value1;","ALTER table_name SET column1 = value1;"],correctAnswer:"UPDATE table_name SET column1 = value1 WHERE condition;",explanation:"Correct syntax: UPDATE table_name SET column1 = value1 WHERE condition;"},
+            {question:"What SQL statement deletes records?",options:["DELETE","REMOVE","DROP","ERASE"],correctAnswer:"DELETE",explanation:"The DELETE statement deletes existing records from a table."},
+            {question:"What is the correct MySQL syntax to delete records?",options:["DELETE FROM table_name WHERE condition;","DELETE table_name WHERE condition;","REMOVE FROM table_name WHERE condition;","DELETE * FROM table_name WHERE condition;"],correctAnswer:"DELETE FROM table_name WHERE condition;",explanation:"Correct syntax: DELETE FROM table_name WHERE condition;"},
+            {question:"What is CRUD?",options:["Create, Read, Update, Delete operations","A data compression technique","A security protocol","A method for organizing data"],correctAnswer:"Create, Read, Update, Delete operations",explanation:"CRUD represents the four basic database operations."},
+            {question:"What does SELECT DISTINCT do?",options:["Returns only unique values","Selects and sorts data","Selects rows with different data types","Separates data into tables"],correctAnswer:"Returns only unique values",explanation:"SELECT DISTINCT returns only unique (non-duplicate) values from a column."},
+            {question:"What operators can be used in WHERE?",options:["=, <>, <, >, <=, >=, LIKE, IN, BETWEEN, AND, OR, NOT","Only = and <>","Only <, >, <=, >=","Only LIKE and IN"],correctAnswer:"=, <>, <, >, <=, >=, LIKE, IN, BETWEEN, AND, OR, NOT",explanation:"WHERE supports multiple operators including comparison, pattern matching, and logical operators."},
+            {question:"What does the LIKE operator do?",options:["Searches for patterns in columns","Checks if values are equal","Orders results by similarity","Joins tables"],correctAnswer:"Searches for patterns in columns",explanation:"LIKE searches for specified patterns using wildcards like % and _."},
+            {question:"What does BETWEEN do in SQL?",options:["Selects values within a range","Separates values into groups","Checks if value exists in list","Calculates differences"],correctAnswer:"Selects values within a range",explanation:"BETWEEN selects values within a specified range (inclusive)."},
+            {question:"What does the IN operator do?",options:["Specifies multiple values in WHERE clause","Inserts data into table","Checks if column is empty","Joins two tables"],correctAnswer:"Specifies multiple values in WHERE clause",explanation:"IN allows you to specify multiple values in a WHERE clause."},
+            {question:"What does ORDER BY do?",options:["Sorts results in ascending or descending order","Groups results by column","Filters results","Joins results"],correctAnswer:"Sorts results in ascending or descending order",explanation:"ORDER BY sorts the result set in ASC or DESC order."},
+            {question:"What is an aggregate function?",options:["Performs calculations on multiple rows returning single value","Modifies individual values","Joins tables","Creates new columns"],correctAnswer:"Performs calculations on multiple rows returning single value",explanation:"Aggregate functions perform calculations and return a single result."},
+            {question:"What does COUNT() return?",options:["Number of rows matching criteria","Total sum of values","Average value","Maximum value"],correctAnswer:"Number of rows matching criteria",explanation:"COUNT() returns the number of rows that meet specified criteria."},
+            {question:"What is correct syntax to count rows?",options:["SELECT COUNT(*) FROM table_name;","SELECT COUNT(ALL) FROM table_name;","SELECT ALL COUNT FROM table_name;","SELECT COUNT() FROM table_name;"],correctAnswer:"SELECT COUNT(*) FROM table_name;",explanation:"Correct syntax: SELECT COUNT(*) FROM table_name;"},
+            {question:"What does SUM() do?",options:["Returns total sum of numeric column","Concatenates strings","Counts values","Finds average"],correctAnswer:"Returns total sum of numeric column",explanation:"SUM() returns the sum of all values in a numeric column."},
+            {question:"What does AVG() do?",options:["Returns average of numeric column","Selects average-length values","Averages multiple tables","Calculates range"],correctAnswer:"Returns average of numeric column",explanation:"AVG() returns the average (mean) of values in a numeric column."},
+            {question:"What does MIN() return?",options:["Smallest value in column","Minimum number of rows","Shortest string","First value"],correctAnswer:"Smallest value in column",explanation:"MIN() returns the smallest value in a column."},
+            {question:"What does MAX() return?",options:["Largest value in column","Maximum number of rows","Longest string","Last value"],correctAnswer:"Largest value in column",explanation:"MAX() returns the largest value in a column."},
+            {question:"What does GROUP BY do?",options:["Groups rows with same values for use with aggregate functions","Sorts rows alphabetically","Filters rows","Combines tables"],correctAnswer:"Groups rows with same values for use with aggregate functions",explanation:"GROUP BY groups rows with same values in specified columns."},
+            {question:"What does HAVING do?",options:["Filters groups based on conditions with GROUP BY","Filters individual rows","Sorts grouped results","Combines groups"],correctAnswer:"Filters groups based on conditions with GROUP BY",explanation:"HAVING filters groups based on conditions after GROUP BY."},
+            {question:"What is a JOIN in SQL?",options:["Combines rows from multiple tables based on related columns","Duplicates data across tables","Deletes redundant data","Encrypts relationships"],correctAnswer:"Combines rows from multiple tables based on related columns",explanation:"JOIN combines rows from two or more tables based on a related column."},
+            {question:"What is INNER JOIN?",options:["Returns rows with match in both tables","Returns all rows from left table","Returns all rows from both tables","Returns rows from right table only"],correctAnswer:"Returns rows with match in both tables",explanation:"INNER JOIN returns only rows with matching values in both tables."},
+            {question:"What is LEFT JOIN?",options:["Returns all rows from left table and matching rows from right","Returns only matching rows","Returns all from right table","Returns all from both"],correctAnswer:"Returns all rows from left table and matching rows from right",explanation:"LEFT JOIN returns all left table rows and matching right table rows."},
+            {question:"What is RIGHT JOIN?",options:["Returns all rows from right table and matching rows from left","Returns all from left table","Returns matching rows only","Returns all from both"],correctAnswer:"Returns all rows from right table and matching rows from left",explanation:"RIGHT JOIN returns all right table rows and matching left table rows."},
+            {question:"What is CROSS JOIN?",options:["Returns Cartesian product of tables","Returns matching rows only","Returns all from left table","Returns unique combinations"],correctAnswer:"Returns Cartesian product of tables",explanation:"CROSS JOIN produces Cartesian product combining each row from first with each row from second."},
+            {question:"What is a self-join?",options:["A join where table joins to itself","A join of unique rows only","A join using one table only","A join that duplicates data"],correctAnswer:"A join where table joins to itself",explanation:"Self-join is when a table is joined to itself using aliases."},
+            {question:"What is NULL in SQL?",options:["A missing or unknown value","An empty string or zero","A value equaling nothing","A default value"],correctAnswer:"A missing or unknown value",explanation:"NULL represents a missing or unknown value, different from empty string or zero."},
+            {question:"How do you check for NULL?",options:["SELECT * FROM table WHERE column IS NULL;","SELECT * FROM table WHERE column = NULL;","SELECT * FROM table WHERE column IS EMPTY;","SELECT * FROM table WHERE NULL IN column;"],correctAnswer:"SELECT * FROM table WHERE column IS NULL;",explanation:"Use IS NULL or IS NOT NULL to check for NULL values."},
+            {question:"What does COALESCE() do?",options:["Returns first non-NULL value from list","Combines multiple columns","Replaces all NULLs with zero","Counts NULL values"],correctAnswer:"Returns first non-NULL value from list",explanation:"COALESCE() returns the first non-NULL value from arguments."},
+            {question:"What does IFNULL() do?",options:["Returns specified value if NULL, otherwise returns column value","Removes NULL values","Checks if equals NULL","Converts NULL to zero"],correctAnswer:"Returns specified value if NULL, otherwise returns column value",explanation:"IFNULL() returns specified value if expression is NULL."},
+            {question:"What MySQL data types exist?",options:["VARCHAR, INT, DECIMAL, DATE, BOOLEAN, TEXT","Only INT and VARCHAR","Only TEXT and BLOB","Only NUMERIC types"],correctAnswer:"VARCHAR, INT, DECIMAL, DATE, BOOLEAN, TEXT",explanation:"MySQL supports VARCHAR, INT, DECIMAL, DATE, BOOLEAN, TEXT and many others."},
+            {question:"VARCHAR vs CHAR difference?",options:["VARCHAR stores variable-length, CHAR stores fixed-length","VARCHAR is faster than CHAR","CHAR stores any length, VARCHAR limited","They are same"],correctAnswer:"VARCHAR stores variable-length, CHAR stores fixed-length",explanation:"VARCHAR is variable-length, CHAR is fixed-length and pads with spaces."},
+            {question:"What is INT for?",options:["Storing integer numbers","Storing text with numbers","Storing decimals","Storing large numbers only"],correctAnswer:"Storing integer numbers",explanation:"INT stores integer numbers (positive and negative whole numbers)."},
+            {question:"What is DECIMAL for?",options:["Storing precise decimals for monetary values","Storing whole numbers only","Storing text with decimals","Storing approximate floats"],correctAnswer:"Storing precise decimals for monetary values",explanation:"DECIMAL stores precise decimals, ideal for monetary values."},
+            {question:"What does DDL stand for?",options:["Data Definition Language","Database Detailed Logic","Data Distribution Layer","Database Design Language"],correctAnswer:"Data Definition Language",explanation:"DDL includes CREATE, ALTER, DROP, TRUNCATE commands."},
+            {question:"What is CREATE TABLE for?",options:["Creating new table with columns and constraints","Adding columns to existing table","Renaming table","Deleting table"],correctAnswer:"Creating new table with columns and constraints",explanation:"CREATE TABLE creates new table with specified columns and constraints."},
+            {question:"CREATE TABLE syntax with primary key?",options:["CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100));","CREATE TABLE users (id INT, name VARCHAR(100), KEY PRIMARY id);","CREATE TABLE users (id INT, name VARCHAR(100)) PRIMARY KEY;","CREATE TABLE users PRIMARY KEY (id INT, name VARCHAR(100));"],correctAnswer:"CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100));",explanation:"Correct syntax: CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100));"},
+            {question:"What does ALTER TABLE do?",options:["Modifies existing table structure","Changes data in table","Renames table","Creates backup"],correctAnswer:"Modifies existing table structure",explanation:"ALTER TABLE modifies table structure like adding/dropping columns."},
+            {question:"Syntax to add new column?",options:["ALTER TABLE table_name ADD column_name datatype;","ALTER TABLE table_name ADD COLUMN column_name datatype;","UPDATE TABLE table_name ADD column_name datatype;","ALTER TABLE ADD table_name column_name datatype;"],correctAnswer:"ALTER TABLE table_name ADD column_name datatype;",explanation:"Correct syntax: ALTER TABLE table_name ADD column_name datatype;"},
+            {question:"What does DROP TABLE do?",options:["Deletes entire table and data","Deletes data but keeps structure","Removes single column","Backs up table"],correctAnswer:"Deletes entire table and data",explanation:"DROP TABLE deletes entire table including structure."},
+            {question:"DROP vs DELETE difference?",options:["DROP removes structure, DELETE removes data only","DELETE removes table, DROP removes data","They do same thing","DROP faster but less safe"],correctAnswer:"DROP removes structure, DELETE removes data only",explanation:"DROP removes table structure, DELETE removes only rows."},
+            {question:"What does TRUNCATE do?",options:["Quickly deletes all rows but keeps structure","Removes specific row","Shortens text in column","Backs up structure"],correctAnswer:"Quickly deletes all rows but keeps structure",explanation:"TRUNCATE quickly deletes all rows but keeps table structure."},
+            {question:"What is a constraint?",options:["Rule enforcing data integrity and restricting values","Way to organize data alphabetically","Backup mechanism","Method to encrypt connections"],correctAnswer:"Rule enforcing data integrity and restricting values",explanation:"Constraint is a rule ensuring data accuracy and integrity."},
+            {question:"What does NOT NULL do?",options:["Ensures column must contain value","Allows any value","Prevents text storage","Makes column primary key"],correctAnswer:"Ensures column must contain value",explanation:"NOT NULL ensures column must always have a value."},
+            {question:"What does UNIQUE do?",options:["Ensures all values are unique with no duplicates","Ensures ascending order","Makes column primary key","Allows one NULL"],correctAnswer:"Ensures all values are unique with no duplicates",explanation:"UNIQUE ensures all column values are unique."},
+            {question:"What does DEFAULT do?",options:["Provides default value if none specified","Deletes column if no value","Prevents NULL values","Makes column required"],correctAnswer:"Provides default value if none specified",explanation:"DEFAULT provides default value when no value is specified."},
+            {question:"What does CHECK do?",options:["Ensures values meet specified condition","Checks if column empty","Verifies table integrity","Checks duplicates"],correctAnswer:"Ensures values meet specified condition",explanation:"CHECK constraint limits values based on specified condition."},
+            {question:"What is a VIEW?",options:["Virtual table based on SELECT query","Physical copy of table","Backup of table structure","Method to sort data"],correctAnswer:"Virtual table based on SELECT query",explanation:"VIEW is virtual table created from SELECT query."},
+            {question:"CREATE VIEW syntax?",options:["CREATE VIEW view_name AS SELECT column FROM table;","CREATE TABLE AS VIEW SELECT column FROM table;","VIEW view_name FROM SELECT column FROM table;","CREATE VIEW AS SELECT FROM table view_name;"],correctAnswer:"CREATE VIEW view_name AS SELECT column FROM table;",explanation:"Correct syntax: CREATE VIEW view_name AS SELECT column FROM table;"},
+            {question:"What is an INDEX?",options:["Object improving speed of data retrieval","List of all tables","Type of primary key","Method to organize rows"],correctAnswer:"Object improving speed of data retrieval",explanation:"INDEX creates sorted structure for faster data retrieval."},
+            {question:"What is normalization?",options:["Process organizing data reducing redundancy through normal forms","Method to encrypt tables","Process converting text to numbers","Way to increase tables"],correctAnswer:"Process organizing data reducing redundancy through normal forms",explanation:"Normalization organizes data to reduce redundancy."},
+            {question:"What is 1NF?",options:["Table with only atomic (indivisible) values","Table with one column only","Table with encrypted data","Table with primary key in first column"],correctAnswer:"Table with only atomic (indivisible) values",explanation:"1NF requires all values be atomic (indivisible)."},
+            {question:"What is 2NF?",options:["1NF where all non-key attributes depend on entire primary key","Table with exactly two primary keys","Table where all columns numeric","Table with two rows only"],correctAnswer:"1NF where all non-key attributes depend on entire primary key",explanation:"2NF requires 1NF plus non-key attributes depend on entire key."},
+            {question:"What is 3NF?",options:["2NF where non-key attributes depend only on primary key","Table with three columns only","Table with data sorted three ways","Table with three backups"],correctAnswer:"2NF where non-key attributes depend only on primary key",explanation:"3NF requires 2NF and eliminates transitive dependencies."},
+            {question:"What is BCNF?",options:["Stricter 3NF where every determinant is candidate key","Form combining all tables","Method for backups","Form used only in MySQL"],correctAnswer:"Stricter 3NF where every determinant is candidate key",explanation:"BCNF is stricter version of 3NF addressing edge cases."},
+            {question:"What is an entity?",options:["Thing or object uniquely identified in table","Relationship between tables","Type of constraint","Data value"],correctAnswer:"Thing or object uniquely identified in table",explanation:"Entity is distinct object or thing that can be uniquely identified."},
+            {question:"What is an attribute?",options:["Property or characteristic of entity as column","Relationship between entities","Type of constraint","Data value"],correctAnswer:"Property or characteristic of entity as column",explanation:"Attribute is characteristic or property of entity."},
+            {question:"What is a relationship?",options:["Association between entities","Data value","Constraint on column","Type of index"],correctAnswer:"Association between entities",explanation:"Relationship is association or connection between entities."},
+            {question:"What is cardinality?",options:["Number of records one entity relates to another (1:1, 1:N, M:N)","Number of columns in table","Number of constraints","Database size"],correctAnswer:"Number of records one entity relates to another (1:1, 1:N, M:N)",explanation:"Cardinality describes relationship type: 1:1, 1:N, or M:N."},
+            {question:"What is strong entity?",options:["Entity existing independently with own primary key","Entity depending on another","Entity with multiple relationships","Entity used for lookups"],correctAnswer:"Entity existing independently with own primary key",explanation:"Strong entity is independent with its own primary key."},
+            {question:"What is weak entity?",options:["Entity depending on strong entity for existence and identification","Entity with no relationships","Entity for storage only","Entity with limited attributes"],correctAnswer:"Entity depending on strong entity for existence and identification",explanation:"Weak entity depends on strong entity for existence."},
+            {question:"What does UNION do?",options:["Combines results from multiple SELECTs removing duplicates","Joins two tables","Adds rows to table","Merges two columns"],correctAnswer:"Combines results from multiple SELECTs removing duplicates",explanation:"UNION combines SELECT results removing duplicates."},
+            {question:"UNION syntax?",options:["SELECT column FROM table1 UNION SELECT column FROM table2;","SELECT column FROM table1, table2 UNION;","UNION SELECT column FROM table1 SELECT column FROM table2;","SELECT UNION column FROM table1, table2;"],correctAnswer:"SELECT column FROM table1 UNION SELECT column FROM table2;",explanation:"Correct syntax: SELECT column FROM table1 UNION SELECT column FROM table2;"},
+            {question:"UNION vs UNION ALL?",options:["UNION removes duplicates, UNION ALL keeps duplicates","UNION ALL faster than UNION","UNION for one table, UNION ALL for multiple","They identical"],correctAnswer:"UNION removes duplicates, UNION ALL keeps duplicates",explanation:"UNION removes duplicates, UNION ALL keeps all rows."},
+            {question:"What is a stored procedure?",options:["Set of pre-compiled SQL statements stored in database","A backup of SQL statements","A temporary SQL query","A method to encrypt queries"],correctAnswer:"Set of pre-compiled SQL statements stored in database",explanation:"Stored procedures are compiled SQL programs that can accept parameters and return values."},
+            {question:"What is a trigger in SQL?",options:["Automatic action executed in response to specific events on table","A rule preventing unauthorized access","A backup mechanism","A scheduling tool"],correctAnswer:"Automatic action executed in response to specific events on table",explanation:"Triggers automatically execute SQL code when INSERT, UPDATE, or DELETE events occur."},
+            {question:"What is a transaction?",options:["Group of SQL statements executed as atomic unit that all succeed or fail","Record of database changes","Backup of database data","Single SQL statement"],correctAnswer:"Group of SQL statements executed as atomic unit that all succeed or fail",explanation:"Transaction groups multiple statements - all execute (COMMIT) or all rollback (ROLLBACK)."},
+            {question:"What does COMMIT do?",options:["Saves all changes in current transaction permanently","Undoes all changes","Starts new transaction","Checks if transaction valid"],correctAnswer:"Saves all changes in current transaction permanently",explanation:"COMMIT makes all changes in transaction permanent. After COMMIT, changes cannot be rolled back."},
+            {question:"What does ROLLBACK do?",options:["Undoes all changes in current transaction returning to previous state","Saves changes","Starts new transaction","Backs up database"],correctAnswer:"Undoes all changes in current transaction returning to previous state",explanation:"ROLLBACK reverts all uncommitted changes, returning database to previous state."},
+            {question:"What MySQL syntax starts transaction?",options:["BEGIN; or START TRANSACTION;","START;","OPEN TRANSACTION;","TRANSACTION BEGIN;"],correctAnswer:"BEGIN; or START TRANSACTION;",explanation:"Both BEGIN; and START TRANSACTION; start new transaction in MySQL."},
+            {question:"What is ACID?",options:["Atomicity, Consistency, Isolation, Durability principles for reliable transactions","Data type in SQL","Backup method","Query optimization"],correctAnswer:"Atomicity, Consistency, Isolation, Durability principles for reliable transactions",explanation:"ACID ensures transactions are reliable: Atomicity (all/nothing), Consistency (valid state), Isolation (no interference), Durability (permanent)."},
+            {question:"What does USING clause do?",options:["Specifies columns to join on when both tables use same column name","Lists columns to select","Filters results after join","Sorts joined results"],correctAnswer:"Specifies columns to join on when both tables use same column name",explanation:"USING is shorthand for ON when both tables have same column name."},
+            {question:"What is an equijoin?",options:["Join using equality (=) operator in join condition","Join with equal rows from both tables","Join returning equal-length columns","Join where all columns equal"],correctAnswer:"Join using equality (=) operator in join condition",explanation:"Equijoin uses = operator in join condition. Most common type of join."},
+            {question:"What is non-equijoin?",options:["Join using operators other than = like <, >, <=, >=, <>","Join returning no rows","Join without condition","Join comparing text"],correctAnswer:"Join using operators other than = like <, >, <=, >=, <>",explanation:"Non-equijoin uses operators like <, >, <=, >= instead of =."},
+            {question:"What does EXISTS operator do?",options:["Returns TRUE if subquery returns rows, FALSE if no rows","Counts rows in subquery","Filters rows by column values","Joins tables in subquery"],correctAnswer:"Returns TRUE if subquery returns rows, FALSE if no rows",explanation:"EXISTS checks if subquery returns any rows. Returns TRUE/FALSE."},
+            {question:"What is DDL?",options:["Data Definition Language - manages database structure","Database Detailed Logic","Data Distribution Layer","Database Design Language"],correctAnswer:"Data Definition Language - manages database structure",explanation:"DDL includes CREATE, ALTER, DROP, TRUNCATE commands for structure."},
+            {question:"What is DML?",options:["Data Manipulation Language - manages data with SELECT, INSERT, UPDATE, DELETE","Database Markup Language","Data Modeling Layer","Database Management Logic"],correctAnswer:"Data Manipulation Language - manages data with SELECT, INSERT, UPDATE, DELETE",explanation:"DML includes INSERT, SELECT, UPDATE, DELETE commands for data."},
+            {question:"What is a candidate key?",options:["Attribute or set of attributes uniquely identifying rows with no extra attributes","Backup for primary key","Foreign key from another table","Temporary key for sorting"],correctAnswer:"Attribute or set of attributes uniquely identifying rows with no extra attributes",explanation:"Candidate key uniquely identifies rows minimally. Primary key chosen from candidates."},
+            {question:"What is composite key?",options:["Primary key made of multiple columns where all together uniquely identify","Key referencing multiple tables","Temporary key for sorting","Backup key"],correctAnswer:"Primary key made of multiple columns where all together uniquely identify",explanation:"Composite key (compound key) is primary key of multiple columns."},
+            {question:"What is superkey?",options:["Attribute or set of attributes uniquely identifying rows (may have extra attributes)","Foreign key from another table","Temporary key for sorting","Backup key"],correctAnswer:"Attribute or set of attributes uniquely identifying rows (may have extra attributes)",explanation:"Superkey uniquely identifies rows but may contain unnecessary attributes."},
+            {question:"What is partial dependency?",options:["Non-key attribute depends on part of composite primary key","Multiple attributes depending on key","Column with partial values","Data with missing values"],correctAnswer:"Non-key attribute depends on part of composite primary key",explanation:"Partial dependency occurs when non-key attribute depends on only part of composite key. Violates 2NF."},
+            {question:"What is transitive dependency?",options:["Non-key attribute depends on another non-key attribute, not directly on primary key","Primary key depending on multiple tables","Data depending on dates","Column changing over time"],correctAnswer:"Non-key attribute depends on another non-key attribute, not directly on primary key",explanation:"Transitive dependency: non-key A depends on primary key, non-key B depends on A. Violates 3NF."},
+            {question:"What is data redundancy?",options:["Duplication of data across locations causing inconsistency and wasted storage","Backup of database tables","Data appearing in multiple columns","Unused columns"],correctAnswer:"Duplication of data across locations causing inconsistency and wasted storage",explanation:"Data redundancy means same data stored multiple places. Normalization reduces it."},
+            {question:"What is unary relationship?",options:["Relationship between instances of same entity type (recursive)","Relationship between two different entities","Relationship with one foreign key","Relationship without primary key"],correctAnswer:"Relationship between instances of same entity type (recursive)",explanation:"Unary (recursive) relationship: entity relates to itself. Example: Employee supervises Employee."},
+            {question:"What is binary relationship?",options:["Relationship between exactly two different entity types","Relationship using two foreign keys","Relationship with two attributes","Relationship with binary data"],correctAnswer:"Relationship between exactly two different entity types",explanation:"Binary relationship exists between two different entities. Most common type."},
+            {question:"What is ternary relationship?",options:["Relationship involving three different entity types","Relationship with three columns","Three-way foreign key","Relationship with three tables joined"],correctAnswer:"Relationship involving three different entity types",explanation:"Ternary relationship involves three entities. Example: Supplier supplies Product to Warehouse."},
+            {question:"What will SELECT AVG(salary) FROM employees WHERE department = 'Sales'; return?",options:["Average salary of Sales department employees","All salaries in Sales","Total salaries in Sales","Highest salary in Sales"],correctAnswer:"Average salary of Sales department employees",explanation:"AVG calculates average. WHERE filters to Sales. Returns single number: average salary."},
+            {question:"What will SELECT department, COUNT(*) FROM employees GROUP BY department; return?",options:["Each department and employee count in that department","Total departments","All employees by department","Departments with >1 employee"],correctAnswer:"Each department and employee count in that department",explanation:"Returns one row per department with count of employees per department."},
+            {question:"What will SELECT * FROM orders JOIN customers ON orders.customer_id = customers.id WHERE country='USA'; return?",options:["Orders joined with customer info for USA customers only","All orders and customers","USA customers only","USA customer orders without customer details"],correctAnswer:"Orders joined with customer info for USA customers only",explanation:"JOIN combines tables, WHERE filters to USA customers. Returns matched rows."},
+            {question:"What is an alias in SQL?",options:["Temporary name for column or table in query","Permanent name change","Backup of column","Column encryption"],correctAnswer:"Temporary name for column or table in query",explanation:"Alias provides temporary name for column (results) or table (JOINs). Syntax: column AS alias."},
+            {question:"What is correct self-join syntax?",options:["SELECT a.name, b.name FROM employees a JOIN employees b ON a.manager_id = b.id;","SELECT * FROM employees, employees;","SELECT name FROM employees a, b WHERE a.id = b.manager_id;","SELECT name FROM employees AS employees1, employees2;"],correctAnswer:"SELECT a.name, b.name FROM employees a JOIN employees b ON a.manager_id = b.id;",explanation:"Self-join syntax requires aliases to distinguish table instances."},
+            {question:"What is LIMIT clause?",options:["Restricts number of rows returned","Prevents column value limits","Speeds up queries","Sorts results"],correctAnswer:"Restricts number of rows returned",explanation:"LIMIT restricts result set rows. Syntax: SELECT * FROM table LIMIT 10;"},
+            {question:"What is OFFSET?",options:["Skips specified rows before returning results","Moves columns","Changes column order","Filters NULL values"],correctAnswer:"Skips specified rows before returning results",explanation:"OFFSET skips rows. Syntax: SELECT * FROM table LIMIT 10 OFFSET 5;"},
+            {question:"What does CASCADE do in foreign key?",options:["Automatically deletes child records when parent is deleted","Prevents child deletion","Backs up child records","Copies child records"],correctAnswer:"Automatically deletes child records when parent is deleted",explanation:"ON DELETE CASCADE automatically deletes child records when parent deleted."},
+            {question:"What does RESTRICT do in foreign key?",options:["Prevents parent deletion if child records exist","Allows cascading deletes","Backs up data","Copies records"],correctAnswer:"Prevents parent deletion if child records exist",explanation:"ON DELETE RESTRICT prevents parent deletion when child records exist."},
+            {question:"What is AUTO_INCREMENT?",options:["Automatically generates unique sequential value for column","Automatically increases column size","Automatically backs up data","Automatically sorts data ascending"],correctAnswer:"Automatically generates unique sequential value for column",explanation:"AUTO_INCREMENT assigns next sequential number to column, usually for PRIMARY KEY."},
+            {question:"Maximum VARCHAR length in MySQL?",options:["65,535 bytes for entire row; actual characters depend on character set and other columns","255 characters maximum","32,767 characters maximum","Unlimited without constraints"],correctAnswer:"65,535 bytes for entire row; actual characters depend on character set and other columns",explanation:"VARCHAR can be declared up to 65,535 bytes, but this is shared among all columns in the table. Actual character count depends on character set: Latin1 = ~65,535 chars, UTF-8 = ~21,844 chars (3 bytes per character). The 65,535-byte limit includes all columns, not just one."},
+            {question:"What is TEXT data type?",options:["Data type for very large documents without specified limit","Fixed-length text","Numeric text only","Encrypted text"],correctAnswer:"Data type for very large documents without specified limit",explanation:"TEXT is for large text data without specified max length but less efficient for searching."},
+            {question:"What is BLOB data type?",options:["Binary Large Object for storing binary data like images","Text data type","Numeric data type","Encrypted data type"],correctAnswer:"Binary Large Object for storing binary data like images",explanation:"BLOB stores binary data like images, videos, files."},
+            {question:"What does DATE data type store?",options:["Dates in YYYY-MM-DD format useful for date calculations","Text dates only","Numeric date codes","Date with time"],correctAnswer:"Dates in YYYY-MM-DD format useful for date calculations",explanation:"DATE stores dates in YYYY-MM-DD format for date operations."},
+            {question:"What does TIMESTAMP store?",options:["Date and time, automatically updates to current for auto columns","Date only","Time only","Fixed timestamp"],correctAnswer:"Date and time, automatically updates to current for auto columns",explanation:"TIMESTAMP stores date and time, useful for audit trails."},
+            {question:"What is supertype/subtype relationship?",options:["Supertype has common attributes, subtypes inherit and add specialized attributes","Relationship between two tables","Relationship requiring junction table","Self-join relationship"],correctAnswer:"Supertype has common attributes, subtypes inherit and add specialized attributes",explanation:"Supertype contains common attributes shared by multiple subtypes."},
+            {question:"What is correct CREATE VIEW syntax?",options:["CREATE VIEW view_name AS SELECT column FROM table WHERE condition;","CREATE TABLE AS VIEW SELECT column FROM table;","VIEW view_name FROM SELECT column FROM table;","CREATE VIEW AS SELECT FROM table view_name;"],correctAnswer:"CREATE VIEW view_name AS SELECT column FROM table WHERE condition;",explanation:"Correct syntax: CREATE VIEW view_name AS SELECT column FROM table WHERE condition;"},
+            {question:"Can you modify simple VIEWs?",options:["Yes, if based on single table containing PRIMARY KEY","No, VIEWs are read-only","Only INSERT allowed","Only if you own table"],correctAnswer:"Yes, if based on single table containing PRIMARY KEY",explanation:"Simple views based on single tables with PRIMARY KEY can be modified."},
+            {question:"What is correct INDEX creation syntax?",options:["CREATE INDEX index_name ON table_name (column_name);","CREATE INDEX ON table_name (column_name) AS index_name;","INDEX index_name FROM table_name (column_name);","CREATE table_name.index_name ON column_name;"],correctAnswer:"CREATE INDEX index_name ON table_name (column_name);",explanation:"Correct syntax: CREATE INDEX index_name ON table_name (column_name);"},
+            {question:"What does % wildcard match?",options:["Zero or more characters","Exactly one character","Any digit","Literal % character"],correctAnswer:"Zero or more characters",explanation:"% matches zero or more of any character in LIKE patterns."},
+            {question:"What does _ wildcard match?",options:["Exactly one character","Zero or more characters","Space character","Any digit"],correctAnswer:"Exactly one character",explanation:"_ matches exactly one character in LIKE patterns."},
+            {question:"What will SELECT * FROM users WHERE email LIKE '%@gmail.com'; return?",options:["All users with emails ending in @gmail.com","Emails starting with @gmail.com","Emails with gmail anywhere","Only @gmail.com addresses"],correctAnswer:"All users with emails ending in @gmail.com",explanation:"% before @gmail.com matches any characters before it."},
+            {question:"What will SELECT * FROM products WHERE name LIKE '_a%'; return?",options:["Products where second letter is 'a'","Products starting with 'a'","Products containing 'a' anywhere","Products ending with 'a'"],correctAnswer:"Products where second letter is 'a'",explanation:"_a% matches one character then 'a' then any characters."},
+            {question:"What is CASE statement?",options:["SQL function for conditional logic in queries","Method to convert case in text","Way to organize data","Type of constraint"],correctAnswer:"SQL function for conditional logic in queries",explanation:"CASE provides conditional logic. Syntax: CASE WHEN condition THEN value ELSE value END."},
+            {question:"What does CONCAT() do?",options:["Combines (concatenates) strings together","Joins tables","Counts characters","Converts case"],correctAnswer:"Combines (concatenates) strings together",explanation:"CONCAT() combines multiple strings. Syntax: CONCAT(str1, str2, str3)."},
+            {question:"What does SUBSTRING() do?",options:["Extracts part of string given start and length","Replaces text","Counts length","Converts case"],correctAnswer:"Extracts part of string given start and length",explanation:"SUBSTRING extracts portion of string. Syntax: SUBSTRING(string, start, length)."},
+            {question:"What does UPPER() do?",options:["Converts string to uppercase","Converts to lowercase","Removes spaces","Reverses string"],correctAnswer:"Converts string to uppercase",explanation:"UPPER() converts string to uppercase. Syntax: UPPER(string)."},
+            {question:"What does LOWER() do?",options:["Converts string to lowercase","Converts to uppercase","Removes spaces","Reverses string"],correctAnswer:"Converts string to lowercase",explanation:"LOWER() converts string to lowercase. Syntax: LOWER(string)."},
+            {question:"What does LENGTH() do?",options:["Returns length of string in characters","Removes characters","Counts unique characters","Reverses string"],correctAnswer:"Returns length of string in characters",explanation:"LENGTH() returns character count. Syntax: LENGTH(string)."},
+            {question:"What does ROUND() do?",options:["Rounds number to specified decimal places","Removes decimals","Counts decimals","Calculates square root"],correctAnswer:"Rounds number to specified decimal places",explanation:"ROUND() rounds numbers. Syntax: ROUND(number, decimals)."},
+            {question:"What does ABS() do?",options:["Returns absolute (positive) value of number","Converts to negative","Calculates average","Finds remainder"],correctAnswer:"Returns absolute (positive) value of number",explanation:"ABS() returns positive value. Syntax: ABS(number)."},
+            {question:"What is CURRENT_DATE?",options:["Returns current date in YYYY-MM-DD format","Returns current time","Returns timestamp","Returns timezone"],correctAnswer:"Returns current date in YYYY-MM-DD format",explanation:"CURRENT_DATE returns today's date in YYYY-MM-DD format."},
+            {question:"What is NOW()?",options:["Returns current date and time in YYYY-MM-DD HH:MM:SS format","Returns current date only","Returns current time only","Returns timezone"],correctAnswer:"Returns current date and time in YYYY-MM-DD HH:MM:SS format",explanation:"NOW() returns current date and time. Syntax: NOW()."},
+            {question:"What does DATE_FORMAT() do?",options:["Formats date with specified format using %Y %m %d etc","Converts text to date","Calculates date difference","Checks date validity"],correctAnswer:"Formats date with specified format using %Y %m %d etc",explanation:"DATE_FORMAT() formats dates. Syntax: DATE_FORMAT(date, format)."},
+            {question:"What does YEAR() do?",options:["Extracts year from date","Extracts month","Extracts day","Counts years"],correctAnswer:"Extracts year from date",explanation:"YEAR() extracts year. Syntax: YEAR(date_column)."},
+            {question:"What does MONTH() do?",options:["Extracts month from date","Extracts year","Extracts day","Counts months"],correctAnswer:"Extracts month from date",explanation:"MONTH() extracts month. Syntax: MONTH(date_column)."},
+            {question:"What does DAY() do?",options:["Extracts day from date","Extracts year","Extracts month","Counts days"],correctAnswer:"Extracts day from date",explanation:"DAY() extracts day. Syntax: DAY(date_column)."},
+            {question:"What does DATEDIFF() do?",options:["Calculates difference between two dates in days","Calculates hours between dates","Calculates months","Checks if dates equal"],correctAnswer:"Calculates difference between two dates in days",explanation:"DATEDIFF() calculates day difference. Syntax: DATEDIFF(date1, date2)."},
+            {question:"What does AND operator do?",options:["Returns true only if all conditions true","Returns true if any condition true","Returns opposite of condition","Joins tables"],correctAnswer:"Returns true only if all conditions true",explanation:"AND returns true only when all conditions are satisfied."},
+            {question:"What does OR operator do?",options:["Returns true if at least one condition true","Returns true if all conditions true","Returns opposite of condition","Joins tables"],correctAnswer:"Returns true if at least one condition true",explanation:"OR returns true when at least one condition is satisfied."},
+            {question:"What does NOT operator do?",options:["Negates/reverses a condition","Checks if equal","Joins conditions","Sorts data"],correctAnswer:"Negates/reverses a condition",explanation:"NOT reverses condition result. Syntax: WHERE NOT condition."},
+            {question:"What is a database schema?",options:["Overall design and structure of database including tables, columns, constraints","Physical file storage location","Backup method","Security setting"],correctAnswer:"Overall design and structure of database including tables, columns, constraints",explanation:"Schema is the overall design and organization of a database."},
+            {question:"What is data integrity?",options:["Accuracy and consistency of data throughout its lifecycle","Backup of data","Encryption of data","Speed of queries"],correctAnswer:"Accuracy and consistency of data throughout its lifecycle",explanation:"Data integrity ensures data accuracy and consistency."},
+            {question:"What is data validation?",options:["Process of ensuring data meets quality standards before storage","Backing up data","Encrypting data","Sorting data"],correctAnswer:"Process of ensuring data meets quality standards before storage",explanation:"Data validation checks that data meets specified criteria."},
+            {question:"What is database normalization benefit?",options:["Reduces redundancy improves integrity prevents anomalies","Speeds up all queries","Reduces storage size only","Encrypts data"],correctAnswer:"Reduces redundancy improves integrity prevents anomalies",explanation:"Normalization reduces redundancy, improves integrity, prevents insertion/update/deletion anomalies."},
+            {question:"What are insertion anomalies?",options:["Inability to insert data without complete information due to structure","Unable to delete rows","Unable to update values","Unable to select data"],correctAnswer:"Inability to insert data without complete information due to structure",explanation:"Insertion anomaly occurs when unable to insert without complete information."},
+            {question:"What are deletion anomalies?",options:["Loss of data when deleting due to denormalized structure","Unable to insert data","Unable to update values","Unable to select data"],correctAnswer:"Loss of data when deleting due to denormalized structure",explanation:"Deletion anomaly occurs when deleting causes unintended data loss."},
+            {question:"What are update anomalies?",options:["Inconsistency when updating same data in multiple places","Unable to insert data","Unable to delete rows","Unable to select data"],correctAnswer:"Inconsistency when updating same data in multiple places",explanation:"Update anomaly occurs when same data in multiple places causes inconsistencies."},
+            {question:"What is a one-to-one relationship?",options:["Each record in one table relates to exactly one record in another table","Multiple records relate to one","One record relates to multiple","No defined relationship"],correctAnswer:"Each record in one table relates to exactly one record in another table",explanation:"One-to-one (1:1) relationship means one record in each table relates to exactly one record in the other."},
+            {question:"How do you drop a constraint?",options:["ALTER TABLE table_name DROP CONSTRAINT constraint_name;","DELETE CONSTRAINT constraint_name;","REMOVE CONSTRAINT FROM table_name;","DROP CONSTRAINT constraint_name;"],correctAnswer:"ALTER TABLE table_name DROP CONSTRAINT constraint_name;",explanation:"Correct syntax: ALTER TABLE table_name DROP CONSTRAINT constraint_name;"},
+            {question:"What is the purpose of a database?",options:["Organized storage and retrieval of data efficiently","To encrypt all information","To slow down queries","To increase file sizes"],correctAnswer:"Organized storage and retrieval of data efficiently",explanation:"Database purpose is efficient organization, storage, retrieval, and management of data."},
+            {question:"What does relational mean in databases?",options:["Tables are related through keys establishing connections","All data in one table","Data sorted by relation","Files linked together"],correctAnswer:"Tables are related through keys establishing connections",explanation:"Relational means tables are linked through primary and foreign keys establishing relationships."},
+            {question:"What is a clustered index?",options:["Index that determines physical order of data rows in table; only one per table","Index sorted alphabetically","Multiple indexes on same table","Index for searching text columns"],correctAnswer:"Index that determines physical order of data rows in table; only one per table",explanation:"Clustered index defines the physical order of rows. Each table has max one clustered index."},
+            {question:"What is an unclustered index?",options:["Index that creates separate lookup structure without affecting row order; multiple per table","Index determining row order","Primary key index","Index for text search only"],correctAnswer:"Index that creates separate lookup structure without affecting row order; multiple per table",explanation:"Unclustered (non-clustered) index creates a lookup table without changing physical row order. A table can have many."},
+            {question:"How many clustered indexes can one table have?",options:["Only one","Multiple","Unlimited","None required"],correctAnswer:"Only one",explanation:"Each table can have maximum one clustered index since data rows can only be ordered one way."},
+            {question:"How many non-clustered indexes can one table have?",options:["Multiple (up to 999 in SQL Server)","Only one","Unlimited","None allowed"],correctAnswer:"Multiple (up to 999 in SQL Server)",explanation:"A table can have many non-clustered indexes for different query optimization scenarios."},
+            {question:"Which is typically the clustered index in a table?",options:["Primary Key","Foreign Key","Unique constraint","Check constraint"],correctAnswer:"Primary Key",explanation:"PRIMARY KEY is typically made a clustered index for performance, though not automatic."},
+            {question:"What is First Normal Form (1NF)?",options:["Atomic values only; no repeating groups; single value per cell","No duplicate rows","Eliminate partial dependencies","Eliminate transitive dependencies"],correctAnswer:"Atomic values only; no repeating groups; single value per cell",explanation:"1NF requires all values be atomic (indivisible) and no repeating groups. Each cell has one value."},
+            {question:"What violates First Normal Form?",options:["Column containing multiple values or array like phone_numbers[1,2,3]","Multiple rows with same data","Non-key attributes depending on part of composite key","Non-key attributes depending on other non-keys"],correctAnswer:"Column containing multiple values or array like phone_numbers[1,2,3]",explanation:"1NF violation: storing multiple values in one cell. Solution: create separate table with one value per row."},
+            {question:"What is Second Normal Form (2NF)?",options:["Must be in 1NF plus no partial dependencies on composite keys","Must be in 1NF plus non-key attributes depend only on primary key","Must be in 1NF plus no transitive dependencies","All non-key attributes are independent"],correctAnswer:"Must be in 1NF plus no partial dependencies on composite keys",explanation:"2NF: in 1NF AND no partial dependencies (non-key attributes depend on entire composite key, not part of it)."},
+            {question:"What is a partial dependency violation of 2NF?",options:["Non-key attribute depends on part of composite primary key, not entire key","Non-key attribute depends on primary key","Data in multiple tables","Repeating groups in column"],correctAnswer:"Non-key attribute depends on part of composite primary key, not entire key",explanation:"Partial dependency: composite key has parts X,Y and attribute A depends only on X. Violates 2NF."},
+            {question:"What is Third Normal Form (3NF)?",options:["Must be in 2NF plus no transitive dependencies","Must be in 2NF plus no duplicate rows","Must be in 1NF plus no composite keys","Must be in 2NF plus no null values"],correctAnswer:"Must be in 2NF plus no transitive dependencies",explanation:"3NF: in 2NF AND non-key attributes depend only on primary key, not on other non-key attributes."},
+            {question:"What is a transitive dependency violation of 3NF?",options:["Non-key A depends on primary key, non-key B depends on A (indirect dependency chain)","Primary key depends on multiple tables","Multiple rows sharing same data","Column with repeating values"],correctAnswer:"Non-key A depends on primary key, non-key B depends on A (indirect dependency chain)",explanation:"Transitive dependency: PK→A→B creates indirect path. Violates 3NF. Solution: move B to separate table."},
+            {question:"What is Boyce-Codd Normal Form (BCNF)?",options:["Stricter than 3NF where every determinant must be a candidate key","Same as 3NF for most practical purposes","Removes all NULL values","Eliminates all foreign keys"],correctAnswer:"Stricter than 3NF where every determinant must be a candidate key",explanation:"BCNF: every attribute that determines another attribute must itself be a candidate key. Stricter than 3NF."},
+            {question:"Can table be in 3NF but not BCNF?",options:["Yes, if there's a determinant that isn't a candidate key","No, BCNF and 3NF are identical","Only if it has foreign keys","Only if it has composite keys"],correctAnswer:"Yes, if there's a determinant that isn't a candidate key",explanation:"A table can satisfy 3NF but violate BCNF if non-candidate-key attribute determines another attribute."},
+            {question:"What is an Entity-Relationship Diagram (ERD)?",options:["Visual representation of entities, attributes, and relationships in database","Diagram showing query execution plans","Chart showing data types","Graph of index performance"],correctAnswer:"Visual representation of entities, attributes, and relationships in database",explanation:"ERD is a visual model showing entities (tables), their attributes (columns), and relationships between entities."},
+            {question:"What symbol represents entity in ERD?",options:["Rectangle","Diamond","Circle","Triangle"],correctAnswer:"Rectangle",explanation:"In ER diagrams, rectangles represent entities (tables or objects)."},
+            {question:"What symbol represents relationship in ERD?",options:["Diamond","Rectangle","Circle","Line only"],correctAnswer:"Diamond",explanation:"In ER diagrams, diamonds represent relationships between entities."},
+            {question:"What symbol represents attribute in ERD?",options:["Circle or ellipse","Rectangle","Diamond","Triangle"],correctAnswer:"Circle or ellipse",explanation:"In ER diagrams, circles or ellipses represent attributes of entities."},
+            {question:"What does crow's foot notation show in ERD?",options:["Cardinality and optionality: one/many sides of relationship","Entity names only","Data type of columns","Index structures"],correctAnswer:"Cardinality and optionality: one/many sides of relationship",explanation:"Crow's foot (lines branching like bird foot) shows whether relationship is one-to-one or one-to-many."},
+            {question:"What does single line mean in crow's foot notation?",options:["One side of relationship (cardinality of 1)","Optional side","Many side","Weak entity"],correctAnswer:"One side of relationship (cardinality of 1)",explanation:"Single line in crow's foot represents cardinality of ONE (1:1 or 1:M relationship)."},
+            {question:"What do three lines mean in crow's foot notation?",options:["Many side of relationship (cardinality of M or N)","Optional relationship","Required relationship","Identifying relationship"],correctAnswer:"Many side of relationship (cardinality of M or N)",explanation:"Three lines (crow's foot branches) represent the MANY side of one-to-many relationship."},
+            {question:"What is cardinality in database design?",options:["Specifies minimum/maximum number of records one entity can relate to another","Number of columns in table","Number of tables in database","Order of sorting data"],correctAnswer:"Specifies minimum/maximum number of records one entity can relate to another",explanation:"Cardinality defines how many instances one entity can be related to: 1:1, 1:M, M:M."},
+            {question:"What is modality in ERD?",options:["Whether relationship is optional (0) or mandatory (1); shown by line style","Number of attributes","Type of relationship name","Duration of relationship"],correctAnswer:"Whether relationship is optional (0) or mandatory (1); shown by line style",explanation:"Modality shows optionality: 0 (optional, participation not required) or 1 (mandatory)."},
+            {question:"What is one-to-one (1:1) relationship?",options:["One record from Entity A relates to exactly one record in Entity B","Each record has multiple related records","Many records relate to one","No relationship exists"],correctAnswer:"One record from Entity A relates to exactly one record in Entity B",explanation:"1:1 relationship: single employee has one assigned office, office assigned to one employee."},
+            {question:"What is one-to-many (1:M) relationship?",options:["One record from Entity A can relate to many records in Entity B","Multiple records relate to multiple","One-to-one only","Circular relationship"],correctAnswer:"One record from Entity A can relate to many records in Entity B",explanation:"1:M relationship: one department has many employees, but each employee assigned to one department."},
+            {question:"What is many-to-many (M:M) relationship?",options:["Records from Entity A relate to many Entity B records and vice versa; requires junction table","Same as one-to-many","Same as one-to-one","No relationship between entities"],correctAnswer:"Records from Entity A relate to many Entity B records and vice versa; requires junction table",explanation:"M:M: students enroll in many courses, courses have many students. Needs bridge/junction table."},
+            {question:"How are many-to-many relationships implemented in relational databases?",options:["Using junction (bridge) table with foreign keys to both entities","Direct relationship without intermediate table","Using view combining both tables","Using UNION of both tables"],correctAnswer:"Using junction (bridge) table with foreign keys to both entities",explanation:"M:M relationships require junction table (StudentCourse) with foreign keys to both Student and Course."},
+            {question:"How do you identify weak entity in ERD?",options:["Double rectangle symbol","Single rectangle","Diamond","Circle"],correctAnswer:"Double rectangle symbol",explanation:"Weak entities shown with double rectangle (or special marking) in ER diagrams."},
+            {question:"What is identifying relationship?",options:["Relationship where weak entity's primary key includes strong entity's primary key","Optional relationship","Named relationship","Self-relationship"],correctAnswer:"Relationship where weak entity's primary key includes strong entity's primary key",explanation:"Identifying relationship: weak entity's key contains parent's key. Example: Order and OrderLine."},
+            {question:"What are stages of database design?",options:["Conceptual design (ER model), Logical design (normalize), Physical design (implement)","Design then build then test","Requirements then coding then deployment","Data then structure then optimization"],correctAnswer:"Conceptual design (ER model), Logical design (normalize), Physical design (implement)",explanation:"Three stages: 1) Conceptual (ER diagrams, requirements), 2) Logical (normalize to 3NF), 3) Physical (SQL, storage)."},
+            {question:"What is conceptual database design phase?",options:["Create ER diagrams showing entities, attributes, relationships independent of database","Write SQL code","Choose storage mechanism","Implement indexes"],correctAnswer:"Create ER diagrams showing entities, attributes, relationships independent of database",explanation:"Conceptual phase: understand requirements, create ER model, identify entities and relationships."},
+            {question:"What is logical database design phase?",options:["Convert ER model to relational schema; normalize to eliminate anomalies","Physical implementation","ER diagramming","Query optimization"],correctAnswer:"Convert ER model to relational schema; normalize to eliminate anomalies",explanation:"Logical phase: map ER model to tables, apply normalization rules, ensure data integrity."},
+            {question:"What is physical database design phase?",options:["Implement schema in DBMS; choose indexes, storage structures, partitioning strategies","Create ER diagrams","Normalize data","Write queries"],correctAnswer:"Implement schema in DBMS; choose indexes, storage structures, partitioning strategies",explanation:"Physical phase: create actual tables, define indexes, set constraints, optimize for performance."},
+            {question:"What JOIN returns only matching rows from both tables?",options:["INNER JOIN","LEFT JOIN","RIGHT JOIN","FULL OUTER JOIN"],correctAnswer:"INNER JOIN",explanation:"INNER JOIN returns only rows where join condition matches in both tables."},
+            {question:"What JOIN returns all rows from left table plus matching from right?",options:["LEFT JOIN (or LEFT OUTER JOIN)","INNER JOIN","RIGHT JOIN","CROSS JOIN"],correctAnswer:"LEFT JOIN (or LEFT OUTER JOIN)",explanation:"LEFT JOIN returns all left table rows and matching right table rows; NULLs for no match."},
+            {question:"What JOIN returns all rows from right table plus matching from left?",options:["RIGHT JOIN (or RIGHT OUTER JOIN)","INNER JOIN","LEFT JOIN","CROSS JOIN"],correctAnswer:"RIGHT JOIN (or RIGHT OUTER JOIN)",explanation:"RIGHT JOIN returns all right table rows and matching left table rows; NULLs for no match."},
+            {question:"What JOIN returns all rows from both tables?",options:["FULL OUTER JOIN","INNER JOIN","LEFT JOIN","CROSS JOIN"],correctAnswer:"FULL OUTER JOIN",explanation:"FULL OUTER JOIN returns all rows from both tables with NULLs where no match."},
+            {question:"What JOIN returns Cartesian product (every row from left with every row from right)?",options:["CROSS JOIN","INNER JOIN","OUTER JOIN","SELF JOIN"],correctAnswer:"CROSS JOIN",explanation:"CROSS JOIN produces Cartesian product. If left has 3 rows and right has 4, result has 12 rows."},
+            {question:"What SELF JOIN does?",options:["Joins table to itself using different aliases for same table","Joins two different tables","Combines rows from multiple tables","Filters duplicate rows"],correctAnswer:"Joins table to itself using different aliases for same table",explanation:"SELF JOIN: table joined with itself. Example: find employees and their managers from Employee table."},
+            {question:"What is EQUIJOIN?",options:["JOIN using equality (=) operator in join condition","JOIN with unequal conditions","JOIN removing duplicates","JOIN combining multiple tables"],correctAnswer:"JOIN using equality (=) operator in join condition",explanation:"Equijoin uses = operator. Example: ON orders.customer_id = customers.id."},
+            {question:"What is NON-EQUIJOIN?",options:["JOIN using operators other than = (>, <, >=, <=, <>)","JOIN with equality operator","Multiple table join","Subquery join"],correctAnswer:"JOIN using operators other than = (>, <, >=, <=, <>)",explanation:"Non-equijoin uses operators like <, >, <=, >=. Example: salary between 30000 and 50000."},
+            {question:"What is NATURAL JOIN?",options:["JOIN on columns with same name without explicit ON; assumes matching names","Manual join definition","Outer join type","Index-based join"],correctAnswer:"JOIN on columns with same name without explicit ON; assumes matching names",explanation:"NATURAL JOIN automatically joins on columns with same name. Risky if naming inconsistent."},
+            {question:"What is USING clause in JOIN?",options:["Shorthand for ON clause when both tables have same column name","Lists which columns to select","Filters join results","Sorts joined data"],correctAnswer:"Shorthand for ON clause when both tables have same column name",explanation:"USING (customer_id) is shorthand for ON orders.customer_id = customers.customer_id."},
+            {question:"What is subquery?",options:["Query nested inside another query that returns data for outer query","Query that sorts results","Query combining tables","Query with WHERE clause"],correctAnswer:"Query nested inside another query that returns data for outer query",explanation:"Subquery executes first, returns results to outer query. Can be in SELECT, FROM, or WHERE."},
+            {question:"What is correlated subquery?",options:["Subquery that references columns from outer query, executes repeatedly for each outer row","Regular subquery in SELECT","Subquery in FROM clause","Subquery with no reference"],correctAnswer:"Subquery that references columns from outer query, executes repeatedly for each outer row",explanation:"Correlated subquery references outer query. Slower since it repeats for each outer row."},
+            {question:"What does NOT EXISTS do?",options:["Returns TRUE if subquery returns no rows, FALSE if rows exist","Reverses join result","Deletes records","Renames columns"],correctAnswer:"Returns TRUE if subquery returns no rows, FALSE if rows exist",explanation:"NOT EXISTS returns TRUE when subquery has no matching rows. Used to find missing relationships."},
+            {question:"What is data redundancy problem?",options:["Same data stored multiple times causing inconsistency and wasted storage","Using backup copies","Sorting data repeatedly","Column duplication"],correctAnswer:"Same data stored multiple times causing inconsistency and wasted storage",explanation:"Redundancy: duplication causes update anomalies. Normalization eliminates redundancy."},
+            {question:"What prevents orphaned records?",options:["Referential integrity constraint (foreign key constraint)","Primary key","Unique constraint","Check constraint"],correctAnswer:"Referential integrity constraint (foreign key constraint)",explanation:"Referential integrity ensures if parent deleted, either children deleted or prevent parent deletion."},
+            {question:"What is domain integrity?",options:["Ensures data type, format, and valid range constraints are enforced","All tables related","All data unique","All queries optimized"],correctAnswer:"Ensures data type, format, and valid range constraints are enforced",explanation:"Domain integrity: correct data type, valid values (CHECK), NOT NULL, DEFAULT constraints."},
+            {question:"What is entity integrity?",options:["Ensures every row uniquely identifiable (PRIMARY KEY not NULL)","All tables linked","All data consistent","All values valid"],correctAnswer:"Ensures every row uniquely identifiable (PRIMARY KEY not NULL)",explanation:"Entity integrity: PRIMARY KEY prevents NULL and duplicates, uniquely identifies each row."},
+            {question:"What normalization reduces?",options:["Data redundancy, insertion/update/deletion anomalies, improves integrity","Query speed only","Storage size only","Number of tables"],correctAnswer:"Data redundancy, insertion/update/deletion anomalies, improves integrity",explanation:"Normalization reduces redundancy and anomalies, improves data integrity and consistency."},
+            {question:"What is denormalization?",options:["Intentional introduction of redundancy for query performance by combining normalized tables","Process of normalization","Removing foreign keys","Deleting duplicate data"],correctAnswer:"Intentional introduction of redundancy for query performance by combining normalized tables",explanation:"Denormalization: add redundancy for speed. Trade-off: faster queries but harder updates."},
+            {question:"What is dimensional modeling?",options:["Database design for data warehouses with fact tables and dimension tables","Normalization for OLTP","ER modeling","Physical database design"],correctAnswer:"Database design for data warehouses with fact tables and dimension tables",explanation:"Dimensional modeling: fact tables (measures) and dimension tables (descriptive data) for analytics."},
+            {question:"What is a fact table?",options:["Contains measurable facts and foreign keys to dimension tables; stores transactional data","Stores reference data","Stores operational data","Stores metadata"],correctAnswer:"Contains measurable facts and foreign keys to dimension tables; stores transactional data",explanation:"Fact table: contains numeric measures (sales amount, quantity) and foreign keys to dimensions."},
+            {question:"What is a dimension table?",options:["Contains descriptive attributes providing context to fact table measures","Contains transactions","Contains keys only","Contains only dates"],correctAnswer:"Contains descriptive attributes providing context to fact table measures",explanation:"Dimension table: stores attributes like product name, category, customer region for analysis."},
+            {question:"What is slowly changing dimension?",options:["Dimension data that changes over time; tracks historical changes with versioning","Dimension rarely accessed","Static dimension data","Dimension without updates"],correctAnswer:"Dimension data that changes over time; tracks historical changes with versioning",explanation:"Slowly changing dimensions: track history (Type 1: overwrite, Type 2: new row, Type 3: new column)."},
+            {question:"What is surrogate key?",options:["Artificial identifier not from business data, often auto-increment integer for performance","Natural business key","Foreign key","Composite key"],correctAnswer:"Artificial identifier not from business data, often auto-increment integer for performance",explanation:"Surrogate key: system-generated ID (1,2,3...) independent of business data. Improves performance."},
+            {question:"What is natural key?",options:["Key from actual business data that has business meaning; example: SSN or ISBN","Artificial identifier","Primary key only","Foreign key"],correctAnswer:"Key from actual business data that has business meaning; example: SSN or ISBN",explanation:"Natural key: from actual data with business meaning. Problem: can change (SSN, ISBN stable)."},
+            {question:"What is primary key difference from candidate key?",options:["PRIMARY KEY chosen from candidate keys; only one PRIMARY KEY per table","No difference","Candidate key is unique constraint","Primary key foreign reference"],correctAnswer:"PRIMARY KEY chosen from candidate keys; only one PRIMARY KEY per table",explanation:"Candidate keys: attributes that can uniquely identify row. PRIMARY KEY: chosen candidate key."},
+            {question:"What is alternate key?",options:["Candidate key not chosen as primary key; still unique but not primary","Foreign key","Composite key","Index key"],correctAnswer:"Candidate key not chosen as primary key; still unique but not primary",explanation:"Alternate key: other candidate keys you could use instead of chosen PRIMARY KEY."},
+            {question:"What is unique key?",options:["Constraint allowing one NULL but no duplicates; similar to PRIMARY but allows NULL","Same as PRIMARY KEY","Foreign key constraint","Check constraint"],correctAnswer:"Constraint allowing one NULL but no duplicates; similar to PRIMARY but allows NULL",explanation:"UNIQUE constraint: no duplicates, allows one NULL, multiple per table (vs PRIMARY KEY)."},
+            {question:"What is foreign key?",options:["Column/columns referencing primary key of another table establishing relationship","Imported key from another database","Temporary key","External identifier"],correctAnswer:"Column/columns referencing primary key of another table establishing relationship",explanation:"FOREIGN KEY maintains referential integrity. Values must exist as PRIMARY KEY in referenced table."},
+            {question:"What is CHECK constraint?",options:["Validates data meets condition; example: age > 0 AND age < 150","Checks for NULL values","Checks for duplicates","Validates data type"],correctAnswer:"Validates data meets condition; example: age > 0 AND age < 150",explanation:"CHECK constraint: enforces business rule. Example: salary >= 0, gender IN ('M','F')."},
+            {question:"What is DEFAULT constraint?",options:["Assigns default value if none provided; example: status DEFAULT 'active'","Requires value","Prevents NULL","Ensures uniqueness"],correctAnswer:"Assigns default value if none provided; example: status DEFAULT 'active'",explanation:"DEFAULT: if INSERT omits column, uses default. Example: created_date DEFAULT CURRENT_DATE."},
+            {question:"What is NOT NULL constraint?",options:["Column must have value, NULL not allowed","Allows empty strings","Allows zero values","Allows NULL"],correctAnswer:"Column must have value, NULL not allowed",explanation:"NOT NULL constraint: column must contain value. Used for essential data."},
+            {question:"What is data type INT in MySQL?",options:["4-byte integer ranging -2,147,483,648 to 2,147,483,647","1 byte integer","8 byte integer","Text type"],correctAnswer:"4-byte integer ranging -2,147,483,648 to 2,147,483,647",explanation:"INT: 4 bytes, range ±2.1 billion. Use TINYINT (1 byte), SMALLINT (2), BIGINT (8) for different ranges."},
+            {question:"What is data type DECIMAL in MySQL?",options:["Fixed-point decimal for exact currency/financial calculations; DECIMAL(5,2) = 999.99","Floating point for approximate values","Exact count of items","Date type"],correctAnswer:"Fixed-point decimal for exact currency/financial calculations; DECIMAL(5,2) = 999.99",explanation:"DECIMAL(p,s): p=total digits, s=decimal places. DECIMAL(5,2)=3 integer+2 decimal. For money."},
+            {question:"What is data type VARCHAR in MySQL?",options:["Variable-length text up to specified max; VARCHAR(100) stores up to 100 chars with row limits","Fixed 100 characters always","Single character","Character set type"],correctAnswer:"Variable-length text up to specified max; VARCHAR(100) stores up to 100 chars with row limits",explanation:"VARCHAR(n): variable length 0 to n chars. Saves space vs CHAR. Shares 65,535-byte row limit."},
+            {question:"What is data type CHAR in MySQL?",options:["Fixed-length text; CHAR(10) always 10 chars, padded with spaces if shorter","Variable length text","Character code","Unicode type"],correctAnswer:"Fixed-length text; CHAR(10) always 10 chars, padded with spaces if shorter",explanation:"CHAR(n): fixed length padded with spaces. Faster than VARCHAR but wastes space for short values."},
+            {question:"What is data type DATE in MySQL?",options:["Stores date in YYYY-MM-DD format; range 1000-01-01 to 9999-12-31","Stores date and time","Text representation of date","Numeric date code"],correctAnswer:"Stores date in YYYY-MM-DD format; range 1000-01-01 to 9999-12-31",explanation:"DATE: date only. Use DATETIME or TIMESTAMP for date and time. Use TIME for time only."},
+            {question:"What is data type BOOLEAN in MySQL?",options:["Stored as TINYINT(1); TRUE=1, FALSE=0","True/false text type","Bit type","Integer type"],correctAnswer:"Stored as TINYINT(1); TRUE=1, FALSE=0",explanation:"BOOLEAN: MySQL converts to TINYINT(1). TRUE→1, FALSE→0. Works with boolean literals."},
+            {question:"What is data type ENUM in MySQL?",options:["String column restricted to enumerated list of values; ENUM('small','medium','large')","Text allowing any value","Fixed number of characters","Date enumeration"],correctAnswer:"String column restricted to enumerated list of values; ENUM('small','medium','large')",explanation:"ENUM: column restricted to list of predefined values. Efficient storage but alter table for new values."},
+            {question:"What is data type TEXT in MySQL?",options:["Large variable-length text; up to 4GB without specified size","Fixed-length text","Small text limited to 255","Unicode text only"],correctAnswer:"Large variable-length text; up to 4GB without specified size",explanation:"TEXT: TINYTEXT (255), TEXT (64K), MEDIUMTEXT (16M), LONGTEXT (4G). For large text."},
+            {question:"What is data type BLOB in MySQL?",options:["Binary Large Object; stores binary data like images, videos, files","Text blob","Large text type","Binary counter"],correctAnswer:"Binary Large Object; stores binary data like images, videos, files",explanation:"BLOB: binary data. TINYBLOB, BLOB, MEDIUMBLOB, LONGBLOB. Use for images, PDFs, etc."},
+            {question:"What does ON DELETE CASCADE do?",options:["Automatically deletes child records when parent record deleted","Prevents parent deletion if children exist","Backs up child records","Copies child records"],correctAnswer:"Automatically deletes child records when parent record deleted",explanation:"ON DELETE CASCADE: enforces referential integrity by cascading deletes. Use carefully!"},
+            {question:"What does ON DELETE RESTRICT do?",options:["Prevents parent record deletion if child records exist; raises error","Allows deletion","Deletes parent only","Copies records"],correctAnswer:"Prevents parent record deletion if child records exist; raises error",explanation:"ON DELETE RESTRICT: parent cannot delete while children exist. Forces cleanup first."},
+            {question:"What does ON DELETE SET NULL do?",options:["Sets foreign key to NULL when parent deleted; only if column allows NULL","Deletes child","Prevents deletion","Copies child"],correctAnswer:"Sets foreign key to NULL when parent deleted; only if column allows NULL",explanation:"ON DELETE SET NULL: child.parent_id becomes NULL when parent deleted. Only works if FK nullable."},
+            {question:"What does ON UPDATE CASCADE do?",options:["Updates all child foreign key values when parent primary key updated","Updates parent only","Prevents update","Copies values"],correctAnswer:"Updates all child foreign key values when parent primary key updated",explanation:"ON UPDATE CASCADE: if parent key changes, all child keys automatically updated (rare since PKs fixed)."},
+            {question:"What is VIEW in database?",options:["Virtual table based on query; stored SELECT statement without storing physical data","Physical table","Index structure","Query result","Database file"],correctAnswer:"Virtual table based on query; stored SELECT statement without storing physical data",explanation:"VIEW: saved query appears as table. Can be updated (simple views), used for security/simplicity."},
+            {question:"Can you insert into VIEW?",options:["Yes, if based on single table with PRIMARY KEY; restricted views only","Yes, always","No, never","Only with special permissions"],correctAnswer:"Yes, if based on single table with PRIMARY KEY; restricted views only",explanation:"Simple views (single table with PK) can have INSERT/UPDATE/DELETE. Complex views read-only."},
+            {question:"What is materialized VIEW?",options:["View with data physically stored and refreshed periodically from source tables","Regular view stored in memory","Indexed view","Cached query result"],correctAnswer:"View with data physically stored and refreshed periodically from source tables",explanation:"Materialized view: stores actual data updated on schedule. Faster reads, slower updates."},
+            {question:"What is CURSOR in SQL?",options:["Pointer to result set allowing row-by-row processing; used in stored procedures","Result set column indicator","Database pointer","Row counter"],correctAnswer:"Pointer to result set allowing row-by-row processing; used in stored procedures",explanation:"CURSOR: iterates through rows. OPEN cursor, FETCH INTO variables, CLOSE cursor."},
+            {question:"What is trigger?",options:["Automatic action (stored procedure) executed in response to INSERT/UPDATE/DELETE events","Scheduled task","User action","Index rebuild"],correctAnswer:"Automatic action (stored procedure) executed in response to INSERT/UPDATE/DELETE events",explanation:"TRIGGER: automatically runs code before/after INSERT/UPDATE/DELETE. Enforces rules, maintains audit logs."},
+            {question:"What is stored procedure?",options:["Compiled SQL code stored in database accepting parameters and returning results","SQL query in application","Index definition","View definition"],correctAnswer:"Compiled SQL code stored in database accepting parameters and returning results",explanation:"Stored procedure: pre-compiled code executed from application/trigger. CALL procedure_name(args)."},
+            {question:"What is function vs stored procedure?",options:["Function returns single value, procedure performs actions; function used in queries","No difference","Procedure is faster","Function stores data"],correctAnswer:"Function returns single value, procedure performs actions; function used in queries",explanation:"Function: returns scalar/table value, used in SELECT. Procedure: performs actions, called with CALL."},
+            {question:"What is BEGIN/START TRANSACTION?",options:["Starts explicit transaction grouping multiple statements as atomic unit","Starts new SQL session","Begins database connection","Initializes variables"],correctAnswer:"Starts explicit transaction grouping multiple statements as atomic unit",explanation:"BEGIN or START TRANSACTION: marks transaction start. Followed by COMMIT or ROLLBACK."},
+            {question:"What is SAVEPOINT?",options:["Marker within transaction allowing partial ROLLBACK to that point, not full rollback","Start of transaction","End of transaction","Backup point"],correctAnswer:"Marker within transaction allowing partial ROLLBACK to that point, not full rollback",explanation:"SAVEPOINT: creates revertible point. ROLLBACK TO SAVEPOINT reverts to that point only."},
+            {question:"What is deadlock in database?",options:["Two transactions waiting for each other to release locks; both blocked indefinitely","Locked transaction","Failed update","Missing index"],correctAnswer:"Two transactions waiting for each other to release locks; both blocked indefinitely",explanation:"Deadlock: Transaction A locks X and waits for Y, Transaction B locks Y and waits for X. System detects, rolls back."},
+            {question:"What is data warehouse?",options:["Large database optimized for complex analysis and reporting of historical data","Operational database for transactions","Index repository","Backup storage"],correctAnswer:"Large database optimized for complex analysis and reporting of historical data",explanation:"Data warehouse: stores historical data from multiple sources for OLAP (analysis) vs OLTP (transactions)."},
+            {question:"What is OLTP?",options:["Online Transaction Processing - operational database optimized for rapid INSERT/UPDATE/DELETE","Analytical processing","Offline database","Legacy system"],correctAnswer:"Online Transaction Processing - operational database optimized for rapid INSERT/UPDATE/DELETE",explanation:"OLTP: production system. Many transactions, real-time. Normalized structure, small data."},
+            {question:"What is OLAP?",options:["Online Analytical Processing - data warehouse optimized for complex analysis, reporting, aggregations","Transaction system","Backup process","Data cleaning"],correctAnswer:"Online Analytical Processing - data warehouse optimized for complex analysis, reporting, aggregations",explanation:"OLAP: analysis system. Complex queries, historical data. Denormalized, large data (star schema)."},
+            {question:"What is ETL process?",options:["Extract-Transform-Load: extract from source, transform to format, load to warehouse","Edit-Track-Log process","Error-Test-Launch process","Export-Transfer-List process"],correctAnswer:"Extract-Transform-Load: extract from source, transform to format, load to warehouse",explanation:"ETL: data pipeline. Extract source data, transform (clean, aggregate), load to warehouse."},
+            {question:"What is data quality issue?",options:["Inaccurate, incomplete, inconsistent, or stale data affecting analysis","Missing columns","Wrong data type","Performance problem"],correctAnswer:"Inaccurate, incomplete, inconsistent, or stale data affecting analysis",explanation:"Data quality: accuracy, completeness, consistency, timeliness. Addressed in ETL validation."},
+            {question:"What is master data?",options:["Core reference data used across organization; customer, product, employee maintained centrally","Temporary data","Transaction data","Archive data"],correctAnswer:"Core reference data used across organization; customer, product, employee maintained centrally",explanation:"Master data: single source of truth. Customers, products, employees. Critical for consistency."},
+            {question:"What is metadata?",options:["Data about data - describes structure, meaning, usage of data in system","User data","System logs","Configuration files"],correctAnswer:"Data about data - describes structure, meaning, usage of data in system",explanation:"Metadata: table schemas, column descriptions, data types, constraints. Data dictionary."},
+            {question:"What is schema in database?",options:["Overall structure of database - collection of tables, relationships, constraints, indexes","Single table definition","User account","Database name"],correctAnswer:"Overall structure of database - collection of tables, relationships, constraints, indexes",explanation:"Schema: complete database design including all tables, columns, keys, constraints."},
+            {question:"What is sharding/partitioning?",options:["Dividing large table into smaller parts horizontally (sharding) or vertically (partitioning) for performance","Backing up data","Compressing data","Encrypting data"],correctAnswer:"Dividing large table into smaller parts horizontally (sharding) or vertically (partitioning) for performance",explanation:"Sharding: split by range (horizontal). Partitioning: split by value. Improves query speed on huge tables."},
+            {question:"What is replication in database?",options:["Creating copies of database on multiple servers for redundancy and read distribution","Backup creation","Data duplication","Query optimization"],correctAnswer:"Creating copies of database on multiple servers for redundancy and read distribution",explanation:"Replication: master-slave or multi-master. Provides failover and read scaling."},
+            {question:"What is backup and recovery?",options:["Backup: copy database regularly; Recovery: restore from backup if failure occurs","Delete old data","Archive history","Performance tuning"],correctAnswer:"Backup: copy database regularly; Recovery: restore from backup if failure occurs",explanation:"Backup strategies: full (entire DB), incremental (changes), differential (changes since last full)."},
+            {question:"What is log-based recovery?",options:["Uses transaction log to redo/undo committed/uncommitted changes for crash recovery","Backup method","Storage format","Compression technique"],correctAnswer:"Uses transaction log to redo/undo committed/uncommitted changes for crash recovery",explanation:"Write-ahead logging: write to log before data. On crash, use log to recover committed changes."},
+            {question:"What is cloud database?",options:["Database managed and hosted by cloud provider; accessed over internet with auto-scaling","Database on local server only","Backup in cloud storage only","Virtual machine database"],correctAnswer:"Database managed and hosted by cloud provider; accessed over internet with auto-scaling",explanation:"Cloud DB: AWS RDS, Azure SQL, Google Cloud SQL. Benefits: scalability, maintenance-free, pay-per-use."},
+            {question:"What is NoSQL database?",options:["Non-relational database; document, key-value, graph stores without strict schema","Any non-SQL database","Old database system","Negative SQL database"],correctAnswer:"Non-relational database; document, key-value, graph stores without strict schema",explanation:"NoSQL: MongoDB (document), Redis (key-value), Neo4j (graph). No SQL, flexible schema, horizontal scaling."},
+            {question:"What is MongoDB?",options:["Document-based NoSQL database storing JSON-like documents in collections","Relational database","Graph database","Key-value store"],correctAnswer:"Document-based NoSQL database storing JSON-like documents in collections",explanation:"MongoDB: stores BSON (JSON-like) documents. Flexible schema, good for semi-structured data."},
+            {question:"What is graph database?",options:["Database optimized for storing and querying relationships; nodes and edges","Document database","Time-series database","Relational database"],correctAnswer:"Database optimized for storing and querying relationships; nodes and edges",explanation:"Graph DB: Neo4j. Stores nodes (entities) and relationships (edges). Fast for complex relationship queries."},
+            {question:"What is key-value database?",options:["Simple database storing key-value pairs for fast retrieval; Redis, Memcached","Document database","Relational database","Graph database"],correctAnswer:"Simple database storing key-value pairs for fast retrieval; Redis, Memcached",explanation:"Key-value: Redis, Memcached. Ultra-fast lookups. Used for caching, sessions, real-time data."},
+            {question:"What is time-series database?",options:["Database optimized for time-stamped data like stock prices, sensor readings, metrics","Temporal database","Historical database","Archive database"],correctAnswer:"Database optimized for time-stamped data like stock prices, sensor readings, metrics",explanation:"Time-series DB: InfluxDB, TimescaleDB. Optimized for timestamps. Good for monitoring, IoT."},
+            {question:"What is search index?",options:["Full-text search optimized database like Elasticsearch for fast text searching","Database index","Regular index","Sorted index"],correctAnswer:"Full-text search optimized database like Elasticsearch for fast text searching",explanation:"Elasticsearch: inverted index for full-text search. Fast text queries. Often used with logging/analytics."},
+            {question:"What is API in database context?",options:["Application Programming Interface allowing applications to communicate with database programmatically","Personal interface","Administrative panel","User login"],correctAnswer:"Application Programming Interface allowing applications to communicate with database programmatically",explanation:"Database API: REST API, GraphQL, JDBC, ODBC. Allows applications to query database remotely."},
+            {question:"What is ORM framework?",options:["Object-Relational Mapping mapping object-oriented code to relational database; Hibernate, SQLAlchemy","Operating system interface","Reporting module","Optimization rule"],correctAnswer:"Object-Relational Mapping mapping object-oriented code to relational database; Hibernate, SQLAlchemy",explanation:"ORM: maps objects to database tables automatically. No manual SQL writing. Hibernate (Java), SQLAlchemy (Python)."},
+            {question:"What is SQL injection attack?",options:["Security vulnerability where attacker injects malicious SQL code into input; prevented by parameterized queries","SQL syntax error","Database corruption","Server failure"],correctAnswer:"Security vulnerability where attacker injects malicious SQL code into input; prevented by parameterized queries",explanation:"SQL injection: malicious SQL in input. Prevention: parameterized queries, input validation, escaping."},
+            {question:"What is parameterized query?",options:["Query with placeholders for values executed with parameters; prevents SQL injection","Query with hardcoded values","Dynamic SQL query","Compiled query"],correctAnswer:"Query with placeholders for values executed with parameters; prevents SQL injection",explanation:"Parameterized query: SELECT * FROM users WHERE id = ? executes with id parameter. Safe from injection."},
+            {question:"What is encryption for database?",options:["Converting sensitive data to unreadable form using algorithms; Transparent Data Encryption (TDE)","Data compression","Data backup","Data sorting"],correctAnswer:"Converting sensitive data to unreadable form using algorithms; Transparent Data Encryption (TDE)",explanation:"Encryption: TDE encrypts database. Column-level encryption for specific sensitive columns."},
+            {question:"What is role-based access control (RBAC)?",options:["Restricting data access based on user roles; admin, user, guest with specific permissions","User login","Password protection","Firewall rules"],correctAnswer:"Restricting data access based on user roles; admin, user, guest with specific permissions",explanation:"RBAC: roles have permissions. User assigned to role inherits permissions. Granular access control."},
+            {question:"What is audit logging?",options:["Recording who accessed/modified data and when for security and compliance","Error logging","Performance logging","Debug logging"],correctAnswer:"Recording who accessed/modified data and when for security and compliance",explanation:"Audit log: tracks INSERT/UPDATE/DELETE by user. Required for regulatory compliance (HIPAA, GDPR)."},
+            {question:"What is consistency in ACID?",options:["Database transitions from one valid state to another; all rules and constraints respected","Data completeness","Data accuracy","Data availability"],correctAnswer:"Database transitions from one valid state to another; all rules and constraints respected",explanation:"Consistency: all constraints, rules, triggers maintained. Database always valid after transaction."},
+            {question:"What is isolation in ACID?",options:["Concurrent transactions don't interfere; reads not affected by uncommitted changes in other transactions","Data protection","Data access control","System separation"],correctAnswer:"Concurrent transactions don't interfere; reads not affected by uncommitted changes in other transactions",explanation:"Isolation: concurrent transactions isolated. Read committed/repeatable read/serializable levels."},
+            {question:"What is durability in ACID?",options:["Committed changes survive system failures; permanently stored even if crash occurs","Data backup","Data retention","Long-term storage"],correctAnswer:"Committed changes survive system failures; permanently stored even if crash occurs",explanation:"Durability: changes written to non-volatile storage. Survives power loss, hardware failure."},
+            {question:"What transaction isolation level is most restrictive?",options:["Serializable - complete isolation; slowest but safest","Repeatable read","Read committed","Read uncommitted"],correctAnswer:"Serializable - complete isolation; slowest but safest",explanation:"Serializable: transactions cannot interfere. Most restrictive, prevents all anomalies but slower."},
+            {question:"What transaction isolation level is least restrictive?",options:["Read uncommitted - dirty reads allowed; fastest but unsafe","Read committed","Repeatable read","Serializable"],correctAnswer:"Read uncommitted - dirty reads allowed; fastest but unsafe",explanation:"Read uncommitted: allows dirty reads (uncommitted data). Fastest, least safe. Rarely used."},
+            {question:"What is dirty read?",options:["Reading uncommitted data from another transaction that might be rolled back","Reading old data","Reading duplicate data","Reading NULL values"],correctAnswer:"Reading uncommitted data from another transaction that might be rolled back",explanation:"Dirty read: transaction reads data not yet committed. If other transaction rolls back, data invalid."},
+            {question:"What is non-repeatable read?",options:["Reading same row twice shows different values because another transaction modified it between reads","Multiple reads same value","Unchanged data read twice","NULL read"],correctAnswer:"Reading same row twice shows different values because another transaction modified it between reads",explanation:"Non-repeatable read: SELECT same row twice, different values between reads due to UPDATE."},
+            {question:"What is phantom read?",options:["Querying same range twice returns different rows because another transaction inserted/deleted rows","Duplicate rows","Missing rows","Empty result"],correctAnswer:"Querying same range twice returns different rows because another transaction inserted/deleted rows",explanation:"Phantom read: SELECT WHERE age>30 returns 5 rows, rerun returns 6 rows (INSERT occurred)."},
+            {question:"What is query optimization?",options:["Improving query performance through execution plans, indexes, statistics, rewriting","Query rewriting only","Adding indexes only","Database tuning"],correctAnswer:"Improving query performance through execution plans, indexes, statistics, rewriting",explanation:"Query optimization: execution plan analysis, add indexes, update statistics, rewrite queries."},
+            {question:"What is query execution plan?",options:["Step-by-step breakdown how database engine executes query; shows operations, order, cost","Query syntax tree","SQL statement","Index list"],correctAnswer:"Step-by-step breakdown how database engine executes query; shows operations, order, cost",explanation:"Execution plan: shows table scan vs index scan, JOIN order, cost. Use EXPLAIN to view."},
+            {question:"What is table scan vs index scan?",options:["Table scan: reads all rows sequentially; Index scan: uses index for faster access to specific rows","Opposite operations","Random vs ordered access","Full vs partial read"],correctAnswer:"Table scan: reads all rows sequentially; Index scan: uses index for faster access to specific rows",explanation:"Table scan: O(n) slow for large tables. Index scan: O(log n) fast for specific values."},
+            {question:"What is database statistics?",options:["Metadata about data distribution (row count, distinct values) used by optimizer for better plans","Performance metrics","User statistics","System logs"],correctAnswer:"Metadata about data distribution (row count, distinct values) used by optimizer for better plans",explanation:"Statistics: analyze table, gather distribution info. Optimizer uses for best execution plan."},
+            {question:"What is connection pooling?",options:["Reusing database connections from pool instead of creating new one per request; improves performance","Connection optimization","Network pooling","Memory pooling"],correctAnswer:"Reusing database connections from pool instead of creating new one per request; improves performance",explanation:"Connection pool: maintains open connections, reuses them. Reduces overhead, faster responses."},
+            {question:"What is prepared statement?",options:["Pre-compiled SQL statement executed multiple times with different parameters; faster and safer","Compiled code","Stored procedure","Trigger definition"],correctAnswer:"Pre-compiled SQL statement executed multiple times with different parameters; faster and safer",explanation:"Prepared statement: parse once, execute many times. Faster for repeated queries, prevents SQL injection."},
+            {question:"What is batch processing in database?",options:["Executing multiple SQL statements as batch for efficiency; INSERT/UPDATE multiple rows at once","Single statement execution","Real-time processing","Sequential execution"],correctAnswer:"Executing multiple SQL statements as batch for efficiency; INSERT/UPDATE multiple rows at once",explanation:"Batch processing: bulk INSERT/UPDATE/DELETE. Faster than individual statements."},
+            {question:"What is CAP theorem?",options:["Consistency, Availability, Partition tolerance - can guarantee only two; tradeoff theory","Database constraint","SQL principle","Normalization rule"],correctAnswer:"Consistency, Availability, Partition tolerance - can guarantee only two; tradeoff theory",explanation:"CAP: Consistency (all see same data), Availability (always responsive), Partition tolerance (works despite splits)."},
+            {question:"What is BASE model?",options:["Basically Available, Soft state, Eventually consistent - NoSQL alternative to ACID","Basic SQL expression","Backup access system","Binary algorithm"],correctAnswer:"Basically Available, Soft state, Eventually consistent - NoSQL alternative to ACID",explanation:"BASE: relaxes consistency for availability. Eventually consistent. Used in distributed systems."},
+            {question:"What is distributed database?",options:["Database spread across multiple locations/servers; data replicated for reliability and performance","Centralized database","Large database","Remote database"],correctAnswer:"Database spread across multiple locations/servers; data replicated for reliability and performance",explanation:"Distributed DB: data split/replicated across servers. Challenges: consistency, network latency."},
+            {question:"What is eventual consistency?",options:["Distributed system becomes consistent after some time; temporary inconsistencies allowed","Immediate consistency","No consistency guarantee","Weak consistency"],correctAnswer:"Distributed system becomes consistent after some time; temporary inconsistencies allowed",explanation:"Eventual consistency: distributed system eventually consistent but temporarily inconsistent. Used in NoSQL."},
+            {question:"What is vector clock?",options:["Mechanism tracking causality in distributed systems without central clock; ensures ordering","System clock","Timer mechanism","Sequential numbering"],correctAnswer:"Mechanism tracking causality in distributed systems without central clock; ensures ordering",explanation:"Vector clock: (node_id, counter) tracks event ordering in distributed DB without synchronized clocks."},
+            {question:"What is query cache?",options:["In-memory storage of query results reused for identical queries; improves response time","Query optimization","Index cache","Buffer pool"],correctAnswer:"In-memory storage of query results reused for identical queries; improves response time",explanation:"Query cache: stores identical query results. Invalidated when table changes. Found in MySQL."},
+            {question:"What is buffer pool in database?",options:["In-memory cache of pages from disk; reduces disk I/O for frequently accessed data","Database backup","Temporary storage","Cache memory"],correctAnswer:"In-memory cache of pages from disk; reduces disk I/O for frequently accessed data",explanation:"Buffer pool: in-memory cache. Larger pool = fewer disk reads. Critical for performance."},
+            {question:"What is write-ahead logging (WAL)?",options:["Writing changes to log before writing to data files; ensures durability in crash recovery","Read-ahead logging","Buffer writing","Delayed writing"],correctAnswer:"Writing changes to log before writing to data files; ensures durability in crash recovery",explanation:"WAL: log written first, then data. Ensures committed changes survive crashes."},
+            {question:"What is MVCC?",options:["Multi-Version Concurrency Control - each transaction sees consistent snapshot; supports concurrent reads/writes","Multi-view concurrency","Master version control","Mutex-based concurrency"],correctAnswer:"Multi-Version Concurrency Control - each transaction sees consistent snapshot; supports concurrent reads/writes",explanation:"MVCC: multiple versions of rows. Readers don't block writers. Used in PostgreSQL, MySQL InnoDB."},
+            {question:"What is ACID transactions guarantee?",options:["Atomicity (all/nothing), Consistency (valid), Isolation (no interference), Durability (permanent)","Accuracy and durability only","Consistency and availability","All operations atomic"],correctAnswer:"Atomicity (all/nothing), Consistency (valid), Isolation (no interference), Durability (permanent)",explanation:"ACID: four properties ensuring reliable transactions. All four must be satisfied."},
+            {question:"What is column-oriented database?",options:["Database storing data by column instead of row; optimized for analytical queries; Parquet, ORC","Row-oriented database","Relational database","File-based database"],correctAnswer:"Database storing data by column instead of row; optimized for analytical queries; Parquet, ORC",explanation:"Column DB: stores columns separately. Better compression, faster analytics. Row DB faster for OLTP."},
+            {question:"What is data governance?",options:["Policies and processes managing data quality, security, compliance, and lifecycle; ensures accountability","Data management","Data storage","Data backup"],correctAnswer:"Policies and processes managing data quality, security, compliance, and lifecycle; ensures accountability",explanation:"Data governance: defines who accesses data, how it's used, quality standards, retention policies."},
+            {question:"What is database migration?",options:["Moving data from one database system to another or one version to newer version; requires careful planning","Backing up database","Copying database","Merging databases"],correctAnswer:"Moving data from one database system to another or one version to newer version; requires careful planning",explanation:"Migration: moving to new system/version. Challenges: downtime, data integrity, rollback plan."},
+            {question:"What is the difference between DROP and TRUNCATE?",options:["DROP is DDL that removes structure/data; TRUNCATE is DDL that removes data only but keeps structure","DROP removes data while TRUNCATE removes structure","TRUNCATE is slower than DROP","DROP can be rolled back but TRUNCATE cannot"],correctAnswer:"DROP is DDL that removes structure/data; TRUNCATE is DDL that removes data only but keeps structure",explanation:"DROP: removes table structure and data; is DDL. TRUNCATE: removes all data but keeps structure; is DDL. DELETE: removes data with conditions; is DML and can be rolled back."},
+            {question:"What is a correlated subquery?",options:["Subquery that references outer query columns and executes once per outer row","Subquery in SELECT clause only","Subquery that joins multiple tables","Subquery with no reference to outer query"],correctAnswer:"Subquery that references outer query columns and executes once per outer row",explanation:"Correlated subquery references outer query. Executes repeatedly for each outer row. Slower than joins but useful for row-by-row comparisons."},
+            {question:"What does DISTINCT keyword do?",options:["Returns only unique/different values removing duplicates","Sorts values alphabetically","Groups values together","Counts occurrences"],correctAnswer:"Returns only unique/different values removing duplicates",explanation:"SELECT DISTINCT removes duplicate rows from result set. Only returns unique values."},
+            {question:"What is a view in database?",options:["Virtual table based on query; stored SELECT without storing physical data","Physical table stored on disk","Copy of table for backup","Query result file"],correctAnswer:"Virtual table based on query; stored SELECT without storing physical data",explanation:"VIEW: a saved SQL query that appears as a table. No physical data stored. Used for security, simplification, and data abstraction."},
+            {question:"What is Boyce-Codd Normal Form (BCNF)?",options:["Stricter than 3NF; every determinant must be a candidate key","Same as 3NF for most cases","Removes all NULL values","Eliminates all foreign keys"],correctAnswer:"Stricter than 3NF; every determinant must be a candidate key",explanation:"BCNF is stricter than 3NF. Every attribute determining another must be a candidate key. Eliminates anomalies that 3NF misses."},
+            {question:"What is a subquery?",options:["Query within another query returning data to outer query","Query sorting results","Query combining tables","Single SELECT statement"],correctAnswer:"Query within another query returning data to outer query",explanation:"Subquery (inner query): executes first, returns results used by outer query. Can be in SELECT, FROM, WHERE, or HAVING."},
+            {question:"What does GROUP BY do?",options:["Groups rows by column values to use with aggregate functions","Orders results by column","Removes duplicate rows","Filters rows with conditions"],correctAnswer:"Groups rows by column values to use with aggregate functions",explanation:"GROUP BY groups rows sharing same column value. Used with COUNT, SUM, AVG, etc. HAVING filters groups after grouping."},
+            {question:"What is referential integrity constraint?",options:["Ensures foreign key values exist as primary key values in referenced table","Ensures all values are unique","Ensures no NULL values exist","Ensures data is sorted correctly"],correctAnswer:"Ensures foreign key values exist as primary key values in referenced table",explanation:"Referential integrity: prevents orphaned records. Foreign key values must match or be NULL. Enforced by PRIMARY KEY/FOREIGN KEY constraints."},
+            {question:"What is database ACID compliance?",options:["Atomicity, Consistency, Isolation, and Durability ensure reliable transactions","Automatic, Consistent, Indexed Database","Atomic Cluster Integrity Database","All Columns In Databases"],correctAnswer:"Atomicity, Consistency, Isolation, and Durability ensure reliable transactions",explanation:"ACID: transactions are all-or-nothing (atomicity), maintain valid state (consistency), don't interfere (isolation), survive crashes (durability)."},
+            {question:"What is an index in database?",options:["Data structure speeding up data retrieval by creating quick lookups based on column values","File storing backup data","Record of all database changes","Table of query results"],correctAnswer:"Data structure speeding up data retrieval by creating quick lookups based on column values",explanation:"Index: creates sorted structure for faster searching. Primary key automatically indexed. Can create additional indexes for frequently searched columns."}
+        ];
+
+        // FLASHCARDS DATA
+        let flashcards = [
+            {term:"SELECT",definition:"SQL statement used to retrieve data from one or more tables. Syntax: SELECT columns FROM table WHERE condition;"},
+            {term:"INSERT",definition:"SQL statement used to insert new records into a table. Syntax: INSERT INTO table (columns) VALUES (values);"},
+            {term:"UPDATE",definition:"SQL statement used to modify existing records. Syntax: UPDATE table SET column = value WHERE condition;"},
+            {term:"DELETE",definition:"SQL statement used to remove records from a table. Syntax: DELETE FROM table WHERE condition;"},
+            {term:"WHERE",definition:"Clause that filters records based on specified conditions. Used in SELECT, UPDATE, and DELETE statements."},
+            {term:"ORDER BY",definition:"Clause that sorts result set in ascending (ASC) or descending (DESC) order. Can use multiple columns."},
+            {term:"GROUP BY",definition:"Clause that groups rows with same values in specified columns, often used with aggregate functions."},
+            {term:"HAVING",definition:"Clause that filters groups created by GROUP BY. Works on aggregated data, unlike WHERE which works on rows."},
+            {term:"JOIN",definition:"Clause that combines rows from two or more tables based on related columns. Types: INNER, LEFT, RIGHT, CROSS."},
+            {term:"INNER JOIN",definition:"Returns only rows where there is a match in both tables. Excludes non-matching rows from both tables."},
+            {term:"LEFT JOIN",definition:"Returns all rows from the left table and matching rows from the right table. Fills NULL for unmatched right rows."},
+            {term:"RIGHT JOIN",definition:"Returns all rows from the right table and matching rows from the left table. Fills NULL for unmatched left rows."},
+            {term:"CROSS JOIN",definition:"Returns the Cartesian product of two tables, combining each row from first table with each row from second table."},
+            {term:"SELF JOIN",definition:"Joins a table to itself, useful for comparing rows within the same table. Requires table aliases."},
+            {term:"UNION",definition:"Combines results from multiple SELECT statements, removing duplicate rows. All SELECTs must have same number of columns."},
+            {term:"UNION ALL",definition:"Combines results from multiple SELECT statements, keeping all rows including duplicates. Faster than UNION."},
+            {term:"COUNT()",definition:"Aggregate function that returns the number of rows matching a condition. COUNT(*) counts all rows."},
+            {term:"SUM()",definition:"Aggregate function that returns the total sum of values in a numeric column. Ignores NULL values."},
+            {term:"AVG()",definition:"Aggregate function that returns the average (mean) of values in a numeric column. Ignores NULL values."},
+            {term:"MIN()",definition:"Aggregate function that returns the smallest value in a column. Works with numeric, date, and text columns."},
+            {term:"MAX()",definition:"Aggregate function that returns the largest value in a column. Works with numeric, date, and text columns."},
+            {term:"DISTINCT",definition:"Keyword that removes duplicate rows from result set. Syntax: SELECT DISTINCT column FROM table;"},
+            {term:"LIKE",definition:"Operator used to search for patterns in text. Uses wildcards: % (zero or more chars) and _ (single char)."},
+            {term:"IN",definition:"Operator that allows specifying multiple values in WHERE clause. Syntax: WHERE column IN (value1, value2, value3);"},
+            {term:"BETWEEN",definition:"Operator that selects values within a specified range, inclusive of endpoints. Syntax: WHERE column BETWEEN value1 AND value2;"},
+            {term:"IS NULL",definition:"Operator used to check if a column contains NULL (unknown) values. Cannot use = NULL."},
+            {term:"IS NOT NULL",definition:"Operator used to check if a column does NOT contain NULL values."},
+            {term:"COALESCE()",definition:"Function that returns the first non-NULL value from a list of arguments. Useful for handling NULL values."},
+            {term:"IFNULL()",definition:"MySQL function that returns a specified value if an expression is NULL, otherwise returns the expression."},
+            {term:"PRIMARY KEY",definition:"Constraint that uniquely identifies each record in a table. Cannot contain NULL values. Only one per table."},
+            {term:"FOREIGN KEY",definition:"Constraint that links to the PRIMARY KEY of another table. Establishes relationships and enforces referential integrity."},
+            {term:"UNIQUE",definition:"Constraint that ensures all values in a column are unique. Multiple UNIQUE constraints allowed; allows NULL."},
+            {term:"NOT NULL",definition:"Constraint that ensures a column must always contain a value. No empty cells allowed."},
+            {term:"DEFAULT",definition:"Constraint that provides a default value for a column if no value is specified during INSERT."},
+            {term:"CHECK",definition:"Constraint that limits values in a column based on specified condition. Example: age INT CHECK (age >= 18);"},
+            {term:"CREATE TABLE",definition:"DDL statement that creates a new table with specified columns and constraints."},
+            {term:"ALTER TABLE",definition:"DDL statement that modifies table structure. Can ADD, MODIFY, or DROP columns and constraints."},
+            {term:"DROP TABLE",definition:"DDL statement that deletes an entire table including structure and all data. Cannot be easily undone."},
+            {term:"TRUNCATE",definition:"DDL statement that quickly deletes all rows from a table but keeps structure. Faster than DELETE, no WHERE clause."},
+            {term:"VIEW",definition:"Virtual table based on SELECT query result. Doesn't store data but displays result set. Useful for simplifying queries."},
+            {term:"INDEX",definition:"Database object that speeds up data retrieval. Creates sorted copy of columns for faster searches."},
+            {term:"INT",definition:"Data type for storing integer numbers. Range: -2,147,483,648 to 2,147,483,647 (SIGNED)."},
+            {term:"VARCHAR",definition:"Data type for variable-length text strings. Uses only needed space. Syntax: VARCHAR(max_length)."},
+            {term:"CHAR",definition:"Data type for fixed-length text strings. Pads with spaces to reach specified length. Less efficient than VARCHAR."},
+            {term:"DECIMAL",definition:"Data type for precise decimal numbers, ideal for monetary values. Syntax: DECIMAL(precision, scale)."},
+            {term:"DATE",definition:"Data type for storing dates in YYYY-MM-DD format. Useful for date calculations and filtering."},
+            {term:"BOOLEAN",definition:"Data type for true/false values. Often stored as TINYINT(1) in MySQL where 1=TRUE, 0=FALSE."},
+            {term:"NULL",definition:"Represents missing or unknown value in a column. Different from empty string or zero. Requires IS NULL to check."},
+            {term:"Normalization",definition:"Process of organizing data to reduce redundancy and improve integrity through normal forms (1NF, 2NF, 3NF, BCNF)."},
+            {term:"1NF",definition:"First Normal Form - requires all values be atomic (indivisible). Eliminates repeating groups."},
+            {term:"2NF",definition:"Second Normal Form - requires 1NF plus all non-key attributes depend on entire primary key."},
+            {term:"3NF",definition:"Third Normal Form - requires 2NF plus non-key attributes depend only on primary key."},
+            {term:"BCNF",definition:"Boyce-Codd Normal Form - stricter than 3NF where every determinant must be a candidate key."},
+            {term:"Entity",definition:"A distinct object or thing that can be uniquely identified and stored in a database table."},
+            {term:"Attribute",definition:"A property or characteristic of an entity, represented as a column in a table."},
+            {term:"Relationship",definition:"An association or connection between entities, typically represented through foreign keys."},
+            {term:"Cardinality",definition:"Describes the number of records: one-to-one (1:1), one-to-many (1:N), or many-to-many (M:N)."},
+            {term:"One-to-Many",definition:"One parent record can have multiple child records, but each child belongs to only one parent."},
+            {term:"Many-to-Many",definition:"Multiple records from one entity relate to multiple records from another. Requires junction table."},
+            {term:"Strong Entity",definition:"Entity that exists independently with its own primary key. Not dependent on other entities."},
+            {term:"Weak Entity",definition:"Entity that depends on another (strong) entity for existence and identification."},
+            {term:"Candidate Key",definition:"Attribute or attributes that can uniquely identify each row. Primary key chosen from candidate keys."},
+            {term:"Composite Key",definition:"Primary key made up of two or more columns. All columns together uniquely identify each row."},
+            {term:"Referential Integrity",definition:"Constraint ensuring foreign key values match primary key values in referenced table. Prevents orphaned records."},
+            {term:"DDL",definition:"Data Definition Language - SQL commands that manage database structure: CREATE, ALTER, DROP, TRUNCATE."},
+            {term:"DML",definition:"Data Manipulation Language - SQL commands that manage data: SELECT, INSERT, UPDATE, DELETE."},
+            {term:"Atomic Value",definition:"An indivisible value that cannot be broken down further. Requirement for 1NF."},
+            {term:"Partial Dependency",definition:"When a non-key attribute depends on only part of a composite primary key. Violates 2NF."},
+            {term:"Transitive Dependency",definition:"When non-key attribute depends on another non-key attribute rather than primary key. Violates 3NF."}
+        ];
+
+        // VARIABLES
+        let currentQuestionIndex = 0;
+        let shuffledQuestions = [];
+        let answers = [];
+        let randomizedOptions = []; // Store randomized options for each question
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function initializeTest() {
+            // Randomly select 100 questions from all questions
+            shuffledQuestions = testQuestions.sort(() => Math.random() - 0.5).slice(0, 100);
+            answers = new Array(shuffledQuestions.length).fill(null);
+            randomizedOptions = []; // Clear stored randomized options
+            currentQuestionIndex = 0;
+            document.getElementById('totalQuestions').textContent = '100';
+            document.getElementById('totalQuestionsResult').textContent = '100';
+            displayQuestion();
+        }
+
+        function initializeFlashcards() {
+            displayFlashcards(flashcards);
+            document.getElementById('cardCount').textContent = flashcards.length;
+        }
+
+        function displayQuestion() {
+            if (!shuffledQuestions || shuffledQuestions.length === 0) return;
+            
+            const question = shuffledQuestions[currentQuestionIndex];
+            const answered = answers[currentQuestionIndex] !== null;
+            
+            // Use stored randomized options for this question
+            let options = randomizedOptions[currentQuestionIndex];
+            if (!options) {
+                // First time showing this question - randomize and store
+                options = [...question.options].sort(() => Math.random() - 0.5);
+                randomizedOptions[currentQuestionIndex] = options;
+            }
+            
+            let html = `
+                <div class="question-container ${answered ? 'answered' : ''}">
+                    <div class="question-number">Question ${currentQuestionIndex + 1} of ${shuffledQuestions.length}</div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options">
+            `;
+
+            options.forEach((option, idx) => {
+                const isSelected = answers[currentQuestionIndex] === option;
+                const isCorrect = option === question.correctAnswer;
+                
+                let classes = 'option';
+                if (isSelected) classes += ' selected';
+                if (answered && isCorrect) classes += ' correct';
+                if (answered && isSelected && !isCorrect) classes += ' incorrect';
+
+                let onchangeAttr = answered ? 'disabled' : `onchange="selectAnswer('${option.replace(/'/g, "\\'")}')"`;
+                html += `
+                    <label class="${classes}">
+                        <input type="radio" name="answer" 
+                            ${isSelected ? 'checked' : ''} 
+                            ${onchangeAttr}
+                        >
+                        <span class="option-label">${option}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+
+            if (answered) {
+                const isCorrect = answers[currentQuestionIndex] === question.correctAnswer;
+                html += `
+                    <div class="feedback ${isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="feedback-label">${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</div>
+                        ${!isCorrect ? `<strong>Correct Answer:</strong> ${question.correctAnswer}<br><br>` : ''}
+                        <strong>Explanation:</strong> ${question.explanation}
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="previousQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>← Previous</button>
+                    <button class="btn-primary" onclick="nextQuestion()" ${!answered ? 'disabled' : ''}>${currentQuestionIndex === shuffledQuestions.length - 1 ? 'Finish' : 'Next'} →</button>
+                </div>
+            </div>
+            `;
+
+            document.getElementById('testContent').innerHTML = html;
+            updateProgress();
+        }
+
+        function selectAnswer(selectedOption) {
+            answers[currentQuestionIndex] = selectedOption;
+            displayQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                finishTest();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / shuffledQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+
+            const correct = answers.filter((a, i) => a !== null && a === shuffledQuestions[i].correctAnswer).length;
+            const wrong = answers.filter((a, i) => a !== null && a !== shuffledQuestions[i].correctAnswer).length;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('wrongCount').textContent = wrong;
+        }
+
+        function finishTest() {
+            const correct = answers.filter((a, i) => a !== null && a === shuffledQuestions[i].correctAnswer).length;
+            const percentage = Math.round((correct / shuffledQuestions.length) * 100);
+
+            document.getElementById('testContent').style.display = 'none';
+            document.getElementById('resultsContainer').classList.add('show');
+            document.getElementById('finalScore').textContent = percentage + '%';
+            document.getElementById('finalCorrect').textContent = correct;
+        }
+
+        function restartTest() {
+            currentQuestionIndex = 0;
+            document.getElementById('testContent').style.display = 'block';
+            document.getElementById('resultsContainer').classList.remove('show');
+            initializeTest();
+        }
+
+        function displayFlashcards(cardsToDisplay) {
+            let html = '';
+            cardsToDisplay.forEach((card) => {
+                html += `
+                    <div class="flashcard" onclick="toggleFlip(this)">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <div class="card-label">Front</div>
+                                ${card.term}
+                            </div>
+                            <div class="flashcard-back">
+                                <div class="card-label">Back</div>
+                                ${card.definition}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (cardsToDisplay.length === 0) {
+                html = '<div class="no-cards">No flashcards match your search.</div>';
+            }
+
+            document.getElementById('flashcardGrid').innerHTML = html;
+        }
+
+        function toggleFlip(element) {
+            element.classList.toggle('flipped');
+        }
+
+        function filterFlashcards() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const filtered = flashcards.filter(card => 
+                card.term.toLowerCase().includes(searchTerm) || 
+                card.definition.toLowerCase().includes(searchTerm)
+            );
+            displayFlashcards(filtered);
+            document.getElementById('cardCount').textContent = filtered.length;
+        }
+
+        function resetFlashcards() {
+            document.getElementById('searchBox').value = '';
+            document.querySelectorAll('.flashcard').forEach(card => {
+                card.classList.remove('flipped');
+            });
+            displayFlashcards(flashcards);
+            document.getElementById('cardCount').textContent = flashcards.length;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTest();
+            initializeFlashcards();
+        });
+    </script>
+</body>
+</html>
